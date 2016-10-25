@@ -47,6 +47,10 @@ dependencies {
     compile 'org.glassfish:javax.annotation:10.0-b28'
     compile 'com.google.dagger:dagger:2.0.1'
 
+    compile 'io.requery:requery:1.0.1'
+    compile 'io.requery:requery-android:1.0.1' // for android
+    apt 'io.requery:requery-processor:1.0.1'   // use an APT plugin
+
     compile 'net.danlew:android.joda:2.8.2'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
