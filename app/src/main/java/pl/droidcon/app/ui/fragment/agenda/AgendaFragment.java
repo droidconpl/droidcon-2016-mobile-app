@@ -39,6 +39,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -140,8 +141,27 @@ public class AgendaFragment extends Fragment implements SwipeRefreshLayout.OnRef
         Subscription sessionSubscription = databaseManager.sessions(sessionDay)
                 .toObservable()
                 .subscribeOn(Schedulers.io())
+                .map(new Func1<SessionEntity, Session>() {
+                    @Override
+                    public Session call(SessionEntity sessionEntity) {
+                        Session session = new Session();
+                        session.id = sessionEntity.getId();
+                        session.date = new DateTime(sessionEntity.getDate());
+                        session.dayId = sessionEntity.getDayId();
+                        session.title = sessionEntity.getTitle();
+                        session.description = sessionEntity.getDescription();
+                        session.left = sessionEntity.isLeft();
+                        session.sessionDisplayHour = sessionEntity.getDisplayHour();
+                        session.roomId = sessionEntity.getRoomId();
+                        session.singleItem = sessionEntity.isSingleItem();
+//                        session.speakersIds = sessionEntity.getSpeaker().
+
+//                        sessionEntity.getSpeaker().getSpeaker
+                        return session;
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<SessionEntity>() {
+                .subscribe(new Subscriber<Session>() {
                     @Override
                     public void onCompleted() {
                         swipeRefreshLayout.setRefreshing(false);
@@ -155,20 +175,8 @@ public class AgendaFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     }
 
                     @Override
-                    public void onNext(SessionEntity sessionEntity) {
-                        Session session = new Session();
-                        session.id = sessionEntity.getId();
-                        session.date = new DateTime(sessionEntity.getDate());
-                        session.dayId = sessionEntity.getDayId();
-                        session.title = sessionEntity.getTitle();
-                        session.description = sessionEntity.getDescription();
-                        session.left = sessionEntity.isLeft();
-                        session.sessionDisplayHour = sessionEntity.getDisplayHour();
-                        session.roomId = sessionEntity.getRoomId();
-                        session.singleItem = sessionEntity.isSingleItem();
-//                        session.speakersIds = sessionEntity.getSpeaker().
-
-                        sessionList.add(session);
+                    public void onNext(Session sessionEntity) {
+                        sessionList.add(sessionEntity);
                     }
                 });
 //                .observeOn(AndroidSchedulers.mainThread())
