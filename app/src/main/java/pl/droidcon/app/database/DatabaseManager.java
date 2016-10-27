@@ -18,6 +18,8 @@ import javax.inject.Inject;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.requery.Persistable;
+import io.requery.rx.SingleEntityStore;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.helper.ScheduleMapper;
 import pl.droidcon.app.helper.SessionMapper;
@@ -35,6 +37,7 @@ import pl.droidcon.app.model.db.RealmSchedule;
 import pl.droidcon.app.model.db.RealmSession;
 import pl.droidcon.app.model.db.RealmSessionNotification;
 import pl.droidcon.app.model.db.RealmSpeaker;
+import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.model.db.SpeakerEntity;
 import pl.droidcon.app.rx.RealmObservable;
 import rx.Observable;
@@ -299,22 +302,7 @@ public class DatabaseManager {
 
     public void saveData(AgendaResponse agendaResponse, SpeakerResponse speakerResponse) {
 
-        DroidconInjector.get().getDatabase().insert(speakerResponse.speakers).subscribe(new Subscriber<Iterable<SpeakerEntity>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(Iterable<SpeakerEntity> speakerEntities) {
-
-            }
-        });
+        storeRequery(speakerResponse, agendaResponse);
 
         if (1 == 1) {
             return;
@@ -349,6 +337,36 @@ public class DatabaseManager {
         realm.commitTransaction();
         realm.close();
     }
+
+    private void storeRequery(SpeakerResponse speakerResponse, AgendaResponse agendaResponse) {
+        SingleEntityStore<Persistable> database = DroidconInjector.get().getDatabase();
+
+        database.insert(speakerResponse.speakers).subscribe(new Subscriber<Iterable<SpeakerEntity>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Iterable<SpeakerEntity> speakerEntities) {
+
+            }
+        });
+
+        List<SessionEntity> sessionEntities = new ArrayList<>(agendaResponse.sessions.size());
+        for (SessionRow session : agendaResponse.sessions) {
+            sessionEntities.addAll(Utils.toSessions(session));
+        }
+
+
+        database.insert(sessionEntities).subscribe();
+    }
+
 
     @SuppressWarnings("unchecked")
     private void callScheduleInserted(Schedule schedule) {
