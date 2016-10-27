@@ -9,10 +9,9 @@ import io.requery.Key;
 import io.requery.ManyToMany;
 
 @Entity
-public abstract class Speaker {
+public class Speaker {
 
     @Key
-    @Generated
     int id;
     String firstName;
     String lastName;

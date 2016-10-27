@@ -12,7 +12,6 @@ import io.requery.ManyToMany;
 public class Session {
 
     @Key
-    @Generated
     int id;
     Date date;
     String title;
