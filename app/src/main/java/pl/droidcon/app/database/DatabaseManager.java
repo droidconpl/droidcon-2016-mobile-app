@@ -321,11 +321,6 @@ public class DatabaseManager {
 
         storeRequery(speakerResponse, agendaResponse);
 
-        if (1 == 1) {
-            return;
-        }
-
-
         List<SessionRow> sessionRows = agendaResponse.sessions;
         List<Session> sessions = new ArrayList<>();
         for (SessionRow sessionRow : sessionRows) {
