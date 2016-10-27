@@ -11,6 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.joda.time.DateTime;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -22,6 +25,7 @@ import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
 import pl.droidcon.app.model.api.Session;
 import pl.droidcon.app.model.common.SessionDay;
+import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.model.event.NewDataEvent;
 import pl.droidcon.app.model.ui.SwipeRefreshColorSchema;
 import pl.droidcon.app.rx.DataSubscription;
@@ -131,29 +135,63 @@ public class AgendaFragment extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
     private void getSessions() {
+        final List<Session> sessionList = new ArrayList<>();
+
         Subscription sessionSubscription = databaseManager.sessions(sessionDay)
+                .toObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<Session>>() {
+                .subscribe(new Subscriber<SessionEntity>() {
                     @Override
                     public void onCompleted() {
-                        Log.d(TAG, "onCompleted");
+                        swipeRefreshLayout.setRefreshing(false);
+                        agendaAdapter = new AgendaAdapter(sessionList);
+                        agendaList.setAdapter(agendaAdapter);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
-                        showErrorSnackBar();
-                        swipeRefreshLayout.setRefreshing(false);
+
                     }
 
                     @Override
-                    public void onNext(List<Session> sessions) {
-                        swipeRefreshLayout.setRefreshing(false);
-                        agendaAdapter = new AgendaAdapter(sessions);
-                        agendaList.setAdapter(agendaAdapter);
+                    public void onNext(SessionEntity sessionEntity) {
+                        Session session = new Session();
+                        session.id = sessionEntity.getId();
+                        session.date = new DateTime(sessionEntity.getDate());
+                        session.dayId = sessionEntity.getDayId();
+                        session.title = sessionEntity.getTitle();
+                        session.description = sessionEntity.getDescription();
+                        session.left = sessionEntity.isLeft();
+                        session.sessionDisplayHour = sessionEntity.getDisplayHour();
+                        session.roomId = sessionEntity.getRoomId();
+                        session.singleItem = sessionEntity.isSingleItem();
+//                        session.speakersIds = sessionEntity.getSpeaker().
+
+                        sessionList.add(session);
                     }
                 });
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Subscriber<List<Session>>() {
+//                    @Override
+//                    public void onCompleted() {
+//                        Log.d(TAG, "onCompleted");
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        e.printStackTrace();
+//                        showErrorSnackBar();
+//                        swipeRefreshLayout.setRefreshing(false);
+//                    }
+//
+//                    @Override
+//                    public void onNext(List<Session> sessions) {
+//                        swipeRefreshLayout.setRefreshing(false);
+//                        agendaAdapter = new AgendaAdapter(sessions);
+//                        agendaList.setAdapter(agendaAdapter);
+//                    }
+//                });
         if (sessionCompositeSubscription != null) {
             sessionCompositeSubscription.add(sessionSubscription);
         }

@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.requery.Persistable;
+import io.requery.query.Result;
 import io.requery.rx.SingleEntityStore;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.helper.ScheduleMapper;
@@ -92,27 +93,43 @@ public class DatabaseManager {
         dataObservers.remove(dataObserver);
     }
 
-    public Observable<List<Session>> sessions(final SessionDay sessionDay) {
-        return RealmObservable.results(context, new Func1<Realm, RealmResults<RealmSession>>() {
-            @Override
-            public RealmResults<RealmSession> call(Realm realm) {
-                Log.d(TAG, "getting sessions from db for day=" + sessionDay + " and transforming to base models");
-                //its a hack
-                Date beginDate = sessionDay.when.toDate();
-                Date endOfDate = sessionDay.when.plusHours(23).toDate();
-                return realm
-                        .where(RealmSession.class)
-                        .between("date", beginDate, endOfDate)
-                        .findAll();
-            }
-        }).map(new Func1<RealmResults<RealmSession>, List<Session>>() {
-            @Override
-            public List<Session> call(RealmResults<RealmSession> realmSessions) {
-                List<Session> sessions = sessionMapper.fromDBList(realmSessions);
-                Collections.sort(sessions);
-                return sessions;
-            }
-        });
+    public Result<SessionEntity> sessions(final SessionDay sessionDay) {
+
+        Date beginDate = sessionDay.when.toDate();
+        Date endOfDate = sessionDay.when.plusHours(23).toDate();
+
+        List<Session> sessionList = new ArrayList<>();
+
+        Result<SessionEntity> sessionEntities = DroidconInjector.get().getDatabase().select(SessionEntity.class).where(SessionEntity.DATE.between(beginDate, endOfDate)).get();
+
+
+
+
+//        if( 1 ==1 ){
+            return sessionEntities;
+//        }
+
+
+//        return RealmObservable.results(context, new Func1<Realm, RealmResults<RealmSession>>() {
+//            @Override
+//            public RealmResults<RealmSession> call(Realm realm) {
+//                Log.d(TAG, "getting sessions from db for day=" + sessionDay + " and transforming to base models");
+//                //its a hack
+//                Date beginDate = sessionDay.when.toDate();
+//                Date endOfDate = sessionDay.when.plusHours(23).toDate();
+//                return realm
+//                        .where(RealmSession.class)
+//                        .between("date", beginDate, endOfDate)
+//                        .findAll();
+//            }
+//        }).map(new Func1<RealmResults<RealmSession>, List<Session>>() {
+//            @Override
+//            public List<Session> call(RealmResults<RealmSession> realmSessions) {
+//                List<Session> sessions = sessionMapper.fromDBList(realmSessions);
+//                Collections.sort(sessions);
+//                return sessions;
+//            }
+//        });
     }
 
     public Observable<List<Session>> sessions(final Collection<Integer> sessionIds) {
@@ -341,7 +358,7 @@ public class DatabaseManager {
     private void storeRequery(SpeakerResponse speakerResponse, AgendaResponse agendaResponse) {
         SingleEntityStore<Persistable> database = DroidconInjector.get().getDatabase();
 
-        database.insert(speakerResponse.speakers).subscribe(new Subscriber<Iterable<SpeakerEntity>>() {
+        database.upsert(speakerResponse.speakers).subscribe(new Subscriber<Iterable<SpeakerEntity>>() {
             @Override
             public void onCompleted() {
 
@@ -364,7 +381,7 @@ public class DatabaseManager {
         }
 
 
-        database.insert(sessionEntities).subscribe();
+        database.upsert(sessionEntities).subscribe();
     }
 
 
