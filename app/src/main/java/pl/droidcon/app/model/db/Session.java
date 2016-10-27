@@ -1,11 +1,12 @@
 package pl.droidcon.app.model.db;
 
 import java.util.Date;
+import java.util.Set;
 
 import io.requery.Entity;
-import io.requery.ForeignKey;
 import io.requery.Generated;
 import io.requery.Key;
+import io.requery.ManyToMany;
 
 @Entity
 public class Session {
@@ -22,6 +23,6 @@ public class Session {
     boolean singleItem;
     boolean left;
 
-    @ForeignKey
-     Speaker speaker;
+    @ManyToMany
+    Set<Speaker> speaker;
 }

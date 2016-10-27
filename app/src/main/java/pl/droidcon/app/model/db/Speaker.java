@@ -1,8 +1,12 @@
 package pl.droidcon.app.model.db;
 
+import java.util.List;
+
 import io.requery.Entity;
 import io.requery.Generated;
+import io.requery.JunctionTable;
 import io.requery.Key;
+import io.requery.ManyToMany;
 
 @Entity
 abstract class Speaker {
@@ -21,4 +25,8 @@ abstract class Speaker {
     String githubLink;
     String linkedIn;
     String googlePlus;
+
+    @JunctionTable
+    @ManyToMany
+    List<Session> session;
 }
