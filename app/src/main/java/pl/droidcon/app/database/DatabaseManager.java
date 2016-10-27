@@ -35,8 +35,10 @@ import pl.droidcon.app.model.db.RealmSchedule;
 import pl.droidcon.app.model.db.RealmSession;
 import pl.droidcon.app.model.db.RealmSessionNotification;
 import pl.droidcon.app.model.db.RealmSpeaker;
+import pl.droidcon.app.model.db.SpeakerEntity;
 import pl.droidcon.app.rx.RealmObservable;
 import rx.Observable;
+import rx.Subscriber;
 import rx.functions.Func1;
 
 public class DatabaseManager {
@@ -296,6 +298,29 @@ public class DatabaseManager {
     }
 
     public void saveData(AgendaResponse agendaResponse, SpeakerResponse speakerResponse) {
+
+        DroidconInjector.get().getDatabase().insert(speakerResponse.speakers).subscribe(new Subscriber<Iterable<SpeakerEntity>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Iterable<SpeakerEntity> speakerEntities) {
+
+            }
+        });
+
+        if (1 == 1) {
+            return;
+        }
+
+
         List<SessionRow> sessionRows = agendaResponse.sessions;
         List<Session> sessions = new ArrayList<>();
         for (SessionRow sessionRow : sessionRows) {
@@ -303,7 +328,8 @@ public class DatabaseManager {
         }
 
         List<RealmSession> sessionDBs = sessionMapper.mapList(sessions);
-        List<RealmSpeaker> speakerDBs = speakerMapper.mapList(speakerResponse.speakers);
+//        List<RealmSpeaker> speakerDBs = speakerMapper.mapList(speakerResponse.speakers);
+        List<RealmSpeaker> speakerDBs = new ArrayList<>();
 
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
