@@ -9,7 +9,7 @@ import io.requery.Key;
 import io.requery.ManyToMany;
 
 @Entity
-abstract class Speaker {
+public abstract class Speaker {
 
     @Key
     @Generated
