@@ -30,6 +30,7 @@ import pl.droidcon.app.helper.SpeakerMapper;
 import pl.droidcon.app.model.api.AgendaResponse;
 import pl.droidcon.app.model.api.Session;
 import pl.droidcon.app.model.api.SessionRow;
+import pl.droidcon.app.model.api.Speaker;
 import pl.droidcon.app.model.api.SpeakerResponse;
 import pl.droidcon.app.model.common.Schedule;
 import pl.droidcon.app.model.common.ScheduleCollision;
@@ -41,6 +42,7 @@ import pl.droidcon.app.model.db.RealmSessionNotification;
 import pl.droidcon.app.model.db.RealmSpeaker;
 import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.model.db.SpeakerEntity;
+import pl.droidcon.app.model.db.SpeakerEntity_SessionEntity;
 import pl.droidcon.app.rx.RealmObservable;
 import rx.Observable;
 import rx.Subscriber;
@@ -101,7 +103,7 @@ public class DatabaseManager {
 
         List<Session> sessionList = new ArrayList<>();
 
-        SingleEntityStore<Persistable> store = DroidconInjector.get().getDatabase();
+        final SingleEntityStore<Persistable> store = DroidconInjector.get().getDatabase();
         WhereAndOr<Result<SessionEntity>> query = store.select(SessionEntity.class).where(SessionEntity.DATE.between(beginDate, endOfDate));
         Result<SessionEntity> sessionEntities = query.get();
 
@@ -121,6 +123,19 @@ public class DatabaseManager {
                 session.sessionDisplayHour = sessionEntity.getDisplayHour();
                 session.roomId = sessionEntity.getRoomId();
                 session.singleItem = sessionEntity.isSingleItem();
+
+                List<SpeakerEntity> speakerEntities = store.select(SpeakerEntity.class).join(SpeakerEntity_SessionEntity.class).on(SpeakerEntity.ID.eq(SpeakerEntity_SessionEntity.SPEAKER_ID)).where(SpeakerEntity_SessionEntity.SESSION_ID.eq(session.id)).get().toList();
+
+
+                for (SpeakerEntity speakerEntity : speakerEntities) {
+                    Speaker speaker = new Speaker();
+                    speaker.id = speakerEntity.getId();
+                    speaker.firstName = speakerEntity.getFirstName();
+                    speaker.lastName = speakerEntity.getLastName();
+                    speaker.imageUrl = speakerEntity.getImageUrl();
+                    session.getSpeakersList().add(speaker);
+                }
+
                 return session;
             }
         });
