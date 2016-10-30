@@ -139,27 +139,7 @@ public class AgendaFragment extends Fragment implements SwipeRefreshLayout.OnRef
         final List<Session> sessionList = new ArrayList<>();
 
         Subscription sessionSubscription = databaseManager.sessions(sessionDay)
-                .toObservable()
                 .subscribeOn(Schedulers.io())
-                .map(new Func1<SessionEntity, Session>() {
-                    @Override
-                    public Session call(SessionEntity sessionEntity) {
-                        Session session = new Session();
-                        session.id = sessionEntity.getId();
-                        session.date = new DateTime(sessionEntity.getDate());
-                        session.dayId = sessionEntity.getDayId();
-                        session.title = sessionEntity.getTitle();
-                        session.description = sessionEntity.getDescription();
-                        session.left = sessionEntity.isLeft();
-                        session.sessionDisplayHour = sessionEntity.getDisplayHour();
-                        session.roomId = sessionEntity.getRoomId();
-                        session.singleItem = sessionEntity.isSingleItem();
-//                        session.speakersIds = sessionEntity.getSpeaker().
-
-//                        sessionEntity.getSpeaker().getSpeaker
-                        return session;
-                    }
-                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Session>() {
                     @Override
@@ -179,27 +159,6 @@ public class AgendaFragment extends Fragment implements SwipeRefreshLayout.OnRef
                         sessionList.add(sessionEntity);
                     }
                 });
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Subscriber<List<Session>>() {
-//                    @Override
-//                    public void onCompleted() {
-//                        Log.d(TAG, "onCompleted");
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        e.printStackTrace();
-//                        showErrorSnackBar();
-//                        swipeRefreshLayout.setRefreshing(false);
-//                    }
-//
-//                    @Override
-//                    public void onNext(List<Session> sessions) {
-//                        swipeRefreshLayout.setRefreshing(false);
-//                        agendaAdapter = new AgendaAdapter(sessions);
-//                        agendaList.setAdapter(agendaAdapter);
-//                    }
-//                });
         if (sessionCompositeSubscription != null) {
             sessionCompositeSubscription.add(sessionSubscription);
         }
