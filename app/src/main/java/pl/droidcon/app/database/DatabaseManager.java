@@ -30,7 +30,6 @@ import pl.droidcon.app.helper.SpeakerMapper;
 import pl.droidcon.app.model.api.AgendaResponse;
 import pl.droidcon.app.model.api.Session;
 import pl.droidcon.app.model.api.SessionRow;
-import pl.droidcon.app.model.api.Speaker;
 import pl.droidcon.app.model.api.SpeakerResponse;
 import pl.droidcon.app.model.common.Schedule;
 import pl.droidcon.app.model.common.ScheduleCollision;
@@ -42,7 +41,7 @@ import pl.droidcon.app.model.db.RealmSessionNotification;
 import pl.droidcon.app.model.db.RealmSpeaker;
 import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.model.db.SpeakerEntity;
-import pl.droidcon.app.model.db.SpeakerEntity_SessionEntity;
+import pl.droidcon.app.model.db.Utils;
 import pl.droidcon.app.rx.RealmObservable;
 import rx.Observable;
 import rx.functions.Func1;
@@ -140,25 +139,25 @@ public class DatabaseManager {
 //                }
 
 
-                List<SpeakerEntity_SessionEntity> entities = store.select(SpeakerEntity_SessionEntity.class).where(SpeakerEntity_SessionEntity.SESSION_ID.eq(session.id)).get().toList();
-
-                List<Integer> ids = new ArrayList<Integer>();
-
-                for (SpeakerEntity_SessionEntity entity : entities) {
-                    ids.add(entity.getSpeakerId());
-                }
-
-                List<SpeakerEntity> speakers = store.select(SpeakerEntity.class).where(SpeakerEntity.ID.in(ids)).get().toList();
-
-                for (SpeakerEntity speakerEntity : speakers) {
-                    Speaker speaker = new Speaker();
-                    speaker.id = speakerEntity.getId();
-                    speaker.firstName = speakerEntity.getFirstName();
-                    speaker.lastName = speakerEntity.getLastName();
-                    speaker.imageUrl = speakerEntity.getImageUrl();
-                    session.getSpeakersList().add(speaker);
-                }
-
+//                List<SpeakerEntity_SessionEntity> entities = store.select(SpeakerEntity_SessionEntity.class).where(SpeakerEntity_SessionEntity.SESSION_ID.eq(session.id)).get().toList();
+//
+//                List<Integer> ids = new ArrayList<Integer>();
+//
+//                for (SpeakerEntity_SessionEntity entity : entities) {
+//                    ids.add(entity.getSpeakerId());
+//                }
+//
+//                List<SpeakerEntity> speakers = store.select(SpeakerEntity.class).where(SpeakerEntity.ID.in(ids)).get().toList();
+//
+//                for (SpeakerEntity speakerEntity : speakers) {
+//                    Speaker speaker = new Speaker();
+//                    speaker.id = speakerEntity.getId();
+//                    speaker.firstName = speakerEntity.getFirstName();
+//                    speaker.lastName = speakerEntity.getLastName();
+//                    speaker.imageUrl = speakerEntity.getImageUrl();
+//                    session.getSpeakersList().add(speaker);
+//                }
+//
                 return session;
             }
         });
@@ -385,14 +384,29 @@ public class DatabaseManager {
     private void storeRequery(SpeakerResponse speakerResponse, AgendaResponse agendaResponse) {
         EntityDataStore<Persistable> database = DroidconInjector.get().getNonRxDatabase();
 
-        for (SpeakerEntity speakerEntity : speakerResponse.speakers) {
-            try {
-                database.insert(speakerEntity);
-            } catch (io.requery.PersistenceException e) {
-                database.update(speakerEntity);
-                // nop
-            }
-        }
+//        for (SpeakerEntity speakerEntity : speakerResponse.speakers) {
+//            try {
+//                database.insert(speakerEntity);
+//            } catch (io.requery.PersistenceException e) {
+//                database.update(speakerEntity);
+//            }
+//        }
+
+////////////////////////////////////////////////////////////////////////
+//        SingleEntityStore<Persistable> rxDatabase = DroidconInjector.get().getDatabase();
+//
+//        for (SpeakerEntity speaker : speakerResponse.speakers) {
+//            try {
+//                rxDatabase.insert(speaker).toBlocking().value();
+//            } catch (io.requery.PersistenceException e) {
+//                rxDatabase.update(speaker).toBlocking().value();
+//            }
+//        }
+
+
+//        Iterable<SpeakerEntity> value = rxDatabase.upsert(speakerResponse.speakers).toBlocking().value();
+
+        ////////////////////////////////////
 
 //        database.select(SpeakerEntity.class).get().toList();
 

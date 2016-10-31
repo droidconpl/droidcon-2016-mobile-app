@@ -5,13 +5,12 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import pl.droidcon.app.model.db.SpeakerEntity;
+import pl.droidcon.app.model.db.Speaker;
 
 public class SpeakerResponse {
 
     @SerializedName("people")
-    public List<SpeakerEntity> speakers = new ArrayList<>();
+    public List<Speaker> speakers = new ArrayList<>();
 
     @Override
     public String toString() {

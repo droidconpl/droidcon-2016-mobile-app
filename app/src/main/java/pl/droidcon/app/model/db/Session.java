@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.Set;
 
 import io.requery.Entity;
-import io.requery.Generated;
 import io.requery.Key;
 import io.requery.ManyToMany;
 
