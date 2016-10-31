@@ -8,7 +8,6 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +21,7 @@ import io.requery.Persistable;
 import io.requery.query.Result;
 import io.requery.query.WhereAndOr;
 import io.requery.rx.SingleEntityStore;
+import io.requery.sql.EntityDataStore;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.helper.ScheduleMapper;
 import pl.droidcon.app.helper.SessionMapper;
@@ -45,7 +45,6 @@ import pl.droidcon.app.model.db.SpeakerEntity;
 import pl.droidcon.app.model.db.SpeakerEntity_SessionEntity;
 import pl.droidcon.app.rx.RealmObservable;
 import rx.Observable;
-import rx.Subscriber;
 import rx.functions.Func1;
 
 public class DatabaseManager {
@@ -124,10 +123,34 @@ public class DatabaseManager {
                 session.roomId = sessionEntity.getRoomId();
                 session.singleItem = sessionEntity.isSingleItem();
 
-                List<SpeakerEntity> speakerEntities = store.select(SpeakerEntity.class).join(SpeakerEntity_SessionEntity.class).on(SpeakerEntity.ID.eq(SpeakerEntity_SessionEntity.SPEAKER_ID)).where(SpeakerEntity_SessionEntity.SESSION_ID.eq(session.id)).get().toList();
+//                Result<SpeakerEntity> query = store
+//                        .select(SpeakerEntity.class)
+//                        .join(SpeakerEntity_SessionEntity.class)
+//                        .on(SpeakerEntity.ID.eq(SpeakerEntity_SessionEntity.SPEAKER_ID))
+//                        .where(SpeakerEntity_SessionEntity.SESSION_ID.eq(session.id))
+//                        .get();
+//
+                List<SpeakerEntity> speakerEntities = new ArrayList<SpeakerEntity>();
+//
+//                try {
+//                    SpeakerEntity entity = query.toObservable().toBlocking().first();
+//                    speakerEntities.add(entity);
+//                } catch (Throwable e) {
+//                    e.toString();
+//                }
 
 
-                for (SpeakerEntity speakerEntity : speakerEntities) {
+                List<SpeakerEntity_SessionEntity> entities = store.select(SpeakerEntity_SessionEntity.class).where(SpeakerEntity_SessionEntity.SESSION_ID.eq(session.id)).get().toList();
+
+                List<Integer> ids = new ArrayList<Integer>();
+
+                for (SpeakerEntity_SessionEntity entity : entities) {
+                    ids.add(entity.getSpeakerId());
+                }
+
+                List<SpeakerEntity> speakers = store.select(SpeakerEntity.class).where(SpeakerEntity.ID.in(ids)).get().toList();
+
+                for (SpeakerEntity speakerEntity : speakers) {
                     Speaker speaker = new Speaker();
                     speaker.id = speakerEntity.getId();
                     speaker.firstName = speakerEntity.getFirstName();
@@ -360,24 +383,21 @@ public class DatabaseManager {
     }
 
     private void storeRequery(SpeakerResponse speakerResponse, AgendaResponse agendaResponse) {
-        SingleEntityStore<Persistable> database = DroidconInjector.get().getDatabase();
+        EntityDataStore<Persistable> database = DroidconInjector.get().getNonRxDatabase();
 
-        database.upsert(speakerResponse.speakers).subscribe(new Subscriber<Iterable<SpeakerEntity>>() {
-            @Override
-            public void onCompleted() {
-
+        for (SpeakerEntity speakerEntity : speakerResponse.speakers) {
+            try {
+                database.insert(speakerEntity);
+            } catch (io.requery.PersistenceException e) {
+                database.update(speakerEntity);
+                // nop
             }
+        }
 
-            @Override
-            public void onError(Throwable e) {
+//        database.select(SpeakerEntity.class).get().toList();
 
-            }
-
-            @Override
-            public void onNext(Iterable<SpeakerEntity> speakerEntities) {
-
-            }
-        });
+//        List<SpeakerEntity> speakerEntities = database.select(SpeakerEntity.class).get().toList();
+//        speakerEntities.toString();
 
         List<SessionEntity> sessionEntities = new ArrayList<>(agendaResponse.sessions.size());
         for (SessionRow session : agendaResponse.sessions) {
@@ -385,7 +405,18 @@ public class DatabaseManager {
         }
 
 
-        database.upsert(sessionEntities).subscribe();
+        for (SessionEntity sessionEntity : sessionEntities) {
+            try {
+                database.insert(sessionEntity);
+            } catch (io.requery.PersistenceException e) {
+                database.update(sessionEntity);
+            }
+        }
+
+
+        database.select(SessionEntity.class).get().toList();
+
+//        database.upsert(sessionEntities).toBlocking().value();
     }
 
 

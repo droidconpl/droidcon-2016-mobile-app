@@ -5,6 +5,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 import io.requery.Persistable;
 import io.requery.rx.SingleEntityStore;
+import io.requery.sql.EntityDataStore;
 import pl.droidcon.app.DroidconApp;
 import pl.droidcon.app.dagger.module.AndroidModule;
 import pl.droidcon.app.dagger.module.ApiModule;
@@ -22,6 +23,8 @@ public interface DroidconComponent extends DroidconGraph {
     SessionReminder sessionReminder();
 
     SingleEntityStore<Persistable> getDatabase();
+
+    EntityDataStore<Persistable> getNonRxDatabase();
 
     final class Initializer {
         private Initializer() {

@@ -96,6 +96,17 @@ public class LogicModule {
         Configuration configuration = source.getConfiguration();
         return RxSupport.toReactiveStore(
                 new EntityDataStore<Persistable>(configuration));
+    }
 
+    @Singleton
+    @Provides
+    public EntityDataStore<Persistable> provideNonRxDatabase(Context context){
+        DatabaseSource source = new DatabaseSource(context, Models.DEFAULT, 1);
+        if (BuildConfig.DEBUG) {
+            // use this in development mode to drop and recreate the tables on every upgrade
+            source.setTableCreationMode(TableCreationMode.DROP_CREATE);
+        }
+        Configuration configuration = source.getConfiguration();
+        return new EntityDataStore<Persistable>(configuration);
     }
 }
