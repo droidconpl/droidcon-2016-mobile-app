@@ -10,9 +10,15 @@ import android.view.ViewGroup;
 
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import pl.droidcon.app.R;
 import pl.droidcon.app.model.api.Session;
 import pl.droidcon.app.model.db.SessionEntity;
+import pl.droidcon.app.model.db.Speaker;
+import pl.droidcon.app.model.db.SpeakerEntity;
+import pl.droidcon.app.model.db.Utils;
 
 public class AgendaAdapter extends RecyclerView.Adapter<BaseSessionViewHolder> {
 
@@ -73,6 +79,31 @@ public class AgendaAdapter extends RecyclerView.Adapter<BaseSessionViewHolder> {
         session.roomId = sessionEntity.getRoomId();
         session.singleItem = sessionEntity.isSingleItem();
 //        session.setSpeakersList(sessionEntity.getSpeaker());
+
+        List<Speaker> speakers = sessionEntity.getSpeaker();
+        ArrayList<pl.droidcon.app.model.api.Speaker> sessionSpeakers = new ArrayList<>();
+
+        for (Speaker speaker : speakers) {
+            SpeakerEntity speakerEntity = Utils.fromSpeaker(speaker);
+            pl.droidcon.app.model.api.Speaker speakerSession = new pl.droidcon.app.model.api.Speaker();
+            speakerSession.id = speakerEntity.getId();
+            speakerSession.firstName = speakerEntity.getFirstName();
+            speakerSession.lastName = speakerEntity.getLastName();
+            speakerSession.websiteTitle = speakerEntity.getWebsiteTitle();
+            speakerSession.bio = speakerEntity.getBio();
+            speakerSession.websiteLink = speakerEntity.getWebsiteLink();
+            speakerSession.facebookLink = speakerEntity.getFacebookLink();
+            speakerSession.twitterHandler = speakerEntity.getTwitterHandler();
+            speakerSession.githubLink = speakerEntity.getGithubLink();
+            speakerSession.linkedIn = speakerEntity.getLinkedIn();
+            speakerSession.googlePlus = speakerEntity.getGooglePlus();
+            speakerSession.imageUrl = speakerEntity.getImageUrl();
+
+            sessionSpeakers.add(speakerSession);
+        }
+
+
+        session.setSpeakersList(sessionSpeakers);
 
         sessions.add(session);
     }
