@@ -1,6 +1,7 @@
 package pl.droidcon.app.model.db;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import io.requery.Entity;
@@ -22,5 +23,5 @@ public class Session {
     boolean left;
 
     @ManyToMany
-    Set<Speaker> speaker;
+    List<Speaker> speaker;
 }

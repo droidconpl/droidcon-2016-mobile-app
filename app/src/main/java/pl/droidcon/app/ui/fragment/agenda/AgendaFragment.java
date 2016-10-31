@@ -11,15 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.joda.time.DateTime;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.requery.query.Result;
 import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
@@ -34,6 +30,7 @@ import pl.droidcon.app.ui.adapter.AgendaAdapter;
 import pl.droidcon.app.ui.decoration.SpacesItemDecoration;
 import pl.droidcon.app.ui.view.RecyclerItemClickListener;
 import pl.droidcon.app.wrapper.SnackbarWrapper;
+import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -68,7 +65,7 @@ public class AgendaFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     private Subscription newDataEventSubscription;
     private CompositeSubscription sessionCompositeSubscription;
-    private AgendaAdapter agendaAdapter;
+    private AgendaAdapter agendaAdapter = new AgendaAdapter();
 
     public static AgendaFragment newInstance(SessionDay sessionDay) {
         Bundle args = new Bundle();
@@ -110,6 +107,7 @@ public class AgendaFragment extends Fragment implements SwipeRefreshLayout.OnRef
         agendaList.setLayoutManager(mLayoutManager);
         agendaList.addItemDecoration(new SpacesItemDecoration(view.getContext().getResources().getDimension(R.dimen.list_element_margin)));
         agendaList.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), this));
+        agendaList.setAdapter(agendaAdapter);
         bindNewDataEvent();
         sessionCompositeSubscription = new CompositeSubscription();
         getSessions();
@@ -136,17 +134,20 @@ public class AgendaFragment extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
     private void getSessions() {
-        final List<Session> sessionList = new ArrayList<>();
-
         Subscription sessionSubscription = databaseManager.sessions(sessionDay)
                 .subscribeOn(Schedulers.io())
+
+                .flatMap(new Func1<Result<SessionEntity>, Observable<SessionEntity>>() {
+                    @Override
+                    public Observable<SessionEntity> call(Result<SessionEntity> sessionEntities) {
+                        return sessionEntities.toObservable();
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Session>() {
+                .subscribe(new Subscriber<SessionEntity>() {
                     @Override
                     public void onCompleted() {
                         swipeRefreshLayout.setRefreshing(false);
-                        agendaAdapter = new AgendaAdapter(sessionList);
-                        agendaList.setAdapter(agendaAdapter);
                     }
 
                     @Override
@@ -155,8 +156,8 @@ public class AgendaFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     }
 
                     @Override
-                    public void onNext(Session sessionEntity) {
-                        sessionList.add(sessionEntity);
+                    public void onNext(SessionEntity sessionEntity) {
+                        agendaAdapter.add(sessionEntity);
                     }
                 });
         if (sessionCompositeSubscription != null) {
@@ -169,7 +170,7 @@ public class AgendaFragment extends Fragment implements SwipeRefreshLayout.OnRef
             @Override
             public void call(NewDataEvent newDataEvent) {
                 Log.d(TAG, "newDataEvent=" + newDataEvent);
-                getSessions();
+//                getSessions();
             }
         }, new Action0() {
             @Override
@@ -184,7 +185,7 @@ public class AgendaFragment extends Fragment implements SwipeRefreshLayout.OnRef
         if (swipeRefreshLayout.isRefreshing()) {
             showErrorSnackBar();
         }
-        getSessions();
+//        getSessions();
     }
 
     @Override

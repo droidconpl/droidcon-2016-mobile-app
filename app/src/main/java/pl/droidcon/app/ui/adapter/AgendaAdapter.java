@@ -1,15 +1,18 @@
 package pl.droidcon.app.ui.adapter;
 
 import android.support.annotation.NonNull;
+import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.util.SortedListAdapterCallback;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.List;
+import org.joda.time.DateTime;
 
 import pl.droidcon.app.R;
 import pl.droidcon.app.model.api.Session;
+import pl.droidcon.app.model.db.SessionEntity;
 
 public class AgendaAdapter extends RecyclerView.Adapter<BaseSessionViewHolder> {
 
@@ -37,10 +40,41 @@ public class AgendaAdapter extends RecyclerView.Adapter<BaseSessionViewHolder> {
         }
     }
 
-    private List<Session> sessions;
 
-    public AgendaAdapter(List<Session> sessions) {
-        this.sessions = sessions;
+    private SortedList<Session> sessions = new SortedList<>(Session.class, new SortedListAdapterCallback<Session>(this) {
+        @Override
+        public int compare(Session o1, Session o2) {
+            return (int) (o1.date.toDate().getTime() - o2.date.toDate().getTime());
+        }
+
+        @Override
+        public boolean areContentsTheSame(Session oldItem, Session newItem) {
+            return oldItem.equals(newItem);
+        }
+
+        @Override
+        public boolean areItemsTheSame(Session item1, Session item2) {
+            return item1.id == item2.id;
+        }
+    });
+
+    public AgendaAdapter() {
+    }
+
+    public void add(SessionEntity sessionEntity) {
+        Session session = new Session();
+        session.id = sessionEntity.getId();
+        session.date = new DateTime(sessionEntity.getDate());
+        session.dayId = sessionEntity.getDayId();
+        session.title = sessionEntity.getTitle();
+        session.description = sessionEntity.getDescription();
+        session.left = sessionEntity.isLeft();
+        session.sessionDisplayHour = sessionEntity.getDisplayHour();
+        session.roomId = sessionEntity.getRoomId();
+        session.singleItem = sessionEntity.isSingleItem();
+//        session.setSpeakersList(sessionEntity.getSpeaker());
+
+        sessions.add(session);
     }
 
     @Override
