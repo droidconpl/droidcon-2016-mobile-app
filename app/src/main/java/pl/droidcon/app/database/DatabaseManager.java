@@ -40,7 +40,6 @@ import pl.droidcon.app.model.db.RealmSession;
 import pl.droidcon.app.model.db.RealmSessionNotification;
 import pl.droidcon.app.model.db.RealmSpeaker;
 import pl.droidcon.app.model.db.SessionEntity;
-import pl.droidcon.app.model.db.SpeakerEntity;
 import pl.droidcon.app.model.db.Utils;
 import pl.droidcon.app.rx.RealmObservable;
 import rx.Observable;
@@ -122,42 +121,6 @@ public class DatabaseManager {
                 session.roomId = sessionEntity.getRoomId();
                 session.singleItem = sessionEntity.isSingleItem();
 
-//                Result<SpeakerEntity> query = store
-//                        .select(SpeakerEntity.class)
-//                        .join(SpeakerEntity_SessionEntity.class)
-//                        .on(SpeakerEntity.ID.eq(SpeakerEntity_SessionEntity.SPEAKER_ID))
-//                        .where(SpeakerEntity_SessionEntity.SESSION_ID.eq(session.id))
-//                        .get();
-//
-                List<SpeakerEntity> speakerEntities = new ArrayList<SpeakerEntity>();
-//
-//                try {
-//                    SpeakerEntity entity = query.toObservable().toBlocking().first();
-//                    speakerEntities.add(entity);
-//                } catch (Throwable e) {
-//                    e.toString();
-//                }
-
-
-//                List<SpeakerEntity_SessionEntity> entities = store.select(SpeakerEntity_SessionEntity.class).where(SpeakerEntity_SessionEntity.SESSION_ID.eq(session.id)).get().toList();
-//
-//                List<Integer> ids = new ArrayList<Integer>();
-//
-//                for (SpeakerEntity_SessionEntity entity : entities) {
-//                    ids.add(entity.getSpeakerId());
-//                }
-//
-//                List<SpeakerEntity> speakers = store.select(SpeakerEntity.class).where(SpeakerEntity.ID.in(ids)).get().toList();
-//
-//                for (SpeakerEntity speakerEntity : speakers) {
-//                    Speaker speaker = new Speaker();
-//                    speaker.id = speakerEntity.getId();
-//                    speaker.firstName = speakerEntity.getFirstName();
-//                    speaker.lastName = speakerEntity.getLastName();
-//                    speaker.imageUrl = speakerEntity.getImageUrl();
-//                    session.getSpeakersList().add(speaker);
-//                }
-//
                 return session;
             }
         });
@@ -348,9 +311,10 @@ public class DatabaseManager {
         });
     }
 
+    // Old way of storing data
     public void saveData(AgendaResponse agendaResponse, SpeakerResponse speakerResponse) {
 
-        storeRequery(speakerResponse, agendaResponse);
+//        storeRequery(speakerResponse, agendaResponse);
 
         List<SessionRow> sessionRows = agendaResponse.sessions;
         List<Session> sessions = new ArrayList<>();
@@ -379,58 +343,6 @@ public class DatabaseManager {
         }
         realm.commitTransaction();
         realm.close();
-    }
-
-    private void storeRequery(SpeakerResponse speakerResponse, AgendaResponse agendaResponse) {
-        EntityDataStore<Persistable> database = DroidconInjector.get().getNonRxDatabase();
-
-//        for (SpeakerEntity speakerEntity : speakerResponse.speakers) {
-//            try {
-//                database.insert(speakerEntity);
-//            } catch (io.requery.PersistenceException e) {
-//                database.update(speakerEntity);
-//            }
-//        }
-
-////////////////////////////////////////////////////////////////////////
-//        SingleEntityStore<Persistable> rxDatabase = DroidconInjector.get().getDatabase();
-//
-//        for (SpeakerEntity speaker : speakerResponse.speakers) {
-//            try {
-//                rxDatabase.insert(speaker).toBlocking().value();
-//            } catch (io.requery.PersistenceException e) {
-//                rxDatabase.update(speaker).toBlocking().value();
-//            }
-//        }
-
-
-//        Iterable<SpeakerEntity> value = rxDatabase.upsert(speakerResponse.speakers).toBlocking().value();
-
-        ////////////////////////////////////
-
-//        database.select(SpeakerEntity.class).get().toList();
-
-//        List<SpeakerEntity> speakerEntities = database.select(SpeakerEntity.class).get().toList();
-//        speakerEntities.toString();
-
-        List<SessionEntity> sessionEntities = new ArrayList<>(agendaResponse.sessions.size());
-        for (SessionRow session : agendaResponse.sessions) {
-            sessionEntities.addAll(Utils.toSessions(session));
-        }
-
-
-        for (SessionEntity sessionEntity : sessionEntities) {
-            try {
-                database.insert(sessionEntity);
-            } catch (io.requery.PersistenceException e) {
-                database.update(sessionEntity);
-            }
-        }
-
-
-        database.select(SessionEntity.class).get().toList();
-
-//        database.upsert(sessionEntities).toBlocking().value();
     }
 
 
