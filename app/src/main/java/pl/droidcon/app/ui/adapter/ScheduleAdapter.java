@@ -58,7 +58,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleViewHolder> {
             if (slot.getSession() == null) {
                 continue;
             }
-            if (slot.getSession().id == schedule.getSessionId()) {
+            if (slot.getSession().getId() == schedule.getSessionId()) {
                 slots.set(slots.indexOf(slot), Slot.ofDeletedSchedule(schedule));
             }
         }

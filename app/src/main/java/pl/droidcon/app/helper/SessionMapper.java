@@ -24,15 +24,15 @@ public class SessionMapper implements Mapper<SessionEntity, RealmSession> {
     @Override
     public RealmSession map(SessionEntity session) {
         RealmSession realmSession = new RealmSession();
-        realmSession.setId(session.id);
-        realmSession.setDate(session.date);
-        realmSession.setTitle(session.title);
-        realmSession.setDescription(session.description);
-        realmSession.setRoomId(session.roomId);
-        realmSession.setDisplayHour(session.displayHour);
-        realmSession.setDayId(session.dayId);
-        realmSession.setSingleItem(session.singleItem);
-        realmSession.setLeft(session.left);
+        realmSession.setId(session.getId());
+        realmSession.setDate(session.getDate());
+        realmSession.setTitle(session.getTitle());
+        realmSession.setDescription(session.getDescription());
+        realmSession.setRoomId(session.getRoomId());
+        realmSession.setDisplayHour(session.getDisplayHour());
+        realmSession.setDayId(session.getDayId());
+        realmSession.setSingleItem(session.isSingleItem());
+        realmSession.setLeft(session.isLeft());
         return realmSession;
     }
 
@@ -70,15 +70,15 @@ public class SessionMapper implements Mapper<SessionEntity, RealmSession> {
     @Override
     public SessionEntity fromDB(RealmSession realmSession) {
         SessionEntity session = new SessionEntity();
-        session.id = realmSession.getId();
-        session.date = realmSession.getDate();
-        session.title = realmSession.getTitle();
-        session.description = realmSession.getDescription();
-        session.roomId = realmSession.getRoomId();
-        session.displayHour = realmSession.getDisplayHour();
-        session.dayId = realmSession.getDayId();
-        session.singleItem = realmSession.isSingleItem();
-        session.left = realmSession.isLeft();
+        session.setId(realmSession.getId());
+        session.setDate(realmSession.getDate());
+        session.setTitle(realmSession.getTitle());
+        session.setDescription(realmSession.getDescription());
+        session.setRoomId(realmSession.getRoomId());
+        session.setDisplayHour(realmSession.getDisplayHour());
+        session.setDayId(realmSession.getDayId());
+        session.setSingleItem(realmSession.isSingleItem());
+        session.setLeft(realmSession.isLeft());
 //        RealmList<RealmSpeaker> speakers = realmSession.getSpeakers();
 //        session.speaker = speakerMapper.fromDBList(speakers);
         return session;

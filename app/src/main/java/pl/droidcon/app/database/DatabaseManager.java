@@ -201,7 +201,7 @@ public class DatabaseManager {
             @Override
             public RealmSchedule call(Realm realm) {
                 return realm.where(RealmSchedule.class)
-                        .equalTo("realmSessionId", session.id)
+                        .equalTo("realmSessionId", session.getId())
                         .findFirst();
             }
         }).map(new Func1<RealmSchedule, Boolean>() {
@@ -216,7 +216,7 @@ public class DatabaseManager {
         return RealmObservable.object(context, new Func1<Realm, RealmSchedule>() {
             @Override
             public RealmSchedule call(Realm realm) {
-                RealmSchedule realmSchedule = new RealmSchedule(session.id, session.date);
+                RealmSchedule realmSchedule = new RealmSchedule(session.getId(), session.getDate());
                 Schedule schedule = scheduleMapper.fromDB(realmSchedule);
                 callScheduleInserted(schedule);
                 return realm.copyToRealm(realmSchedule);
@@ -229,7 +229,7 @@ public class DatabaseManager {
             @Override
             public RealmSchedule call(Realm realm) {
                 RealmSchedule realmSchedule = realm.where(RealmSchedule.class)
-                        .equalTo("realmSessionId", session.id)
+                        .equalTo("realmSessionId", session.getId())
                         .findFirst();
                 if (realmSchedule != null) {
                     Schedule schedule = scheduleMapper.fromDB(realmSchedule);
@@ -252,7 +252,7 @@ public class DatabaseManager {
             @Override
             public RealmSchedule call(Realm realm) {
                 return realm.where(RealmSchedule.class)
-                        .equalTo("scheduleDate", session.date)
+                        .equalTo("scheduleDate", session.getDate())
                         .findFirst();
             }
         }).map(new Func1<RealmSchedule, ScheduleCollision>() {

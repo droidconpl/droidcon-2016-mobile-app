@@ -13,7 +13,7 @@ public class SessionNotification {
     }
 
     public static SessionNotification of(Session session) {
-        return new SessionNotification(session.id);
+        return new SessionNotification(session.getId());
     }
 
     public static SessionNotification of(RealmSessionNotification sessionNotification) {

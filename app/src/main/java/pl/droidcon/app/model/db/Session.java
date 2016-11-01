@@ -11,20 +11,19 @@ import io.requery.Key;
 import io.requery.ManyToMany;
 
 @Entity
-public abstract class Session implements Parcelable{
+public interface Session extends Parcelable{
 
     @Key
-    public
-    int id;
-    public Date date;
-    public String title;
-    public String description;
-    public int roomId;
-    public String displayHour;
-    public int dayId;
-    public boolean singleItem;
-    public boolean left;
+    int getId();
+    Date getDate();
+    String getTitle();
+    String getDescription();
+    int getRoomId();
+    String getDisplayHour();
+    int getDayId();
+    boolean isSingleItem();
+    boolean isLeft();
 
     @ManyToMany
-    List<Speaker> speaker;
+    List<Speaker> getSpeakers();
 }

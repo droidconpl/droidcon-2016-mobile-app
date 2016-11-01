@@ -43,17 +43,17 @@ public class AgendaSessionViewHolder extends BaseSessionViewHolder {
     public void attachSession(SessionEntity session) {
         this.session = session;
 
-        Room room = Room.valueOfRoomId(session.roomId);
+        Room room = Room.valueOfRoomId(session.getRoomId());
         sessionRoom.setText(room.getStringRes());
-        sessionTitle.setText(session.title);
+        sessionTitle.setText(session.getTitle());
 
-        sessionDate.setText(DateTimePrinter.toPrintableString(new DateTime(session.date)));
+        sessionDate.setText(DateTimePrinter.toPrintableString(new DateTime(session.getDate())));
 
-        List<Speaker> realSpeakerList = session.getSpeaker();
+        List<Speaker> realSpeakerList = session.getSpeakers();
         if (realSpeakerList.isEmpty()) {
             sessionPicture.setImageResource(R.drawable.droidcon_krakow_logo);
         } else {
-            String url = UrlHelper.url(realSpeakerList.get(0).imageUrl);
+            String url = UrlHelper.url(realSpeakerList.get(0).getImageUrl());
             Picasso.with(sessionPicture.getContext())
                     .load(url)
                     .into(sessionPicture);

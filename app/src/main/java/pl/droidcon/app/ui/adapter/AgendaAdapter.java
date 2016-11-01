@@ -130,10 +130,10 @@ public class AgendaAdapter extends RecyclerView.Adapter<BaseSessionViewHolder> {
     @Override
     public int getItemViewType(int position) {
         SessionEntity sessionByPosition = getSessionByPosition(position);
-        if (!sessionByPosition.singleItem) {
+        if (!sessionByPosition.isSingleItem()) {
             return ViewType.NORMAL_SESSION.getViewType();
         }
-        if (sessionByPosition.getSpeaker().isEmpty()) {
+        if (sessionByPosition.getSpeakers().isEmpty()) {
             return ViewType.LARGE_NON_SESSION.getViewType();
         } else {
             return ViewType.LARGE_SESSION.getViewType();

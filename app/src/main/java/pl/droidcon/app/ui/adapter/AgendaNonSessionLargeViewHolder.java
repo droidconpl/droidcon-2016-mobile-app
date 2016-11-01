@@ -36,11 +36,11 @@ public class AgendaNonSessionLargeViewHolder extends BaseSessionViewHolder {
     public void attachSession(SessionEntity session) {
         this.session = session;
 
-        String title = session.title;
+        String title = session.getTitle();
 
         sessionTitle.setText(title);
-        sessionDate.setText(DateTimePrinter.toPrintableStringWithDay(new DateTime(session.date)));
-        String lowerCaseTitle = session.title.toLowerCase();
+        sessionDate.setText(DateTimePrinter.toPrintableStringWithDay(new DateTime(session.getDate())));
+        String lowerCaseTitle = session.getTitle().toLowerCase();
         if (lowerCaseTitle.startsWith("registration") || lowerCaseTitle.startsWith("opening") ||
                 lowerCaseTitle.startsWith("closing") || lowerCaseTitle.startsWith("barcamp")) {
             icon.setImageResource(R.drawable.ic_icon_droid_large);

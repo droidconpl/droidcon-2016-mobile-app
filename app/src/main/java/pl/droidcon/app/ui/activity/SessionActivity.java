@@ -63,12 +63,12 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
 
     private static final String SESSION_EXTRA = "session";
 
-    public static void start(Context context, SessionEntity session) {
+    public static void start(Context context, Session session) {
         Intent intent = getSessionIntent(context, session);
         context.startActivity(intent);
     }
 
-    public static Intent getSessionIntent(Context context, SessionEntity session) {
+    public static Intent getSessionIntent(Context context, Session session) {
         Intent intent = new Intent(context, SessionActivity.class);
         intent.putExtra(SESSION_EXTRA, session);
         return intent;
@@ -128,18 +128,18 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
 
     private void fillDetails() {
         setToolbarTitle(null);
-        title.setText(session.title);
-        List<Speaker> speakersList = session.getSpeaker();
+        title.setText(session.getTitle());
+        List<Speaker> speakersList = session.getSpeakers();
         speakerPhotos.setAdapter(new SpeakerPhotosAdapter(this, speakersList));
-        description.setText(Html.fromHtml(session.description));
-        date.setText(DateTimePrinter.toPrintableStringWithDay(new DateTime(session.date)));
+        description.setText(Html.fromHtml(session.getDescription()));
+        date.setText(DateTimePrinter.toPrintableStringWithDay(new DateTime(session.getDate())));
         indicator.setViewPager(speakerPhotos);
         if (speakersList.size() == 1) {
             indicator.setVisibility(View.INVISIBLE);
         }
         speakerListView.setSpeakers(speakersList, this);
         favouriteButton.setOnClickListener(favouriteClickListener);
-        int stringRes = Room.valueOfRoomId(session.roomId).getStringRes();
+        int stringRes = Room.valueOfRoomId(session.getRoomId()).getStringRes();
         sessionRoom.setText(stringRes);
     }
 
@@ -342,7 +342,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
         public Object instantiateItem(ViewGroup container, int position) {
             View itemView = LayoutInflater.from(context).inflate(R.layout.speaker_pager_item, container, false);
             ImageView imageView = (ImageView) itemView.findViewById(R.id.speaker_photo);
-            String url = UrlHelper.url(speakers.get(position).imageUrl);
+            String url = UrlHelper.url(speakers.get(position).getImageUrl());
             Picasso.with(context)
                     .load(url)
                     .into(imageView);

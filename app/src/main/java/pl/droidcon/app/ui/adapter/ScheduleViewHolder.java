@@ -134,7 +134,7 @@ public class ScheduleViewHolder extends RecyclerView.ViewHolder implements View.
             return;
         }
 
-        int stringRes = Room.valueOfRoomId(session.roomId).getStringRes();
+        int stringRes = Room.valueOfRoomId(session.getRoomId()).getStringRes();
         String room = resources.getString(stringRes);
         roomName.setText(room);
     }
@@ -143,9 +143,9 @@ public class ScheduleViewHolder extends RecyclerView.ViewHolder implements View.
         return session == null ? defaultValue : resources.getDimensionPixelSize(R.dimen.list_item_expanded_height);
     }
 
-    private void setSessionPhoto(@Nullable SessionEntity session) {
-        if (session != null && !session.getSpeaker().isEmpty()) {
-            String url = UrlHelper.url(session.getSpeaker().get(0).imageUrl);
+    private void setSessionPhoto(@Nullable Session session) {
+        if (session != null && !session.getSpeakers().isEmpty()) {
+            String url = UrlHelper.url(session.getSpeakers().get(0).getImageUrl());
             Picasso.with(itemView.getContext())
                     .load(url)
                     .resize(512, 512)

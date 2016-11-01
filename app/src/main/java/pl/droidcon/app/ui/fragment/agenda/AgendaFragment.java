@@ -101,7 +101,7 @@ public class AgendaFragment extends Fragment implements SwipeRefreshLayout.OnRef
             @Override
             public int getSpanSize(int position) {
                 //return 2 for single item as single item occupies all width
-                return agendaAdapter.getSessionByPosition(position).singleItem ? 2 : 1;
+                return agendaAdapter.getSessionByPosition(position).isSingleItem() ? 2 : 1;
             }
         });
         agendaList.setLayoutManager(mLayoutManager);

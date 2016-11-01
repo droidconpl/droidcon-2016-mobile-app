@@ -43,7 +43,7 @@ public class Slot {
 
     private String title;
     private DateTime dateTime;
-    private SessionEntity session;
+    private Session session;
     private Type slotType;
 
     public static Slot ofType(Type type, SessionDay sessionDay, int hour, int minutes) {
@@ -55,11 +55,11 @@ public class Slot {
         return slot;
     }
 
-    public static Slot ofSession(SessionEntity session) {
+    public static Slot ofSession(Session session) {
         Slot slot = new Slot();
         slot.setType(Type.SESSION);
-        slot.setTitle(session.title);
-        slot.setDateTime(new DateTime(session.date));
+        slot.setTitle(session.getTitle());
+        slot.setDateTime(new DateTime(session.getDate()));
         slot.setSession(session);
         return slot;
     }
@@ -105,7 +105,7 @@ public class Slot {
         this.title = resources.getString(titleStringRes);
     }
 
-    void setSession(SessionEntity session) {
+    void setSession(Session session) {
         this.session = session;
     }
 
@@ -113,7 +113,7 @@ public class Slot {
         return dateTime;
     }
 
-    public SessionEntity getSession() {
+    public Session getSession() {
         return session;
     }
 

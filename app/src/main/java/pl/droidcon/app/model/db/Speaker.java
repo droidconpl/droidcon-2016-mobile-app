@@ -10,25 +10,23 @@ import io.requery.Key;
 import io.requery.ManyToMany;
 
 @Entity
-public abstract class Speaker implements Parcelable {
+public interface Speaker extends Parcelable {
 
     @Key
-    int id;
-    public String firstName;
-    public String lastName;
-    public String bio;
-    public String imageUrl;
-    public String websiteTitle;
-    public String websiteLink;
-    public String facebookLink;
-    public String twitterHandler;
-    public String githubLink;
-    public String linkedIn;
-    public String googlePlus;
+    int getId();
+    String getFirstName();
+    String getLastName();
+    String getBio();
+    String getImageUrl();
+    String getWebsiteTitle();
+    String getWebsiteLink();
+    String getFacebookLink();
+    String getTwitterHandler();
+    String getGithubLink();
+    String getLinkedIn();
+    String getGooglePlus();
 
     @JunctionTable
     @ManyToMany
-    List<Session> session;
-
-
+    List<Session> getSessions();
 }
