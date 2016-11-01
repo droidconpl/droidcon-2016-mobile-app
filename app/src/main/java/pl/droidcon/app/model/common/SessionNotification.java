@@ -1,7 +1,7 @@
 package pl.droidcon.app.model.common;
 
 
-import pl.droidcon.app.model.api.Session;
+import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.db.RealmSessionNotification;
 
 public class SessionNotification {

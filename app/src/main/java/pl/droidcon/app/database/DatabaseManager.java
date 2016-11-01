@@ -27,7 +27,7 @@ import pl.droidcon.app.helper.SessionMapper;
 import pl.droidcon.app.helper.SessionNotificationMapper;
 import pl.droidcon.app.helper.SpeakerMapper;
 import pl.droidcon.app.model.api.AgendaResponse;
-import pl.droidcon.app.model.api.Session;
+import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.api.SessionRow;
 import pl.droidcon.app.model.api.SpeakerResponse;
 import pl.droidcon.app.model.common.Schedule;
@@ -38,6 +38,7 @@ import pl.droidcon.app.model.db.RealmSchedule;
 import pl.droidcon.app.model.db.RealmSession;
 import pl.droidcon.app.model.db.RealmSessionNotification;
 import pl.droidcon.app.model.db.RealmSpeaker;
+import pl.droidcon.app.model.db.ScheduleEntity;
 import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.rx.RealmObservable;
 import rx.Observable;
@@ -58,6 +59,9 @@ public class DatabaseManager {
     ScheduleMapper scheduleMapper;
     @Inject
     SessionNotificationMapper sessionNotificationMapper;
+
+    @Inject
+    SingleEntityStore<Persistable> store;
 
     private Map<Class, List<DataObserver>> dataObserverMap;
 
@@ -98,7 +102,6 @@ public class DatabaseManager {
 
         List<Session> sessionList = new ArrayList<>();
 
-        final SingleEntityStore<Persistable> store = DroidconInjector.get().getDatabase();
         WhereAndOr<Result<SessionEntity>> query = store.select(SessionEntity.class).where(SessionEntity.DATE.between(beginDate, endOfDate));
 
         final Result<SessionEntity> sessionEntities = query.get();
@@ -107,28 +110,33 @@ public class DatabaseManager {
         return sessionEntities.toSelfObservable();
     }
 
-    public Observable<List<Session>> sessions(final Collection<Integer> sessionIds) {
-        return RealmObservable.results(context, new Func1<Realm, RealmResults<RealmSession>>() {
-            @Override
-            public RealmResults<RealmSession> call(Realm realm) {
-                return realm.where(RealmSession.class)
-                        .findAll();
-            }
-        }).map(new Func1<RealmResults<RealmSession>, List<Session>>() {
-            @Override
-            public List<Session> call(RealmResults<RealmSession> realmSessions) {
-                List<RealmSession> rightSessions = new ArrayList<>();
-                for (RealmSession realmSession : realmSessions) {
-                    if (sessionIds.contains(realmSession.getId())) {
-                        rightSessions.add(realmSession);
-                    }
-                }
-                return sessionMapper.fromDBList(rightSessions);
-            }
-        });
+    public Observable<Result<SessionEntity>> sessions(final Collection<Integer> sessionIds) {
+
+        return store.select(SessionEntity.class).where(SessionEntity.ID.in(sessionIds)).get().toSelfObservable();
+
+
+
+//        return RealmObservable.results(context, new Func1<Realm, RealmResults<RealmSession>>() {
+//            @Override
+//            public RealmResults<RealmSession> call(Realm realm) {
+//                return realm.where(RealmSession.class)
+//                        .findAll();
+//            }
+//        }).map(new Func1<RealmResults<RealmSession>, List<Session>>() {
+//            @Override
+//            public List<Session> call(RealmResults<RealmSession> realmSessions) {
+//                List<RealmSession> rightSessions = new ArrayList<>();
+//                for (RealmSession realmSession : realmSessions) {
+//                    if (sessionIds.contains(realmSession.getId())) {
+//                        rightSessions.add(realmSession);
+//                    }
+//                }
+//                return sessionMapper.fromDBList(rightSessions);
+//            }
+//        });
     }
 
-    public Observable<List<Session>> sessions(final DateTime when) {
+    public Observable<List<SessionEntity>> sessions(final DateTime when) {
         return RealmObservable.results(context, new Func1<Realm, RealmResults<RealmSession>>() {
             @Override
             public RealmResults<RealmSession> call(Realm realm) {
@@ -136,9 +144,9 @@ public class DatabaseManager {
                         .equalTo("date", when.toDate())
                         .findAll();
             }
-        }).map(new Func1<RealmResults<RealmSession>, List<Session>>() {
+        }).map(new Func1<RealmResults<RealmSession>, List<SessionEntity>>() {
             @Override
-            public List<Session> call(RealmResults<RealmSession> realmSessions) {
+            public List<SessionEntity> call(RealmResults<RealmSession> realmSessions) {
                 return sessionMapper.fromDBList(realmSessions);
             }
         });
@@ -160,20 +168,32 @@ public class DatabaseManager {
         });
     }
 
-    public Observable<List<Schedule>> schedules(final SessionDay sessionDay) {
-        return RealmObservable.results(context, new Func1<Realm, RealmResults<RealmSchedule>>() {
-            @Override
-            public RealmResults<RealmSchedule> call(Realm realm) {
-                return realm.where(RealmSchedule.class)
-                        .between("scheduleDate", sessionDay.when.toDate(), sessionDay.when.plusHours(23).toDate())
-                        .findAll();
-            }
-        }).map(new Func1<RealmResults<RealmSchedule>, List<Schedule>>() {
-            @Override
-            public List<Schedule> call(RealmResults<RealmSchedule> realmSchedules) {
-                return scheduleMapper.fromDBList(realmSchedules);
-            }
-        });
+    public Observable<Result<ScheduleEntity>> schedules(final SessionDay sessionDay) {
+
+        return store
+                .select(ScheduleEntity.class)
+                .where(
+                        ScheduleEntity.SCHEDULE_DATE
+                                .between(
+                                        sessionDay.when.toDate(),
+                                        sessionDay.when.plusHours(23).toDate()))
+                .get()
+                .toSelfObservable();
+
+
+//        return RealmObservable.results(context, new Func1<Realm, RealmResults<RealmSchedule>>() {
+//            @Override
+//            public RealmResults<RealmSchedule> call(Realm realm) {
+//                return realm.where(RealmSchedule.class)
+//                        .between("scheduleDate", sessionDay.when.toDate(), sessionDay.when.plusHours(23).toDate())
+//                        .findAll();
+//            }
+//        }).map(new Func1<RealmResults<RealmSchedule>, List<Schedule>>() {
+//            @Override
+//            public List<Schedule> call(RealmResults<RealmSchedule> realmSchedules) {
+//                return scheduleMapper.fromDBList(realmSchedules);
+//            }
+//        });
     }
 
     public Observable<Boolean> isFavourite(final Session session) {
@@ -196,7 +216,7 @@ public class DatabaseManager {
         return RealmObservable.object(context, new Func1<Realm, RealmSchedule>() {
             @Override
             public RealmSchedule call(Realm realm) {
-                RealmSchedule realmSchedule = new RealmSchedule(session.id, session.date.toDate());
+                RealmSchedule realmSchedule = new RealmSchedule(session.id, session.date);
                 Schedule schedule = scheduleMapper.fromDB(realmSchedule);
                 callScheduleInserted(schedule);
                 return realm.copyToRealm(realmSchedule);
@@ -232,7 +252,7 @@ public class DatabaseManager {
             @Override
             public RealmSchedule call(Realm realm) {
                 return realm.where(RealmSchedule.class)
-                        .equalTo("scheduleDate", session.date.toDate())
+                        .equalTo("scheduleDate", session.date)
                         .findFirst();
             }
         }).map(new Func1<RealmSchedule, ScheduleCollision>() {
@@ -297,33 +317,33 @@ public class DatabaseManager {
 
 //        storeRequery(speakerResponse, agendaResponse);
 
-        List<SessionRow> sessionRows = agendaResponse.sessions;
-        List<Session> sessions = new ArrayList<>();
-        for (SessionRow sessionRow : sessionRows) {
-            sessions.addAll(SessionRow.toSessions(sessionRow));
-        }
-
-        List<RealmSession> sessionDBs = sessionMapper.mapList(sessions);
+//        List<SessionRow> sessionRows = agendaResponse.sessions;
+//        List<Session> sessions = new ArrayList<>();
+//        for (SessionRow sessionRow : sessionRows) {
+//            sessions.addAll(SessionRow.toSessions(sessionRow));
+//        }
+//
+//        List<RealmSession> sessionDBs = sessionMapper.mapList(sessions);
 //        List<RealmSpeaker> speakerDBs = speakerMapper.mapList(speakerResponse.speakers);
-        List<RealmSpeaker> speakerDBs = new ArrayList<>();
-
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-
-        realm.copyToRealmOrUpdate(sessionDBs);
-        List<RealmSpeaker> realmSpeakers = realm.copyToRealmOrUpdate(speakerDBs);
-
-        for (Session session : sessions) {
-            List<RealmSpeaker> sessionsSpeaker = speakerMapper.matchFromApi(realmSpeakers, session.speakersIds);
-            RealmSession sessionDB = realm
-                    .where(RealmSession.class)
-                    .equalTo("id", session.id)
-                    .findFirst();
-            sessionDB.getSpeakers().addAll(sessionsSpeaker);
-            realm.copyToRealmOrUpdate(sessionDB);
-        }
-        realm.commitTransaction();
-        realm.close();
+//        List<RealmSpeaker> speakerDBs = new ArrayList<>();
+//
+//        Realm realm = Realm.getDefaultInstance();
+//        realm.beginTransaction();
+//
+//        realm.copyToRealmOrUpdate(sessionDBs);
+//        List<RealmSpeaker> realmSpeakers = realm.copyToRealmOrUpdate(speakerDBs);
+//
+//        for (Session session : sessions) {
+//            List<RealmSpeaker> sessionsSpeaker = speakerMapper.matchFromApi(realmSpeakers, session.speakersIds);
+//            RealmSession sessionDB = realm
+//                    .where(RealmSession.class)
+//                    .equalTo("id", session.id)
+//                    .findFirst();
+//            sessionDB.getSpeakers().addAll(sessionsSpeaker);
+//            realm.copyToRealmOrUpdate(sessionDB);
+//        }
+//        realm.commitTransaction();
+//        realm.close();
     }
 
 

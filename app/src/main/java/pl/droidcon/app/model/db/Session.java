@@ -1,5 +1,7 @@
 package pl.droidcon.app.model.db;
 
+import android.os.Parcelable;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -9,18 +11,19 @@ import io.requery.Key;
 import io.requery.ManyToMany;
 
 @Entity
-public class Session {
+public abstract class Session implements Parcelable{
 
     @Key
+    public
     int id;
-    Date date;
-    String title;
-    String description;
-    int roomId;
-    String displayHour;
-    int dayId;
-    boolean singleItem;
-    boolean left;
+    public Date date;
+    public String title;
+    public String description;
+    public int roomId;
+    public String displayHour;
+    public int dayId;
+    public boolean singleItem;
+    public boolean left;
 
     @ManyToMany
     List<Speaker> speaker;

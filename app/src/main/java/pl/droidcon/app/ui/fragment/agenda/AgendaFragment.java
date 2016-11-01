@@ -19,7 +19,7 @@ import io.requery.query.Result;
 import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
-import pl.droidcon.app.model.api.Session;
+import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.common.SessionDay;
 import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.model.event.NewDataEvent;
@@ -190,8 +190,8 @@ public class AgendaFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     @Override
     public void onItemClick(View view, int position) {
-        Session session = agendaAdapter.getSessionByPosition(position);
-        if (session.getSpeakersList().isEmpty()) {
+        SessionEntity session = agendaAdapter.getSessionByPosition(position);
+        if (session.getSpeaker().isEmpty()) {
             return;
         }
         SessionActivity.start(getContext(), session);

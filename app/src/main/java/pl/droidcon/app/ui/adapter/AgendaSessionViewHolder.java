@@ -6,6 +6,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import org.joda.time.DateTime;
+
 import java.util.List;
 
 import butterknife.Bind;
@@ -13,8 +15,9 @@ import butterknife.ButterKnife;
 import pl.droidcon.app.R;
 import pl.droidcon.app.helper.DateTimePrinter;
 import pl.droidcon.app.helper.UrlHelper;
-import pl.droidcon.app.model.api.Session;
-import pl.droidcon.app.model.api.Speaker;
+import pl.droidcon.app.model.db.Session;
+import pl.droidcon.app.model.db.SessionEntity;
+import pl.droidcon.app.model.db.Speaker;
 import pl.droidcon.app.model.common.Room;
 
 public class AgendaSessionViewHolder extends BaseSessionViewHolder {
@@ -37,16 +40,16 @@ public class AgendaSessionViewHolder extends BaseSessionViewHolder {
     }
 
     @Override
-    public void attachSession(Session session) {
+    public void attachSession(SessionEntity session) {
         this.session = session;
 
         Room room = Room.valueOfRoomId(session.roomId);
         sessionRoom.setText(room.getStringRes());
         sessionTitle.setText(session.title);
 
-        sessionDate.setText(DateTimePrinter.toPrintableString(session.date));
+        sessionDate.setText(DateTimePrinter.toPrintableString(new DateTime(session.date)));
 
-        List<Speaker> realSpeakerList = session.getSpeakersList();
+        List<Speaker> realSpeakerList = session.getSpeaker();
         if (realSpeakerList.isEmpty()) {
             sessionPicture.setImageResource(R.drawable.droidcon_krakow_logo);
         } else {

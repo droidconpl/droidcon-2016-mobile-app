@@ -23,6 +23,8 @@ import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 import com.squareup.picasso.Picasso;
 
+import org.joda.time.DateTime;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -35,8 +37,9 @@ import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
 import pl.droidcon.app.helper.DateTimePrinter;
 import pl.droidcon.app.helper.UrlHelper;
-import pl.droidcon.app.model.api.Session;
-import pl.droidcon.app.model.api.Speaker;
+import pl.droidcon.app.model.db.Session;
+import pl.droidcon.app.model.db.SessionEntity;
+import pl.droidcon.app.model.db.Speaker;
 import pl.droidcon.app.model.common.Room;
 import pl.droidcon.app.model.common.Schedule;
 import pl.droidcon.app.model.common.ScheduleCollision;
@@ -60,18 +63,18 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
 
     private static final String SESSION_EXTRA = "session";
 
-    public static void start(Context context, Session session) {
+    public static void start(Context context, SessionEntity session) {
         Intent intent = getSessionIntent(context, session);
         context.startActivity(intent);
     }
 
-    public static Intent getSessionIntent(Context context, Session session) {
+    public static Intent getSessionIntent(Context context, SessionEntity session) {
         Intent intent = new Intent(context, SessionActivity.class);
         intent.putExtra(SESSION_EXTRA, session);
         return intent;
     }
 
-    private Session session;
+    private SessionEntity session;
 
     @Bind(R.id.speaker_photos)
     ViewPager speakerPhotos;
@@ -126,10 +129,10 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
     private void fillDetails() {
         setToolbarTitle(null);
         title.setText(session.title);
-        List<Speaker> speakersList = session.getSpeakersList();
+        List<Speaker> speakersList = session.getSpeaker();
         speakerPhotos.setAdapter(new SpeakerPhotosAdapter(this, speakersList));
         description.setText(Html.fromHtml(session.description));
-        date.setText(DateTimePrinter.toPrintableStringWithDay(session.date));
+        date.setText(DateTimePrinter.toPrintableStringWithDay(new DateTime(session.date)));
         indicator.setViewPager(speakerPhotos);
         if (speakersList.size() == 1) {
             indicator.setVisibility(View.INVISIBLE);

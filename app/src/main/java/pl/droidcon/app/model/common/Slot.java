@@ -11,7 +11,8 @@ import javax.inject.Inject;
 
 import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
-import pl.droidcon.app.model.api.Session;
+import pl.droidcon.app.model.db.Session;
+import pl.droidcon.app.model.db.SessionEntity;
 
 public class Slot {
 
@@ -42,7 +43,7 @@ public class Slot {
 
     private String title;
     private DateTime dateTime;
-    private Session session;
+    private SessionEntity session;
     private Type slotType;
 
     public static Slot ofType(Type type, SessionDay sessionDay, int hour, int minutes) {
@@ -54,11 +55,11 @@ public class Slot {
         return slot;
     }
 
-    public static Slot ofSession(Session session) {
+    public static Slot ofSession(SessionEntity session) {
         Slot slot = new Slot();
         slot.setType(Type.SESSION);
         slot.setTitle(session.title);
-        slot.setDateTime(session.date);
+        slot.setDateTime(new DateTime(session.date));
         slot.setSession(session);
         return slot;
     }
@@ -104,7 +105,7 @@ public class Slot {
         this.title = resources.getString(titleStringRes);
     }
 
-    void setSession(Session session) {
+    void setSession(SessionEntity session) {
         this.session = session;
     }
 
@@ -112,7 +113,7 @@ public class Slot {
         return dateTime;
     }
 
-    public Session getSession() {
+    public SessionEntity getSession() {
         return session;
     }
 

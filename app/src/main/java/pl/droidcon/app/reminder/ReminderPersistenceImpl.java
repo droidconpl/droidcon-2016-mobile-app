@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
-import pl.droidcon.app.model.api.Session;
+import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.common.SessionNotification;
 import pl.droidcon.app.model.db.RealmSessionNotification;
 import rx.Subscriber;

@@ -7,12 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.RealmList;
-import pl.droidcon.app.model.api.Session;
-import pl.droidcon.app.model.api.Speaker;
+import pl.droidcon.app.model.db.Session;
+import pl.droidcon.app.model.db.SessionEntity;
+import pl.droidcon.app.model.db.Speaker;
 import pl.droidcon.app.model.db.RealmSession;
 import pl.droidcon.app.model.db.RealmSpeaker;
 
-public class SessionMapper implements Mapper<Session, RealmSession> {
+public class SessionMapper implements Mapper<SessionEntity, RealmSession> {
 
     private SpeakerMapper speakerMapper;
 
@@ -21,14 +22,14 @@ public class SessionMapper implements Mapper<Session, RealmSession> {
     }
 
     @Override
-    public RealmSession map(Session session) {
+    public RealmSession map(SessionEntity session) {
         RealmSession realmSession = new RealmSession();
         realmSession.setId(session.id);
-        realmSession.setDate(session.date.toDate());
+        realmSession.setDate(session.date);
         realmSession.setTitle(session.title);
         realmSession.setDescription(session.description);
         realmSession.setRoomId(session.roomId);
-        realmSession.setDisplayHour(session.sessionDisplayHour);
+        realmSession.setDisplayHour(session.displayHour);
         realmSession.setDayId(session.dayId);
         realmSession.setSingleItem(session.singleItem);
         realmSession.setLeft(session.left);
@@ -36,9 +37,9 @@ public class SessionMapper implements Mapper<Session, RealmSession> {
     }
 
     @Override
-    public RealmList<RealmSession> mapList(List<Session> sessions) {
+    public RealmList<RealmSession> mapList(List<SessionEntity> sessions) {
         RealmList<RealmSession> realmSessions = new RealmList<>();
-        for (Session session : sessions) {
+        for (SessionEntity session : sessions) {
             realmSessions.add(map(session));
         }
         return realmSessions;
@@ -58,8 +59,8 @@ public class SessionMapper implements Mapper<Session, RealmSession> {
     }
 
     @Override
-    public List<Session> fromDBList(List<RealmSession> realmSessions) {
-        List<Session> sessions = new ArrayList<>();
+    public List<SessionEntity> fromDBList(List<RealmSession> realmSessions) {
+        List<SessionEntity> sessions = new ArrayList<>();
         for (RealmSession realmSession : realmSessions) {
             sessions.add(fromDB(realmSession));
         }
@@ -67,19 +68,19 @@ public class SessionMapper implements Mapper<Session, RealmSession> {
     }
 
     @Override
-    public Session fromDB(RealmSession realmSession) {
-        Session session = new Session();
+    public SessionEntity fromDB(RealmSession realmSession) {
+        SessionEntity session = new SessionEntity();
         session.id = realmSession.getId();
-        session.date = new DateTime(realmSession.getDate());
+        session.date = realmSession.getDate();
         session.title = realmSession.getTitle();
         session.description = realmSession.getDescription();
         session.roomId = realmSession.getRoomId();
-        session.sessionDisplayHour = realmSession.getDisplayHour();
+        session.displayHour = realmSession.getDisplayHour();
         session.dayId = realmSession.getDayId();
         session.singleItem = realmSession.isSingleItem();
         session.left = realmSession.isLeft();
-        RealmList<RealmSpeaker> speakers = realmSession.getSpeakers();
-        session.setSpeakersList((ArrayList<Speaker>) speakerMapper.fromDBList(speakers));
+//        RealmList<RealmSpeaker> speakers = realmSession.getSpeakers();
+//        session.speaker = speakerMapper.fromDBList(speakers);
         return session;
     }
 }

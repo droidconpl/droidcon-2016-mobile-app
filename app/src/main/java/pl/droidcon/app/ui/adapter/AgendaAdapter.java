@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pl.droidcon.app.R;
-import pl.droidcon.app.model.api.Session;
+import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.model.db.Speaker;
 import pl.droidcon.app.model.db.SpeakerEntity;
@@ -47,20 +47,20 @@ public class AgendaAdapter extends RecyclerView.Adapter<BaseSessionViewHolder> {
     }
 
 
-    private SortedList<Session> sessions = new SortedList<>(Session.class, new SortedListAdapterCallback<Session>(this) {
+    private SortedList<SessionEntity> sessions = new SortedList<>(SessionEntity.class, new SortedListAdapterCallback<SessionEntity>(this) {
         @Override
-        public int compare(Session o1, Session o2) {
-            return (int) (o1.date.toDate().getTime() - o2.date.toDate().getTime());
+        public int compare(SessionEntity o1, SessionEntity o2) {
+            return (int) (o1.getDate().getTime() - o2.getDate().getTime());
         }
 
         @Override
-        public boolean areContentsTheSame(Session oldItem, Session newItem) {
+        public boolean areContentsTheSame(SessionEntity oldItem, SessionEntity newItem) {
             return oldItem.equals(newItem);
         }
 
         @Override
-        public boolean areItemsTheSame(Session item1, Session item2) {
-            return item1.id == item2.id;
+        public boolean areItemsTheSame(SessionEntity item1, SessionEntity item2) {
+            return item1.getId() == item2.getId();
         }
     });
 
@@ -68,44 +68,44 @@ public class AgendaAdapter extends RecyclerView.Adapter<BaseSessionViewHolder> {
     }
 
     public void add(SessionEntity sessionEntity) {
-        Session session = new Session();
-        session.id = sessionEntity.getId();
-        session.date = new DateTime(sessionEntity.getDate());
-        session.dayId = sessionEntity.getDayId();
-        session.title = sessionEntity.getTitle();
-        session.description = sessionEntity.getDescription();
-        session.left = sessionEntity.isLeft();
-        session.sessionDisplayHour = sessionEntity.getDisplayHour();
-        session.roomId = sessionEntity.getRoomId();
-        session.singleItem = sessionEntity.isSingleItem();
-//        session.setSpeakersList(sessionEntity.getSpeaker());
+//        Session session = new Session();
+//        session.id = sessionEntity.getId();
+//        session.date = new DateTime(sessionEntity.getDate());
+//        session.dayId = sessionEntity.getDayId();
+//        session.title = sessionEntity.getTitle();
+//        session.description = sessionEntity.getDescription();
+//        session.left = sessionEntity.isLeft();
+//        session.sessionDisplayHour = sessionEntity.getDisplayHour();
+//        session.roomId = sessionEntity.getRoomId();
+//        session.singleItem = sessionEntity.isSingleItem();
+////        session.setSpeakersList(sessionEntity.getSpeaker());
+//
+//        List<Speaker> speakers = sessionEntity.getSpeaker();
+//        ArrayList<pl.droidcon.app.model.api.Speaker> sessionSpeakers = new ArrayList<>();
+//
+//        for (Speaker speaker : speakers) {
+//            SpeakerEntity speakerEntity = Utils.fromSpeaker(speaker);
+//            pl.droidcon.app.model.api.Speaker speakerSession = new pl.droidcon.app.model.api.Speaker();
+//            speakerSession.id = speakerEntity.getId();
+//            speakerSession.firstName = speakerEntity.getFirstName();
+//            speakerSession.lastName = speakerEntity.getLastName();
+//            speakerSession.websiteTitle = speakerEntity.getWebsiteTitle();
+//            speakerSession.bio = speakerEntity.getBio();
+//            speakerSession.websiteLink = speakerEntity.getWebsiteLink();
+//            speakerSession.facebookLink = speakerEntity.getFacebookLink();
+//            speakerSession.twitterHandler = speakerEntity.getTwitterHandler();
+//            speakerSession.githubLink = speakerEntity.getGithubLink();
+//            speakerSession.linkedIn = speakerEntity.getLinkedIn();
+//            speakerSession.googlePlus = speakerEntity.getGooglePlus();
+//            speakerSession.imageUrl = speakerEntity.getImageUrl();
+//
+//            sessionSpeakers.add(speakerSession);
+//        }
+//
+//
+//        session.setSpeakersList(sessionSpeakers);
 
-        List<Speaker> speakers = sessionEntity.getSpeaker();
-        ArrayList<pl.droidcon.app.model.api.Speaker> sessionSpeakers = new ArrayList<>();
-
-        for (Speaker speaker : speakers) {
-            SpeakerEntity speakerEntity = Utils.fromSpeaker(speaker);
-            pl.droidcon.app.model.api.Speaker speakerSession = new pl.droidcon.app.model.api.Speaker();
-            speakerSession.id = speakerEntity.getId();
-            speakerSession.firstName = speakerEntity.getFirstName();
-            speakerSession.lastName = speakerEntity.getLastName();
-            speakerSession.websiteTitle = speakerEntity.getWebsiteTitle();
-            speakerSession.bio = speakerEntity.getBio();
-            speakerSession.websiteLink = speakerEntity.getWebsiteLink();
-            speakerSession.facebookLink = speakerEntity.getFacebookLink();
-            speakerSession.twitterHandler = speakerEntity.getTwitterHandler();
-            speakerSession.githubLink = speakerEntity.getGithubLink();
-            speakerSession.linkedIn = speakerEntity.getLinkedIn();
-            speakerSession.googlePlus = speakerEntity.getGooglePlus();
-            speakerSession.imageUrl = speakerEntity.getImageUrl();
-
-            sessionSpeakers.add(speakerSession);
-        }
-
-
-        session.setSpeakersList(sessionSpeakers);
-
-        sessions.add(session);
+        sessions.add(sessionEntity);
     }
 
     @Override
@@ -129,11 +129,11 @@ public class AgendaAdapter extends RecyclerView.Adapter<BaseSessionViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        Session sessionByPosition = getSessionByPosition(position);
+        SessionEntity sessionByPosition = getSessionByPosition(position);
         if (!sessionByPosition.singleItem) {
             return ViewType.NORMAL_SESSION.getViewType();
         }
-        if (sessionByPosition.getSpeakersList().isEmpty()) {
+        if (sessionByPosition.getSpeaker().isEmpty()) {
             return ViewType.LARGE_NON_SESSION.getViewType();
         } else {
             return ViewType.LARGE_SESSION.getViewType();
@@ -151,7 +151,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<BaseSessionViewHolder> {
     }
 
     @NonNull
-    public Session getSessionByPosition(int position) {
+    public SessionEntity getSessionByPosition(int position) {
         return sessions.get(position);
     }
 }

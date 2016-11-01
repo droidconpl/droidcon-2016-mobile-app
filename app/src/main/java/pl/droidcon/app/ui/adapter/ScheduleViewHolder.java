@@ -20,9 +20,10 @@ import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.helper.DateTimePrinter;
 import pl.droidcon.app.helper.UrlHelper;
-import pl.droidcon.app.model.api.Session;
+import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.common.Room;
 import pl.droidcon.app.model.common.Slot;
+import pl.droidcon.app.model.db.SessionEntity;
 
 
 public class ScheduleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -142,9 +143,9 @@ public class ScheduleViewHolder extends RecyclerView.ViewHolder implements View.
         return session == null ? defaultValue : resources.getDimensionPixelSize(R.dimen.list_item_expanded_height);
     }
 
-    private void setSessionPhoto(@Nullable Session session) {
-        if (session != null && !session.getSpeakersList().isEmpty()) {
-            String url = UrlHelper.url(session.getSpeakersList().get(0).imageUrl);
+    private void setSessionPhoto(@Nullable SessionEntity session) {
+        if (session != null && !session.getSpeaker().isEmpty()) {
+            String url = UrlHelper.url(session.getSpeaker().get(0).imageUrl);
             Picasso.with(itemView.getContext())
                     .load(url)
                     .resize(512, 512)

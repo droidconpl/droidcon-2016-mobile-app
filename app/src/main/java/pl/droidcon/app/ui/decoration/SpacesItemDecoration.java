@@ -4,7 +4,7 @@ import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import pl.droidcon.app.model.api.Session;
+import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.ui.adapter.BaseSessionViewHolder;
 
 public class SpacesItemDecoration extends RecyclerView.ItemDecoration {

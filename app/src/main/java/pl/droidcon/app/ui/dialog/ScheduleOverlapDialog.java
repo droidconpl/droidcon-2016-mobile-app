@@ -9,9 +9,11 @@ import android.support.v7.app.AppCompatDialogFragment;
 import android.text.Html;
 import android.view.View;
 
+import org.joda.time.DateTime;
+
 import pl.droidcon.app.R;
 import pl.droidcon.app.helper.DateTimePrinter;
-import pl.droidcon.app.model.api.Session;
+import pl.droidcon.app.model.db.Session;
 
 
 public class ScheduleOverlapDialog extends AppCompatDialogFragment {
@@ -53,7 +55,7 @@ public class ScheduleOverlapDialog extends AppCompatDialogFragment {
     @Override
     public AppCompatDialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        String message = getString(R.string.schedule_overlap_message, collisionSchedule.title, DateTimePrinter.toPrintableString(collisionSchedule.date), replaceSession.title);
+        String message = getString(R.string.schedule_overlap_message, collisionSchedule.title, DateTimePrinter.toPrintableString(new DateTime(collisionSchedule.date)), replaceSession.title);
 
         builder.setTitle(R.string.schedule_overlap_title)
                 .setMessage(Html.fromHtml(message))

@@ -10,7 +10,7 @@ import android.util.Log;
 
 import org.joda.time.DateTime;
 
-import pl.droidcon.app.model.api.Session;
+import pl.droidcon.app.model.db.Session;
 
 public class ReminderImpl implements Reminder {
 
@@ -29,7 +29,7 @@ public class ReminderImpl implements Reminder {
     public void setRemind(@NonNull Session session) {
         PendingIntent pendingIntent = createIntentForRemind(session);
         DateTime now = DateTime.now();
-        DateTime sessionDate = session.date.minusMinutes(1);//now.plusSeconds(10);//
+        DateTime sessionDate = new DateTime(session.date).minusMinutes(1);//now.plusSeconds(10);//
         if (!sessionDate.isAfter(now)) {
             Log.w(TAG, "Not setting reminder for passed session");
             return;

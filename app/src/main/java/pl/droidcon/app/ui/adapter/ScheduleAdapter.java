@@ -45,6 +45,14 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleViewHolder> {
         }
     }
 
+    public void attachSessionSlots(Slot slotToAdd) {
+            for (Slot slot : slots) {
+                if (slot.equals(slotToAdd)) {
+                    slots.set(slots.indexOf(slot), slotToAdd);
+                }
+            }
+    }
+
     public void removeScheduleFromSlots(Schedule schedule) {
         for (Slot slot : slots) {
             if (slot.getSession() == null) {

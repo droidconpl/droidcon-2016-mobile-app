@@ -30,7 +30,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import pl.droidcon.app.R;
 import pl.droidcon.app.helper.UrlHelper;
-import pl.droidcon.app.model.api.Speaker;
+import pl.droidcon.app.model.db.Speaker;
 
 public class SpeakerDialog extends AppCompatDialogFragment {
 

@@ -20,8 +20,9 @@ import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
 import pl.droidcon.app.helper.DateTimePrinter;
-import pl.droidcon.app.model.api.Session;
+import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.db.RealmSchedule;
+import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.reminder.SessionReminder;
 import pl.droidcon.app.ui.view.SessionList;
 import rx.Subscriber;
@@ -103,7 +104,7 @@ public class SessionChooserDialog extends AppCompatDialogFragment implements Ses
         Subscription subscribe = databaseManager.sessions(sessionDate)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<Session>>() {
+                .subscribe(new Subscriber<List<SessionEntity>>() {
                     @Override
                     public void onCompleted() {
 
@@ -115,7 +116,7 @@ public class SessionChooserDialog extends AppCompatDialogFragment implements Ses
                     }
 
                     @Override
-                    public void onNext(List<Session> sessions) {
+                    public void onNext(List<SessionEntity> sessions) {
                         sessionList.setSessions(sessions, SessionChooserDialog.this);
                     }
                 });

@@ -11,7 +11,8 @@ import android.widget.LinearLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import pl.droidcon.app.model.api.Session;
+import pl.droidcon.app.model.db.Session;
+import pl.droidcon.app.model.db.SessionEntity;
 
 
 public class SessionList extends LinearLayout {
@@ -50,17 +51,17 @@ public class SessionList extends LinearLayout {
     }
 
     private void showStubData() {
-        List<Session> sessions = new ArrayList<>();
-        Session session = new Session();
+        List<SessionEntity> sessions = new ArrayList<>();
+        SessionEntity session = new SessionEntity();
         session.title = "stub";
         session.description = "stub.description";
         sessions.add(session);
         setSessions(sessions, null);
     }
 
-    public void setSessions(List<Session> sessions, @Nullable SessionClickListener sessionClickListener) {
+    public void setSessions(List<SessionEntity> sessions, @Nullable SessionClickListener sessionClickListener) {
         removeAllViews();
-        for (Session session : sessions) {
+        for (SessionEntity session : sessions) {
             SessionListItem sessionListItem = new SessionListItem(getContext());
             sessionListItem.setSession(session);
             sessionListItem.setSessionClickListener(sessionClickListener);

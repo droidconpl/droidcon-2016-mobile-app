@@ -11,8 +11,9 @@ import android.util.Log;
 
 import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
-import pl.droidcon.app.model.api.Session;
+import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.common.SessionNotification;
+import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.ui.activity.SessionActivity;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -34,7 +35,7 @@ public class ReminderReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, Intent intent) {
         Log.d(TAG, "received");
-        final Session session = (Session) intent.getExtras().get(SESSION_KEY);
+        final SessionEntity session = (SessionEntity) intent.getExtras().get(SESSION_KEY);
         if (session == null) {
             Log.e(TAG, "Session received null");
             return;
@@ -55,7 +56,7 @@ public class ReminderReceiver extends BroadcastReceiver {
                 });
     }
 
-    private void showNotification(Context context, Session session) {
+    private void showNotification(Context context, SessionEntity session) {
         Intent sessionIntent = SessionActivity.getSessionIntent(context, session);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, session.id, sessionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
