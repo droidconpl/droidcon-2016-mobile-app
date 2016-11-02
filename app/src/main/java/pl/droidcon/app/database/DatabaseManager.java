@@ -25,7 +25,6 @@ import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.helper.ScheduleMapper;
 import pl.droidcon.app.helper.SessionMapper;
 import pl.droidcon.app.helper.SessionNotificationMapper;
-import pl.droidcon.app.helper.SpeakerMapper;
 import pl.droidcon.app.model.api.AgendaResponse;
 import pl.droidcon.app.model.api.SpeakerResponse;
 import pl.droidcon.app.model.common.Schedule;
@@ -49,8 +48,6 @@ public class DatabaseManager {
 
     @Inject
     Context context;
-    @Inject
-    SpeakerMapper speakerMapper;
     @Inject
     SessionMapper sessionMapper;
     @Inject

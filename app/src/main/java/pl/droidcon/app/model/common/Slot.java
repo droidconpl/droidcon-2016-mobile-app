@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.model.db.Session;
-import pl.droidcon.app.model.db.SessionEntity;
 
 public class Slot {
 

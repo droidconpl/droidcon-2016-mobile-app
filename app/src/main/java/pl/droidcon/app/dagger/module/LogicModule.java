@@ -18,7 +18,6 @@ import pl.droidcon.app.database.DatabaseManager;
 import pl.droidcon.app.helper.ScheduleMapper;
 import pl.droidcon.app.helper.SessionMapper;
 import pl.droidcon.app.helper.SessionNotificationMapper;
-import pl.droidcon.app.helper.SpeakerMapper;
 import pl.droidcon.app.model.db.Models;
 import pl.droidcon.app.reminder.Reminder;
 import pl.droidcon.app.reminder.ReminderImpl;
@@ -50,13 +49,8 @@ public class LogicModule {
     }
 
     @Provides
-    public SpeakerMapper provideSpeakerMapper() {
-        return new SpeakerMapper();
-    }
-
-    @Provides
-    public SessionMapper provideSessionMapper(SpeakerMapper speakerMapper) {
-        return new SessionMapper(speakerMapper);
+    public SessionMapper provideSessionMapper() {
+        return new SessionMapper();
     }
 
     @Provides

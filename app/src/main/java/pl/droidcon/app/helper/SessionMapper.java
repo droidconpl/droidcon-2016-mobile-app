@@ -9,10 +9,7 @@ import pl.droidcon.app.model.db.RealmSession;
 
 public class SessionMapper implements Mapper<SessionEntity, RealmSession> {
 
-    private SpeakerMapper speakerMapper;
-
-    public SessionMapper(SpeakerMapper speakerMapper) {
-        this.speakerMapper = speakerMapper;
+    public SessionMapper() {
     }
 
     @Override
