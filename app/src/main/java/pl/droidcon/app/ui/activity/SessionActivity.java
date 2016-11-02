@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -25,6 +26,7 @@ import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -62,6 +64,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
     private static final String TAG = SessionActivity.class.getSimpleName();
 
     private static final String SESSION_EXTRA = "session";
+    private static final String SPEAKERS_EXTRA = "speakers";
 
     public static void start(Context context, Session session) {
         Intent intent = getSessionIntent(context, session);
@@ -71,10 +74,12 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
     public static Intent getSessionIntent(Context context, Session session) {
         Intent intent = new Intent(context, SessionActivity.class);
         intent.putExtra(SESSION_EXTRA, session);
+        intent.putParcelableArrayListExtra(SPEAKERS_EXTRA, new ArrayList<Parcelable>(session.getSpeakers()));
         return intent;
     }
 
     private SessionEntity session;
+    List<Speaker> speakersList;
 
     @Bind(R.id.speaker_photos)
     ViewPager speakerPhotos;
@@ -115,6 +120,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
         ButterKnife.bind(this);
         setupToolbarBack(toolbar);
         session = getIntent().getExtras().getParcelable(SESSION_EXTRA);
+        speakersList = getIntent().getExtras().getParcelableArrayList(SPEAKERS_EXTRA);
         compositeSubscription = new CompositeSubscription();
         fillDetails();
         checkIsFavourite();
@@ -129,7 +135,6 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
     private void fillDetails() {
         setToolbarTitle(null);
         title.setText(session.getTitle());
-        List<Speaker> speakersList = session.getSpeakers();
         speakerPhotos.setAdapter(new SpeakerPhotosAdapter(this, speakersList));
         description.setText(Html.fromHtml(session.getDescription()));
         date.setText(DateTimePrinter.toPrintableStringWithDay(new DateTime(session.getDate())));
