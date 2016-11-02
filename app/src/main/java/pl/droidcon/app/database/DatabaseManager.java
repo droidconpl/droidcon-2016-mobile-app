@@ -209,16 +209,23 @@ public class DatabaseManager {
         });
     }
 
-    public Observable<RealmSchedule> addToFavourite(final Session session) {
-        return RealmObservable.object(context, new Func1<Realm, RealmSchedule>() {
-            @Override
-            public RealmSchedule call(Realm realm) {
-                RealmSchedule realmSchedule = new RealmSchedule(session.getId(), session.getDate());
-                Schedule schedule = scheduleMapper.fromDB(realmSchedule);
-                callScheduleInserted(schedule);
-                return realm.copyToRealm(realmSchedule);
-            }
-        });
+    public Observable<ScheduleEntity> addToFavourite(final Session session) {
+
+        ScheduleEntity scheduleEntity = new ScheduleEntity();
+        scheduleEntity.setScheduleDate(session.getDate());
+        scheduleEntity.setSession(session);
+
+        return store.insert(scheduleEntity).toObservable();
+
+//        return RealmObservable.object(context, new Func1<Realm, RealmSchedule>() {
+//            @Override
+//            public RealmSchedule call(Realm realm) {
+//                RealmSchedule realmSchedule = new RealmSchedule(session.getId(), session.getDate());
+//                Schedule schedule = scheduleMapper.fromDB(realmSchedule);
+//                callScheduleInserted(schedule);
+//                return realm.copyToRealm(realmSchedule);
+//            }
+//        });
     }
 
     public Observable<Boolean> removeFromFavourite(final Session session) {

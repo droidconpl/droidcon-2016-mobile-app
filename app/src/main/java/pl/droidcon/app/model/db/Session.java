@@ -4,11 +4,11 @@ import android.os.Parcelable;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import io.requery.Entity;
 import io.requery.Key;
 import io.requery.ManyToMany;
+import io.requery.OneToOne;
 
 @Entity
 public interface Session extends Parcelable{
@@ -26,4 +26,7 @@ public interface Session extends Parcelable{
 
     @ManyToMany
     List<Speaker> getSpeakers();
+
+    @OneToOne
+    Schedule getSchedule();
 }

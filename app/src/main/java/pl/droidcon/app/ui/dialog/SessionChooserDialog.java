@@ -18,7 +18,7 @@ import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
 import pl.droidcon.app.helper.DateTimePrinter;
-import pl.droidcon.app.model.db.RealmSchedule;
+import pl.droidcon.app.model.db.ScheduleEntity;
 import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.reminder.SessionReminder;
@@ -126,9 +126,9 @@ public class SessionChooserDialog extends AppCompatDialogFragment implements Ses
         Subscription subscription = databaseManager.addToFavourite(session)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RealmSchedule>() {
+                .subscribe(new Action1<ScheduleEntity>() {
                     @Override
-                    public void call(RealmSchedule realmSchedule) {
+                    public void call(ScheduleEntity scheduleEntity) {
                         sessionReminder.addSessionToReminding(session);
                         dismiss();
                     }

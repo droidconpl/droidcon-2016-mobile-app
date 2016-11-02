@@ -49,6 +49,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleViewHolder> {
             for (Slot slot : slots) {
                 if (slot.equals(slotToAdd)) {
                     slots.set(slots.indexOf(slot), slotToAdd);
+                    notifyDataSetChanged();
                 }
             }
     }

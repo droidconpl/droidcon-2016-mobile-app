@@ -39,13 +39,13 @@ import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
 import pl.droidcon.app.helper.DateTimePrinter;
 import pl.droidcon.app.helper.UrlHelper;
-import pl.droidcon.app.model.db.Session;
-import pl.droidcon.app.model.db.SessionEntity;
-import pl.droidcon.app.model.db.Speaker;
 import pl.droidcon.app.model.common.Room;
 import pl.droidcon.app.model.common.Schedule;
 import pl.droidcon.app.model.common.ScheduleCollision;
-import pl.droidcon.app.model.db.RealmSchedule;
+import pl.droidcon.app.model.db.ScheduleEntity;
+import pl.droidcon.app.model.db.Session;
+import pl.droidcon.app.model.db.SessionEntity;
+import pl.droidcon.app.model.db.Speaker;
 import pl.droidcon.app.reminder.SessionReminder;
 import pl.droidcon.app.ui.dialog.FullScreenPhotoDialog;
 import pl.droidcon.app.ui.dialog.ScheduleOverlapDialog;
@@ -221,7 +221,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
         Subscription subscription = databaseManager.addToFavourite(session)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<RealmSchedule>() {
+                .subscribe(new Subscriber<ScheduleEntity>() {
                     @Override
                     public void onCompleted() {
                         Log.d(TAG, "on completed");
@@ -233,7 +233,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
                     }
 
                     @Override
-                    public void onNext(RealmSchedule realmSchedule) {
+                    public void onNext(ScheduleEntity realmSchedule) {
                         if (realmSchedule != null) {
                             sessionReminder.addSessionToReminding(session);
                             setRightFloatingActionButtonAction(true);
