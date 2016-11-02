@@ -23,7 +23,6 @@ import io.requery.query.WhereAndOr;
 import io.requery.rx.SingleEntityStore;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.helper.ScheduleMapper;
-import pl.droidcon.app.helper.SessionMapper;
 import pl.droidcon.app.helper.SessionNotificationMapper;
 import pl.droidcon.app.model.api.AgendaResponse;
 import pl.droidcon.app.model.api.SpeakerResponse;
@@ -32,7 +31,6 @@ import pl.droidcon.app.model.common.ScheduleCollision;
 import pl.droidcon.app.model.common.SessionDay;
 import pl.droidcon.app.model.common.SessionNotification;
 import pl.droidcon.app.model.db.RealmSchedule;
-import pl.droidcon.app.model.db.RealmSession;
 import pl.droidcon.app.model.db.RealmSessionNotification;
 import pl.droidcon.app.model.db.ScheduleEntity;
 import pl.droidcon.app.model.db.Session;
@@ -48,8 +46,8 @@ public class DatabaseManager {
 
     @Inject
     Context context;
-    @Inject
-    SessionMapper sessionMapper;
+//    @Inject
+//    SessionMapper sessionMapper;
     @Inject
     ScheduleMapper scheduleMapper;
     @Inject
@@ -149,20 +147,22 @@ public class DatabaseManager {
 //        });
     }
 
-    public Observable<Session> session(final int sessionId) {
-        return RealmObservable.object(context, new Func1<Realm, RealmSession>() {
-            @Override
-            public RealmSession call(Realm realm) {
-                return realm.where(RealmSession.class)
-                        .equalTo("id", sessionId)
-                        .findFirst();
-            }
-        }).map(new Func1<RealmSession, Session>() {
-            @Override
-            public Session call(RealmSession realmSession) {
-                return sessionMapper.fromDB(realmSession);
-            }
-        });
+    public Observable<SessionEntity> session(final int sessionId) {
+        return store.select(SessionEntity.class).where(SessionEntity.ID.eq(sessionId)).get().toObservable();
+
+//        return RealmObservable.object(context, new Func1<Realm, RealmSession>() {
+//            @Override
+//            public RealmSession call(Realm realm) {
+//                return realm.where(RealmSession.class)
+//                        .equalTo("id", sessionId)
+//                        .findFirst();
+//            }
+//        }).map(new Func1<RealmSession, Session>() {
+//            @Override
+//            public Session call(RealmSession realmSession) {
+//                return sessionMapper.fromDB(realmSession);
+//            }
+//        });
     }
 
     public Observable<Result<ScheduleEntity>> schedules(final SessionDay sessionDay) {

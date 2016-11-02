@@ -16,7 +16,6 @@ import io.requery.sql.TableCreationMode;
 import pl.droidcon.app.BuildConfig;
 import pl.droidcon.app.database.DatabaseManager;
 import pl.droidcon.app.helper.ScheduleMapper;
-import pl.droidcon.app.helper.SessionMapper;
 import pl.droidcon.app.helper.SessionNotificationMapper;
 import pl.droidcon.app.model.db.Models;
 import pl.droidcon.app.reminder.Reminder;
@@ -48,10 +47,10 @@ public class LogicModule {
         return new DatabaseManager();
     }
 
-    @Provides
-    public SessionMapper provideSessionMapper() {
-        return new SessionMapper();
-    }
+//    @Provides
+//    public SessionMapper provideSessionMapper() {
+//        return new SessionMapper();
+//    }
 
     @Provides
     public ScheduleMapper provideScheduleMapper() {
