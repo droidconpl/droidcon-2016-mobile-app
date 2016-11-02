@@ -195,7 +195,7 @@ public class DatabaseManager {
 
     public Observable<ScheduleEntity> isFavourite(final Session session) {
 
-        return store.select(ScheduleEntity.class).where(ScheduleEntity.SESSION_ID.eq(session.getId())).get().toObservable();
+        return store.select(ScheduleEntity.class).where(ScheduleEntity.SESSION.eq(session)).get().toObservable();
 
 //        return RealmObservable.object(context, new Func1<Realm, RealmSchedule>() {
 //            @Override
@@ -279,7 +279,7 @@ public class DatabaseManager {
                         if (scheduleEntity == null) {
                             return Observable.just(new ScheduleCollision(null, false));
                         } else {
-                            return Observable.just(new ScheduleCollision(scheduleEntity, true));
+                            return Observable.just(new ScheduleCollision(scheduleEntity, scheduleEntity.getSession().getId() != session.getId()));
                         }
                     }
                 });
