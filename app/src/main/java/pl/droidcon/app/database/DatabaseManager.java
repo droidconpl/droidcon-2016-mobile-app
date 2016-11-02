@@ -37,6 +37,7 @@ import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.rx.RealmObservable;
 import rx.Observable;
+import rx.Single;
 import rx.functions.Func1;
 
 public class DatabaseManager {
@@ -231,18 +232,19 @@ public class DatabaseManager {
 //        });
     }
 
-    public Observable<Boolean> removeFromFavourite(final Session session) {
+    public Single<Boolean> removeFromFavourite(final Session session) {
 
-        return store.select(ScheduleEntity.class)
+        return store.delete(ScheduleEntity.class)
                 .where(ScheduleEntity.SESSION_ID.eq(session.getId()))
                 .get()
-                .toObservable()
-                .flatMap(new Func1<ScheduleEntity, Observable<Boolean>>() {
+                .toSingle()
+                .flatMap(new Func1<Integer, Single<Boolean>>() {
                     @Override
-                    public Observable<Boolean> call(ScheduleEntity scheduleEntity) {
-                        return  Observable.just(scheduleEntity != null);
+                    public Single<Boolean> call(Integer integer) {
+                        return Single.just(integer > 0);
                     }
-                } );
+                });
+
 
 //        return RealmObservable.object(context, new Func1<Realm, RealmSchedule>() {
 //            @Override
