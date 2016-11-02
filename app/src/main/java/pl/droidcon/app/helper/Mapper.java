@@ -10,10 +10,6 @@ public interface Mapper<ApiObject, DatabaseObject extends RealmObject> {
 
     DatabaseObject map(ApiObject apiObject);
 
-    RealmList<DatabaseObject> mapList(List<ApiObject> apiObjects);
-
-    RealmList<DatabaseObject> matchFromApi(List<DatabaseObject> databaseObjects, List<Integer> ids);
-
     List<ApiObject> fromDBList(List<DatabaseObject> databaseObjects);
 
     ApiObject fromDB(DatabaseObject databaseObject);

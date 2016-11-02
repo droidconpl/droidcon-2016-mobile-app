@@ -4,7 +4,6 @@ package pl.droidcon.app.helper;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.RealmList;
 import pl.droidcon.app.model.api.Speaker;
 import pl.droidcon.app.model.db.RealmSpeaker;
 
@@ -26,28 +25,6 @@ public class SpeakerMapper implements Mapper<Speaker, RealmSpeaker> {
         realmSpeaker.setLinkedIn(speaker.linkedIn);
         realmSpeaker.setGooglePlus(speaker.googlePlus);
         return realmSpeaker;
-    }
-
-    @Override
-    public RealmList<RealmSpeaker> mapList(List<Speaker> speakers) {
-        RealmList<RealmSpeaker> realmSpeakers = new RealmList<>();
-        for (Speaker speaker : speakers) {
-            realmSpeakers.add(map(speaker));
-        }
-        return realmSpeakers;
-    }
-
-    @Override
-    public RealmList<RealmSpeaker> matchFromApi(List<RealmSpeaker> databaseObjects, List<Integer> ids) {
-        RealmList<RealmSpeaker> realmSpeakers = new RealmList<>();
-        for (Integer id : ids) {
-            for (RealmSpeaker orig : databaseObjects) {
-                if (id.equals(orig.getId())) {
-                    realmSpeakers.add(orig);
-                }
-            }
-        }
-        return realmSpeakers;
     }
 
     @Override

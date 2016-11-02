@@ -1,17 +1,11 @@
 package pl.droidcon.app.helper;
 
 
-import org.joda.time.DateTime;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.RealmList;
-import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.db.SessionEntity;
-import pl.droidcon.app.model.db.Speaker;
 import pl.droidcon.app.model.db.RealmSession;
-import pl.droidcon.app.model.db.RealmSpeaker;
 
 public class SessionMapper implements Mapper<SessionEntity, RealmSession> {
 
@@ -34,28 +28,6 @@ public class SessionMapper implements Mapper<SessionEntity, RealmSession> {
         realmSession.setSingleItem(session.isSingleItem());
         realmSession.setLeft(session.isLeft());
         return realmSession;
-    }
-
-    @Override
-    public RealmList<RealmSession> mapList(List<SessionEntity> sessions) {
-        RealmList<RealmSession> realmSessions = new RealmList<>();
-        for (SessionEntity session : sessions) {
-            realmSessions.add(map(session));
-        }
-        return realmSessions;
-    }
-
-    @Override
-    public RealmList<RealmSession> matchFromApi(List<RealmSession> databaseObjects, List<Integer> ids) {
-        RealmList<RealmSession> dbs = new RealmList<>();
-        for (Integer id : ids) {
-            for (RealmSession orig : databaseObjects) {
-                if (id.equals(orig.getId())) {
-                    dbs.add(orig);
-                }
-            }
-        }
-        return dbs;
     }
 
     @Override
