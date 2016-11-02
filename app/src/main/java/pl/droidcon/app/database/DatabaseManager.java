@@ -232,46 +232,76 @@ public class DatabaseManager {
     }
 
     public Observable<Boolean> removeFromFavourite(final Session session) {
-        return RealmObservable.object(context, new Func1<Realm, RealmSchedule>() {
-            @Override
-            public RealmSchedule call(Realm realm) {
-                RealmSchedule realmSchedule = realm.where(RealmSchedule.class)
-                        .equalTo("realmSessionId", session.getId())
-                        .findFirst();
-                if (realmSchedule != null) {
-                    Schedule schedule = scheduleMapper.fromDB(realmSchedule);
-                    callScheduleDeleted(schedule);
-                    realmSchedule.removeFromRealm();
-                }
 
-                return realmSchedule;
-            }
-        }).map(new Func1<RealmSchedule, Boolean>() {
-            @Override
-            public Boolean call(RealmSchedule realmSchedule) {
-                return realmSchedule != null;
-            }
-        });
+        return store.select(ScheduleEntity.class)
+                .where(ScheduleEntity.SESSION_ID.eq(session.getId()))
+                .get()
+                .toObservable()
+                .flatMap(new Func1<ScheduleEntity, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(ScheduleEntity scheduleEntity) {
+                        return  Observable.just(scheduleEntity != null);
+                    }
+                } );
+
+//        return RealmObservable.object(context, new Func1<Realm, RealmSchedule>() {
+//            @Override
+//            public RealmSchedule call(Realm realm) {
+//                RealmSchedule realmSchedule = realm.where(RealmSchedule.class)
+//                        .equalTo("realmSessionId", session.getId())
+//                        .findFirst();
+//                if (realmSchedule != null) {
+//                    Schedule schedule = scheduleMapper.fromDB(realmSchedule);
+//                    callScheduleDeleted(schedule);
+//                    realmSchedule.removeFromRealm();
+//                }
+//
+//                return realmSchedule;
+//            }
+//        }).map(new Func1<RealmSchedule, Boolean>() {
+//            @Override
+//            public Boolean call(RealmSchedule realmSchedule) {
+//                return realmSchedule != null;
+//            }
+//        });
     }
 
     public Observable<ScheduleCollision> canSessionBeSchedule(final Session session) {
-        return RealmObservable.object(context, new Func1<Realm, RealmSchedule>() {
-            @Override
-            public RealmSchedule call(Realm realm) {
-                return realm.where(RealmSchedule.class)
-                        .equalTo("scheduleDate", session.getDate())
-                        .findFirst();
-            }
-        }).map(new Func1<RealmSchedule, ScheduleCollision>() {
-            @Override
-            public ScheduleCollision call(RealmSchedule realmSchedule) {
-                if (realmSchedule == null) {
-                    return new ScheduleCollision(null, false);
-                } else {
-                    return new ScheduleCollision(scheduleMapper.fromDB(realmSchedule), true);
-                }
-            }
-        });
+
+        return store
+                .select(ScheduleEntity.class)
+                .where(ScheduleEntity.SESSION_ID.eq(session.getId()))
+                .get()
+                .toObservable()
+                .flatMap(new Func1<ScheduleEntity, Observable<ScheduleCollision>>() {
+                    @Override
+                    public Observable<ScheduleCollision> call(ScheduleEntity scheduleEntity) {
+                        if (scheduleEntity == null) {
+                            return Observable.just(new ScheduleCollision(null, false));
+                        } else {
+                            return Observable.just(new ScheduleCollision(scheduleEntity, true));
+                        }
+                    }
+                });
+
+
+//        return RealmObservable.object(context, new Func1<Realm, RealmSchedule>() {
+//            @Override
+//            public RealmSchedule call(Realm realm) {
+//                return realm.where(RealmSchedule.class)
+//                        .equalTo("scheduleDate", session.getDate())
+//                        .findFirst();
+//            }
+//        }).map(new Func1<RealmSchedule, ScheduleCollision>() {
+//            @Override
+//            public ScheduleCollision call(RealmSchedule realmSchedule) {
+//                if (realmSchedule == null) {
+//                    return new ScheduleCollision(null, false);
+//                } else {
+//                    return new ScheduleCollision(scheduleMapper.fromDB(realmSchedule), true);
+//                }
+//            }
+//        });
     }
 
     public Observable<RealmSessionNotification> addToNotification(final SessionNotification sessionNotification) {

@@ -40,8 +40,8 @@ import pl.droidcon.app.database.DatabaseManager;
 import pl.droidcon.app.helper.DateTimePrinter;
 import pl.droidcon.app.helper.UrlHelper;
 import pl.droidcon.app.model.common.Room;
-import pl.droidcon.app.model.common.Schedule;
 import pl.droidcon.app.model.common.ScheduleCollision;
+import pl.droidcon.app.model.db.Schedule;
 import pl.droidcon.app.model.db.ScheduleEntity;
 import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.db.SessionEntity;
@@ -213,7 +213,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
     }
 
     private void getCollisionSessionAndShowOverlapDialog(Schedule schedule) {
-        Subscription subscription = databaseManager.session(schedule.getSessionId())
+        Subscription subscription = databaseManager.session(schedule.getSession().getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Session>() {
