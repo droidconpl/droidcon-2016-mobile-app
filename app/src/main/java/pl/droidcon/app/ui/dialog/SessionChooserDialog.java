@@ -10,8 +10,6 @@ import android.widget.TextView;
 
 import org.joda.time.DateTime;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import butterknife.Bind;
@@ -20,8 +18,8 @@ import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
 import pl.droidcon.app.helper.DateTimePrinter;
-import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.db.RealmSchedule;
+import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.reminder.SessionReminder;
 import pl.droidcon.app.ui.view.SessionList;
@@ -104,10 +102,10 @@ public class SessionChooserDialog extends AppCompatDialogFragment implements Ses
         Subscription subscribe = databaseManager.sessions(sessionDate)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<SessionEntity>>() {
+                .subscribe(new Subscriber<SessionEntity>() {
                     @Override
                     public void onCompleted() {
-
+                        sessionList.show(SessionChooserDialog.this);
                     }
 
                     @Override
@@ -116,8 +114,8 @@ public class SessionChooserDialog extends AppCompatDialogFragment implements Ses
                     }
 
                     @Override
-                    public void onNext(List<SessionEntity> sessions) {
-                        sessionList.setSessions(sessions, SessionChooserDialog.this);
+                    public void onNext(SessionEntity session) {
+                        sessionList.addSession(session);
                     }
                 });
         compositeSubscription.add(subscribe);

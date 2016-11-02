@@ -51,17 +51,22 @@ public class SessionList extends LinearLayout {
     }
 
     private void showStubData() {
-        List<SessionEntity> sessions = new ArrayList<>();
         SessionEntity session = new SessionEntity();
         session.setTitle("stub");
         session.setDescription("stub.description");
-        sessions.add(session);
-        setSessions(sessions, null);
+        addSession(session);
+        show(null);
     }
 
-    public void setSessions(List<SessionEntity> sessions, @Nullable SessionClickListener sessionClickListener) {
+    List<SessionEntity> sessionEntities = new ArrayList<>();
+
+    public void addSession(SessionEntity session) {
+        sessionEntities.add(session);
+    }
+
+    public void show(@Nullable SessionClickListener sessionClickListener){
         removeAllViews();
-        for (SessionEntity session : sessions) {
+        for (SessionEntity session : sessionEntities) {
             SessionListItem sessionListItem = new SessionListItem(getContext());
             sessionListItem.setSession(session);
             sessionListItem.setSessionClickListener(sessionClickListener);
