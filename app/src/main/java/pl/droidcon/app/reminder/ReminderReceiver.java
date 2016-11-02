@@ -48,7 +48,7 @@ public class ReminderReceiver extends BroadcastReceiver {
                 .subscribe(new Action1<Boolean>() {
                     @Override
                     public void call(Boolean aBoolean) {
-                        Log.d(TAG, "Removed remind notification for session " + session.title);
+                        Log.d(TAG, "Removed remind notification for session " + session.getTitle());
                         if (aBoolean) {
                             showNotification(context, session);
                         }
@@ -58,19 +58,19 @@ public class ReminderReceiver extends BroadcastReceiver {
 
     private void showNotification(Context context, SessionEntity session) {
         Intent sessionIntent = SessionActivity.getSessionIntent(context, session);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, session.id, sessionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, session.getId(), sessionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
         Notification notification = builder.setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(context.getString(R.string.app_name))
-                .setContentText(context.getString(R.string.received_session_notification, session.title))
+                .setContentText(context.getString(R.string.received_session_notification, session.getTitle()))
                 .setContentIntent(pendingIntent)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setAutoCancel(true)
                 .build();
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(session.id, notification);
+        notificationManager.notify(session.getId(), notification);
     }
 }

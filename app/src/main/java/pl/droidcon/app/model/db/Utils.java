@@ -7,9 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pl.droidcon.app.model.api.SessionRow;
-import pl.droidcon.app.model.db.SessionEntity;
-import pl.droidcon.app.model.db.Speaker;
-import pl.droidcon.app.model.db.SpeakerEntity;
 
 public class Utils {
 
@@ -31,7 +28,7 @@ public class Utils {
         for (Integer speakerId : speakerIdsLeft) {
             SpeakerEntity speakerEntity = new SpeakerEntity();
             speakerEntity.setId(speakerId);
-            leftSession.getSpeaker().add(speakerEntity);
+            leftSession.getSpeakers().add(speakerEntity);
         }
 
         leftSession.setRoomId(sessionRow.roomId.get(0));
@@ -51,7 +48,7 @@ public class Utils {
         for (Integer speakerId : speakerIdsRight) {
             SpeakerEntity speakerEntity = new SpeakerEntity();
             speakerEntity.setId(speakerId);
-            rightSession.getSpeaker().add(speakerEntity);
+            rightSession.getSpeakers().add(speakerEntity);
         }
 
         rightSession.setRoomId(sessionRow.roomId.get(1));
@@ -67,20 +64,20 @@ public class Utils {
         return sessions;
     }
 
-    public static SpeakerEntity fromSpeaker(Speaker speaker){
+    public static SpeakerEntity fromSpeaker(Speaker speaker) {
         SpeakerEntity speakerEntity = new SpeakerEntity();
-        speakerEntity.setId(speaker.id);
-        speakerEntity.setFirstName(speaker.firstName);
-        speakerEntity.setLastName(speaker.lastName);
-        speakerEntity.setBio(speaker.bio);
-        speakerEntity.setImageUrl(speaker.imageUrl);
-        speakerEntity.setWebsiteTitle(speaker.websiteTitle);
-        speakerEntity.setWebsiteLink(speaker.websiteLink);
-        speakerEntity.setFacebookLink(speaker.facebookLink);
-        speakerEntity.setTwitterHandler(speaker.twitterHandler);
-        speakerEntity.setGithubLink(speaker.githubLink);
-        speakerEntity.setLinkedIn(speaker.linkedIn);
-        speakerEntity.setGooglePlus(speaker.googlePlus);
+        speakerEntity.setId(speaker.getId());
+        speakerEntity.setFirstName(speaker.getFirstName());
+        speakerEntity.setLastName(speaker.getLastName());
+        speakerEntity.setBio(speaker.getBio());
+        speakerEntity.setImageUrl(speaker.getImageUrl());
+        speakerEntity.setWebsiteTitle(speaker.getWebsiteTitle());
+        speakerEntity.setWebsiteLink(speaker.getWebsiteLink());
+        speakerEntity.setFacebookLink(speaker.getFacebookLink());
+        speakerEntity.setTwitterHandler(speaker.getTwitterHandler());
+        speakerEntity.setGithubLink(speaker.getGithubLink());
+        speakerEntity.setLinkedIn(speaker.getLinkedIn());
+        speakerEntity.setGooglePlus(speaker.getGooglePlus());
         return speakerEntity;
     }
 }

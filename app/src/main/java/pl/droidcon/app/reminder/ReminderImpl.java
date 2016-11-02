@@ -29,7 +29,7 @@ public class ReminderImpl implements Reminder {
     public void setRemind(@NonNull Session session) {
         PendingIntent pendingIntent = createIntentForRemind(session);
         DateTime now = DateTime.now();
-        DateTime sessionDate = new DateTime(session.date).minusMinutes(1);//now.plusSeconds(10);//
+        DateTime sessionDate = new DateTime(session.getDate()).minusMinutes(1);//now.plusSeconds(10);//
         if (!sessionDate.isAfter(now)) {
             Log.w(TAG, "Not setting reminder for passed session");
             return;
@@ -46,6 +46,6 @@ public class ReminderImpl implements Reminder {
 
     private PendingIntent createIntentForRemind(Session session) {
         Intent intent = ReminderReceiver.createReceiverIntent(context, session);
-        return PendingIntent.getBroadcast(context, session.id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getBroadcast(context, session.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 }

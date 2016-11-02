@@ -55,7 +55,7 @@ public class ScheduleOverlapDialog extends AppCompatDialogFragment {
     @Override
     public AppCompatDialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        String message = getString(R.string.schedule_overlap_message, collisionSchedule.title, DateTimePrinter.toPrintableString(new DateTime(collisionSchedule.date)), replaceSession.title);
+        String message = getString(R.string.schedule_overlap_message, collisionSchedule.getTitle(), DateTimePrinter.toPrintableString(new DateTime(collisionSchedule.getDate())), replaceSession.getTitle());
 
         builder.setTitle(R.string.schedule_overlap_title)
                 .setMessage(Html.fromHtml(message))

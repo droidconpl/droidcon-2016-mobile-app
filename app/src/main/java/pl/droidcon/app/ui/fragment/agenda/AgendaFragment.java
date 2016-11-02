@@ -191,7 +191,7 @@ public class AgendaFragment extends Fragment implements SwipeRefreshLayout.OnRef
     @Override
     public void onItemClick(View view, int position) {
         SessionEntity session = agendaAdapter.getSessionByPosition(position);
-        if (session.getSpeaker().isEmpty()) {
+        if (session.getSpeakers().isEmpty()) {
             return;
         }
         SessionActivity.start(getContext(), session);

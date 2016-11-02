@@ -82,10 +82,10 @@ public class SpeakerDialog extends AppCompatDialogFragment {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.speaker_dialog, null);
         ButterKnife.bind(this, view);
         int size = (int) getResources().getDimension(R.dimen.speaker_dialog_avatar_size);
-        Picasso.with(getContext()).load(UrlHelper.url(speaker.imageUrl)).resize(size, size).into(avatarTarget);
-        speakerFullName.setText(getString(R.string.speaker_full_name_format, speaker.firstName, speaker.lastName));
-        speakerBio.setText(Html.fromHtml(speaker.bio));
-        speakerTitle.setText(speaker.websiteTitle);
+        Picasso.with(getContext()).load(UrlHelper.url(speaker.getImageUrl())).resize(size, size).into(avatarTarget);
+        speakerFullName.setText(getString(R.string.speaker_full_name_format, speaker.getFirstName(), speaker.getLastName()));
+        speakerBio.setText(Html.fromHtml(speaker.getBio()));
+        speakerTitle.setText(speaker.getWebsiteLink());
         setLinks();
         builder.setView(view)
                 .setPositiveButton(R.string.hide, new DialogInterface.OnClickListener() {
@@ -106,35 +106,35 @@ public class SpeakerDialog extends AppCompatDialogFragment {
     }
 
     private void setLinks() {
-        if (TextUtils.isEmpty(speaker.websiteLink)) {
+        if (TextUtils.isEmpty(speaker.getWebsiteLink())) {
             websiteButton.setVisibility(View.GONE);
         } else {
-            websiteButton.setOnClickListener(new LinkClickListener(speaker.websiteLink, LinkClickListener.Type.WEBSITE));
+            websiteButton.setOnClickListener(new LinkClickListener(speaker.getWebsiteLink(), LinkClickListener.Type.WEBSITE));
         }
-        if (TextUtils.isEmpty(speaker.facebookLink)) {
+        if (TextUtils.isEmpty(speaker.getFacebookLink())) {
             facebookButton.setVisibility(View.GONE);
         } else {
-            facebookButton.setOnClickListener(new LinkClickListener(speaker.facebookLink, LinkClickListener.Type.FACEBOOK));
+            facebookButton.setOnClickListener(new LinkClickListener(speaker.getFacebookLink(), LinkClickListener.Type.FACEBOOK));
         }
-        if (TextUtils.isEmpty(speaker.twitterHandler)) {
+        if (TextUtils.isEmpty(speaker.getTwitterHandler())) {
             twitterButton.setVisibility(View.GONE);
         } else {
-            twitterButton.setOnClickListener(new LinkClickListener(speaker.twitterHandler, LinkClickListener.Type.TWITTER));
+            twitterButton.setOnClickListener(new LinkClickListener(speaker.getTwitterHandler(), LinkClickListener.Type.TWITTER));
         }
-        if (TextUtils.isEmpty(speaker.githubLink)) {
+        if (TextUtils.isEmpty(speaker.getGithubLink())) {
             githubButton.setVisibility(View.GONE);
         } else {
-            githubButton.setOnClickListener(new LinkClickListener(speaker.githubLink, LinkClickListener.Type.GITHUB));
+            githubButton.setOnClickListener(new LinkClickListener(speaker.getGithubLink(), LinkClickListener.Type.GITHUB));
         }
-        if (TextUtils.isEmpty(speaker.linkedIn)) {
+        if (TextUtils.isEmpty(speaker.getLinkedIn())) {
             linkedInButton.setVisibility(View.GONE);
         } else {
-            linkedInButton.setOnClickListener(new LinkClickListener(speaker.linkedIn, LinkClickListener.Type.LINKEDIN));
+            linkedInButton.setOnClickListener(new LinkClickListener(speaker.getLinkedIn(), LinkClickListener.Type.LINKEDIN));
         }
-        if (TextUtils.isEmpty(speaker.googlePlus)) {
+        if (TextUtils.isEmpty(speaker.getGooglePlus())) {
             googleLink.setVisibility(View.GONE);
         } else {
-            googleLink.setOnClickListener(new LinkClickListener(speaker.googlePlus, LinkClickListener.Type.GOOGLE));
+            googleLink.setOnClickListener(new LinkClickListener(speaker.getGooglePlus(), LinkClickListener.Type.GOOGLE));
         }
     }
 

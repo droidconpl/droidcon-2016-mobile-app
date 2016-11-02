@@ -18,12 +18,12 @@ public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         BaseSessionViewHolder sessionViewHolder = (BaseSessionViewHolder) parent.getChildViewHolder(view);
         Session session = sessionViewHolder.getSession();
-        if (session.singleItem) {
+        if (session.isSingleItem()) {
             // single element on list
             outRect.right = space;
             outRect.left = space;
         } else {
-            if (session.left) {
+            if (session.isLeft()) {
                 // left element
                 outRect.right = (int) (space * 0.5f);
                 outRect.left = space;

@@ -50,9 +50,9 @@ public class DataSubscription {
 
     public void fetchData() {
         restService.getSpeakers()
-                .flatMap(new Func1<SpeakerResponse, Observable<Speaker>>() {
+                .flatMap(new Func1<SpeakerResponse, Observable<SpeakerEntity>>() {
                     @Override
-                    public Observable<Speaker> call(SpeakerResponse speakerResponse) {
+                    public Observable<SpeakerEntity> call(SpeakerResponse speakerResponse) {
                         return Observable.from(speakerResponse.speakers);
                     }
                 })

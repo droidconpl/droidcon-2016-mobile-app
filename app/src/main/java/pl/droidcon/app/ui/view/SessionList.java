@@ -53,8 +53,8 @@ public class SessionList extends LinearLayout {
     private void showStubData() {
         List<SessionEntity> sessions = new ArrayList<>();
         SessionEntity session = new SessionEntity();
-        session.title = "stub";
-        session.description = "stub.description";
+        session.setTitle("stub");
+        session.setDescription("stub.description");
         sessions.add(session);
         setSessions(sessions, null);
     }

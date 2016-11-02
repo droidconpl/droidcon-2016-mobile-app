@@ -67,9 +67,9 @@ public class SpeakerListItem extends SimpleListItem {
             return;
         }
         this.speaker = speaker;
-        setTitle(getResources().getString(R.string.speaker_full_name_format, speaker.firstName, speaker.lastName));
-        setImage(UrlHelper.url(speaker.imageUrl));
-        setDescription(speaker.bio);
+        setTitle(getResources().getString(R.string.speaker_full_name_format, speaker.getFirstName(), speaker.getLastName()));
+        setImage(UrlHelper.url(speaker.getImageUrl()));
+        setDescription(speaker.getBio());
     }
 
 }

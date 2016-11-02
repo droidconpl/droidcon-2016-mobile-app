@@ -62,8 +62,8 @@ public class DatabaseManagerTest {
         speakerEntity1.setLastName("Eod");
 
 
-        sessionEntity.getSpeaker().add(speakerEntity);
-        sessionEntity.getSpeaker().add(speakerEntity1);
+        sessionEntity.getSpeakers().add(speakerEntity);
+        sessionEntity.getSpeakers().add(speakerEntity1);
 
         dataStore.insert(speakerEntity);
         dataStore.insert(speakerEntity1);
@@ -72,6 +72,6 @@ public class DatabaseManagerTest {
 
         SessionEntity result = dataStore.select(SessionEntity.class).get().first();
 
-        assert result.getSpeaker().size() == 2;
+        assert result.getSpeakers().size() == 2;
     }
 }

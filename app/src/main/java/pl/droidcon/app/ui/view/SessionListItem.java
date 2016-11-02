@@ -58,14 +58,14 @@ public class SessionListItem extends SimpleListItem {
 
     public void setSession(SessionEntity session) {
         this.session = session;
-        setTitle(session.title);
-        setDescription(session.description);
-        if (session.getSpeaker().isEmpty()) {
+        setTitle(session.getTitle());
+        setDescription(session.getDescription());
+        if (session.getSpeakers().isEmpty()) {
             return;
         }
-        Speaker speaker = session.getSpeaker().get(0);
-        if (!TextUtils.isEmpty(speaker.imageUrl)) {
-            setImage(UrlHelper.url(speaker.imageUrl));
+        Speaker speaker = session.getSpeakers().get(0);
+        if (!TextUtils.isEmpty(speaker.getImageUrl())) {
+            setImage(UrlHelper.url(speaker.getImageUrl()));
         }
     }
 

@@ -57,7 +57,7 @@ public class ReminderPersistenceImpl implements ReminderPersistence {
                 .subscribe(new Action1<RealmSessionNotification>() {
                     @Override
                     public void call(RealmSessionNotification sessionNotification) {
-                        Log.d(TAG, "Added session " + session.title + " to notifications");
+                        Log.d(TAG, "Added session " + session.getTitle() + " to notifications");
                     }
                 });
     }
@@ -70,7 +70,7 @@ public class ReminderPersistenceImpl implements ReminderPersistence {
                 .subscribe(new Action1<Boolean>() {
                     @Override
                     public void call(Boolean aBoolean) {
-                        Log.d(TAG, "Removed notification for session " + session.title);
+                        Log.d(TAG, "Removed notification for session " + session.getTitle());
                     }
                 });
     }
