@@ -52,10 +52,12 @@ import pl.droidcon.app.ui.dialog.ScheduleOverlapDialog;
 import pl.droidcon.app.ui.dialog.SpeakerDialog;
 import pl.droidcon.app.ui.view.SpeakerList;
 import pl.droidcon.app.wrapper.SnackbarWrapper;
+import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -156,6 +158,12 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
     private void checkIsFavourite() {
         Subscription subscription = databaseManager.isFavourite(session)
                 .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<ScheduleEntity, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(ScheduleEntity scheduleEntity) {
+                        return Observable.just(scheduleEntity != null);
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Boolean>() {
                     @Override
