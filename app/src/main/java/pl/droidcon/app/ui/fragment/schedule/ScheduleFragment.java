@@ -7,13 +7,10 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -23,12 +20,9 @@ import butterknife.ButterKnife;
 import io.requery.query.Result;
 import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
-import pl.droidcon.app.database.DataObserver;
 import pl.droidcon.app.database.DatabaseManager;
 import pl.droidcon.app.factory.SlotFactory;
 import pl.droidcon.app.helper.UrlHelper;
-import pl.droidcon.app.model.api.Session;
-import pl.droidcon.app.model.common.Schedule;
 import pl.droidcon.app.model.common.SessionDay;
 import pl.droidcon.app.model.common.Slot;
 import pl.droidcon.app.model.db.ScheduleEntity;
@@ -39,12 +33,10 @@ import pl.droidcon.app.ui.decoration.ScheduleItemDecoration;
 import pl.droidcon.app.ui.dialog.SessionChooserDialog;
 import pl.droidcon.app.wrapper.SnackbarWrapper;
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
@@ -82,12 +74,10 @@ public class ScheduleFragment extends Fragment implements ScheduleViewHolder.Sch
         super.onCreate(savedInstanceState);
         sessionDay = (SessionDay) getArguments().getSerializable(SESSION_DAY_KEY);
         DroidconInjector.get().inject(this);
-        databaseManager.registerDataObserver(scheduleDataObserver);
     }
 
     @Override
     public void onDestroy() {
-        databaseManager.unregisterDataObserver(scheduleDataObserver);
         super.onDestroy();
     }
 
@@ -200,29 +190,6 @@ public class ScheduleFragment extends Fragment implements ScheduleViewHolder.Sch
             clickSubject.onNext(clickCounter++);
         }
     }
-
-    private void notifyAdapter() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                scheduleAdapter.notifyDataSetChanged();
-            }
-        });
-    }
-
-
-    private DataObserver<Schedule> scheduleDataObserver = new DataObserver<Schedule>(Schedule.class) {
-        @Override
-        public void onInsert(Schedule data) {
-            getSchedules();
-        }
-
-        @Override
-        public void onDelete(Schedule data) {
-            scheduleAdapter.removeScheduleFromSlots(data);
-            notifyAdapter();
-        }
-    };
 
 
     private void startResetTimer() {

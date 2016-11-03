@@ -51,36 +51,8 @@ public class DatabaseManager {
     @Inject
     SingleEntityStore<Persistable> store;
 
-    private Map<Class, List<DataObserver>> dataObserverMap;
-
     public DatabaseManager() {
         DroidconInjector.get().inject(this);
-        dataObserverMap = new HashMap<>();
-    }
-
-    public void registerDataObserver(DataObserver dataObserver) {
-        Log.d(TAG, "register data observer for class=" + dataObserver.getType());
-        List<DataObserver> dataObservers = dataObserverMap.get(dataObserver.getType());
-        if (dataObservers == null) {
-            dataObservers = new ArrayList<>();
-        }
-        if (dataObservers.contains(dataObserver)) {
-            throw new IllegalStateException("Observer already registered");
-        }
-        dataObservers.add(dataObserver);
-        dataObserverMap.put(dataObserver.getType(), dataObservers);
-    }
-
-    public void unregisterDataObserver(DataObserver dataObserver) {
-        Log.d(TAG, "unregister data observer for class=" + dataObserver.getType());
-        List<DataObserver> dataObservers = dataObserverMap.get(dataObserver.getType());
-        if (dataObservers == null) {
-            throw new IllegalStateException("Not found any registered observers for given type " + dataObserver.getType());
-        }
-        if (!dataObservers.contains(dataObserver)) {
-            throw new IllegalStateException("Observer not registered");
-        }
-        dataObservers.remove(dataObserver);
     }
 
     public Observable<Result<SessionEntity>> sessions(final SessionDay sessionDay) {
@@ -393,23 +365,4 @@ public class DatabaseManager {
     }
 
 
-    @SuppressWarnings("unchecked")
-    private void callScheduleInserted(Schedule schedule) {
-        List<DataObserver> dataObservers = dataObserverMap.get(Schedule.class);
-        if (dataObservers != null) {
-            for (DataObserver observer : dataObservers) {
-                observer.onInsert(schedule);
-            }
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void callScheduleDeleted(Schedule schedule) {
-        List<DataObserver> dataObservers = dataObserverMap.get(Schedule.class);
-        if (dataObservers != null) {
-            for (DataObserver observer : dataObservers) {
-                observer.onDelete(schedule);
-            }
-        }
-    }
 }
