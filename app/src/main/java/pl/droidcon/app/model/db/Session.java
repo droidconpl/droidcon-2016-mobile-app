@@ -29,4 +29,7 @@ public interface Session extends Parcelable{
 
     @OneToOne
     Schedule getSchedule();
+
+    @OneToOne
+    Notification getNotification();
 }

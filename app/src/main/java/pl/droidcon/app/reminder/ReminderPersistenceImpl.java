@@ -12,9 +12,9 @@ import javax.inject.Inject;
 
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
-import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.common.SessionNotification;
-import pl.droidcon.app.model.db.RealmSessionNotification;
+import pl.droidcon.app.model.db.NotificationEntity;
+import pl.droidcon.app.model.db.Session;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -51,12 +51,12 @@ public class ReminderPersistenceImpl implements ReminderPersistence {
 
     @Override
     public void addSessionToReminding(@NonNull final Session session) {
-        databaseManager.addToNotification(SessionNotification.of(session))
+        databaseManager.addToNotification(session)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RealmSessionNotification>() {
+                .subscribe(new Action1<NotificationEntity>() {
                     @Override
-                    public void call(RealmSessionNotification sessionNotification) {
+                    public void call(NotificationEntity notificationEntity) {
                         Log.d(TAG, "Added session " + session.getTitle() + " to notifications");
                     }
                 });
