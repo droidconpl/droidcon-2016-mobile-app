@@ -15,8 +15,6 @@ import io.requery.sql.EntityDataStore;
 import io.requery.sql.TableCreationMode;
 import pl.droidcon.app.BuildConfig;
 import pl.droidcon.app.database.DatabaseManager;
-import pl.droidcon.app.helper.ScheduleMapper;
-import pl.droidcon.app.helper.SessionNotificationMapper;
 import pl.droidcon.app.model.db.Models;
 import pl.droidcon.app.reminder.Reminder;
 import pl.droidcon.app.reminder.ReminderImpl;
@@ -45,21 +43,6 @@ public class LogicModule {
     @Provides
     public DatabaseManager provideDatabaseManager() {
         return new DatabaseManager();
-    }
-
-//    @Provides
-//    public SessionMapper provideSessionMapper() {
-//        return new SessionMapper();
-//    }
-
-    @Provides
-    public ScheduleMapper provideScheduleMapper() {
-        return new ScheduleMapper();
-    }
-
-    @Provides
-    public SessionNotificationMapper provideSessionNotificationMapper() {
-        return new SessionNotificationMapper();
     }
 
     @Provides
@@ -91,15 +74,4 @@ public class LogicModule {
                 new EntityDataStore<Persistable>(configuration));
     }
 
-    @Singleton
-    @Provides
-    public EntityDataStore<Persistable> provideNonRxDatabase(Context context){
-        DatabaseSource source = new DatabaseSource(context, Models.DEFAULT, 1);
-        if (BuildConfig.DEBUG) {
-            // use this in development mode to drop and recreate the tables on every upgrade
-            source.setTableCreationMode(TableCreationMode.DROP_CREATE);
-        }
-        Configuration configuration = source.getConfiguration();
-        return new EntityDataStore<Persistable>(configuration);
-    }
 }
