@@ -64,7 +64,7 @@ public class ReminderPersistenceImpl implements ReminderPersistence {
 
     @Override
     public void removeSessionFromReminding(@NonNull final Session session) {
-        databaseManager.removeFromNotification(SessionNotification.of(session))
+        databaseManager.removeFromNotification(session)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Boolean>() {

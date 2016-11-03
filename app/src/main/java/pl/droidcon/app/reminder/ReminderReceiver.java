@@ -42,7 +42,8 @@ public class ReminderReceiver extends BroadcastReceiver {
         }
 
         DroidconInjector.get().databaseManager()
-                .removeFromNotification(SessionNotification.of(session))
+                // TODO: this session object needs to be fetched from DB ...
+                .removeFromNotification(session)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Boolean>() {

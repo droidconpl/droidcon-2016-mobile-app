@@ -310,24 +310,39 @@ public class DatabaseManager {
 //        });
     }
 
-    public Observable<Boolean> removeFromNotification(final SessionNotification sessionNotification) {
-        return RealmObservable.object(context, new Func1<Realm, RealmSessionNotification>() {
-            @Override
-            public RealmSessionNotification call(Realm realm) {
-                RealmSessionNotification notification = realm.where(RealmSessionNotification.class)
-                        .equalTo("sessionId", sessionNotification.getSessionId())
-                        .findFirst();
-                if (notification != null) {
-                    notification.removeFromRealm();
-                }
-                return notification;
-            }
-        }).map(new Func1<RealmSessionNotification, Boolean>() {
-            @Override
-            public Boolean call(RealmSessionNotification sessionNotification) {
-                return sessionNotification != null;
-            }
-        });
+    public Observable<Boolean> removeFromNotification(final Session session) {
+
+        return store
+                .delete(NotificationEntity.class)
+                .where(NotificationEntity.SESSION.eq(session))
+                .get()
+                .toSingle()
+                .toObservable()
+                .flatMap(new Func1<Integer, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(Integer integer) {
+                        return Observable.just(integer > 0);
+                    }
+                });
+
+
+//        return RealmObservable.object(context, new Func1<Realm, RealmSessionNotification>() {
+//            @Override
+//            public RealmSessionNotification call(Realm realm) {
+//                RealmSessionNotification notification = realm.where(RealmSessionNotification.class)
+//                        .equalTo("sessionId", sessionNotification.getSessionId())
+//                        .findFirst();
+//                if (notification != null) {
+//                    notification.removeFromRealm();
+//                }
+//                return notification;
+//            }
+//        }).map(new Func1<RealmSessionNotification, Boolean>() {
+//            @Override
+//            public Boolean call(RealmSessionNotification sessionNotification) {
+//                return sessionNotification != null;
+//            }
+//        });
     }
 
     public Observable<List<SessionNotification>> notifications() {
