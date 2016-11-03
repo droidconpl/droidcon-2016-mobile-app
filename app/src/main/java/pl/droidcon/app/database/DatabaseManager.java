@@ -15,8 +15,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import io.realm.Realm;
-import io.realm.RealmResults;
 import io.requery.Persistable;
 import io.requery.query.Result;
 import io.requery.query.WhereAndOr;
@@ -28,13 +26,10 @@ import pl.droidcon.app.model.api.AgendaResponse;
 import pl.droidcon.app.model.api.SpeakerResponse;
 import pl.droidcon.app.model.common.Schedule;
 import pl.droidcon.app.model.common.SessionDay;
-import pl.droidcon.app.model.common.SessionNotification;
 import pl.droidcon.app.model.db.NotificationEntity;
-import pl.droidcon.app.model.db.RealmSessionNotification;
 import pl.droidcon.app.model.db.ScheduleEntity;
 import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.db.SessionEntity;
-import pl.droidcon.app.rx.RealmObservable;
 import rx.Observable;
 import rx.Single;
 import rx.functions.Func1;
@@ -345,19 +340,22 @@ public class DatabaseManager {
 //        });
     }
 
-    public Observable<List<SessionNotification>> notifications() {
-        return RealmObservable.results(context, new Func1<Realm, RealmResults<RealmSessionNotification>>() {
-            @Override
-            public RealmResults<RealmSessionNotification> call(Realm realm) {
-                return realm.where(RealmSessionNotification.class)
-                        .findAll();
-            }
-        }).map(new Func1<RealmResults<RealmSessionNotification>, List<SessionNotification>>() {
-            @Override
-            public List<SessionNotification> call(RealmResults<RealmSessionNotification> realmSessionNotifications) {
-                return sessionNotificationMapper.fromDBList(realmSessionNotifications);
-            }
-        });
+    public Observable<NotificationEntity> notifications() {
+
+        return store.select(NotificationEntity.class).get().toObservable();
+
+//        return RealmObservable.results(context, new Func1<Realm, RealmResults<RealmSessionNotification>>() {
+//            @Override
+//            public RealmResults<RealmSessionNotification> call(Realm realm) {
+//                return realm.where(RealmSessionNotification.class)
+//                        .findAll();
+//            }
+//        }).map(new Func1<RealmResults<RealmSessionNotification>, List<SessionNotification>>() {
+//            @Override
+//            public List<SessionNotification> call(RealmResults<RealmSessionNotification> realmSessionNotifications) {
+//                return sessionNotificationMapper.fromDBList(realmSessionNotifications);
+//            }
+//        });
     }
 
     // Old way of storing data

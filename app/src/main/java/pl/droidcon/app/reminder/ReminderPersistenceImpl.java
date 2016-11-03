@@ -6,13 +6,10 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
-import pl.droidcon.app.model.common.SessionNotification;
 import pl.droidcon.app.model.db.NotificationEntity;
 import pl.droidcon.app.model.db.Session;
 import rx.Subscriber;
@@ -80,21 +77,37 @@ public class ReminderPersistenceImpl implements ReminderPersistence {
         databaseManager.notifications()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .subscribe(new Action1<List<SessionNotification>>() {
+
+                .subscribe(new Subscriber<NotificationEntity>() {
                     @Override
-                    public void call(List<SessionNotification> sessionNotifications) {
-                        Log.d(TAG, "sessions notification size=" + sessionNotifications.size());
-                        for (SessionNotification sessionNotification : sessionNotifications) {
-                            databaseManager.session(sessionNotification.getSessionId())
-                                    .subscribe(new Action1<Session>() {
-                                        @Override
-                                        public void call(Session session) {
-                                            topSubscriber.onNext(session);
-                                        }
-                                    });
-                        }
+                    public void onCompleted() {
                         topSubscriber.onCompleted();
                     }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(NotificationEntity notificationEntity) {
+                        topSubscriber.onNext(notificationEntity.getSession());
+//                        databaseManager.session(notificationEntity.getSession().getId())
+//                                .subscribe(new Action1<Session>() {
+//                                    @Override
+//                                    public void call(Session session) {
+//                                        topSubscriber.onNext(session);
+//                                    }
+//                                });
+                    }
                 });
+
+//                .subscribe(new Action1<List<NotificationEntity>>() {
+//                    @Override
+//                    public void call(List<NotificationEntity> sessionNotifications) {
+//
+//
+//                    }
+//                });
     }
 }
