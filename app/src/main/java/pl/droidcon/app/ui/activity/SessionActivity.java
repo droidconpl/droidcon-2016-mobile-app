@@ -33,6 +33,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.requery.query.Result;
 import me.relex.circleindicator.CircleIndicator;
 import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
@@ -66,7 +67,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
     private static final String TAG = SessionActivity.class.getSimpleName();
 
     private static final String SESSION_EXTRA = "session";
-    private static final String SPEAKERS_EXTRA = "speakers";
+//    private static final String SPEAKERS_EXTRA = "speakers";
 
     public static void start(Context context, Session session) {
         Intent intent = getSessionIntent(context, session);
@@ -75,8 +76,8 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
 
     public static Intent getSessionIntent(Context context, Session session) {
         Intent intent = new Intent(context, SessionActivity.class);
-        intent.putExtra(SESSION_EXTRA, session);
-        intent.putParcelableArrayListExtra(SPEAKERS_EXTRA, new ArrayList<Parcelable>(session.getSpeakers()));
+        intent.putExtra(SESSION_EXTRA, session.getId());
+//        intent.putParcelableArrayListExtra(SPEAKERS_EXTRA, new ArrayList<Parcelable>(session.getSpeakers()));
         return intent;
     }
 
@@ -121,8 +122,9 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
         DroidconInjector.get().inject(this);
         ButterKnife.bind(this);
         setupToolbarBack(toolbar);
-        session = getIntent().getExtras().getParcelable(SESSION_EXTRA);
-        speakersList = getIntent().getExtras().getParcelableArrayList(SPEAKERS_EXTRA);
+        int sessionId = getIntent().getExtras().getInt(SESSION_EXTRA);
+        session = DroidconInjector.get().getDatabase().select(SessionEntity.class).where(SessionEntity.ID.eq(sessionId)).get().first();
+        speakersList = session.getSpeakers();
         compositeSubscription = new CompositeSubscription();
         fillDetails();
         checkIsFavourite();
@@ -158,6 +160,12 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
     private void checkIsFavourite() {
         Subscription subscription = databaseManager.isFavourite(session)
                 .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<Result<ScheduleEntity>, Observable<ScheduleEntity>>() {
+                    @Override
+                    public Observable<ScheduleEntity> call(Result<ScheduleEntity> scheduleEntities) {
+                        return scheduleEntities.toObservable();
+                    }
+                })
                 .flatMap(new Func1<ScheduleEntity, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(ScheduleEntity scheduleEntity) {
@@ -198,10 +206,30 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
     private void checkAndAddToFavourite() {
         Subscription subscription = databaseManager.canSessionBeSchedule(session)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<ScheduleCollision>() {
+                .flatMap(new Func1<ScheduleEntity, Observable<ScheduleCollision>>() {
                     @Override
-                    public void call(ScheduleCollision scheduleCollision) {
+                    public Observable<ScheduleCollision> call(ScheduleEntity scheduleEntity) {
+                        if (scheduleEntity == null) {
+                            return Observable.just(new ScheduleCollision(null, false));
+                        } else {
+                            return Observable.just(new ScheduleCollision(scheduleEntity, scheduleEntity.getSession().getId() != session.getId()));
+                        }
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ScheduleCollision>() {
+                    @Override
+                    public void onCompleted() {
+                        addToFavourites();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(ScheduleCollision scheduleCollision) {
                         if (scheduleCollision.isCollision()) {
                             getCollisionSessionAndShowOverlapDialog(scheduleCollision.getSchedule());
                         } else {

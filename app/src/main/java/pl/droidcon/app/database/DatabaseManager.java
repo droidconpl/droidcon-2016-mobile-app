@@ -194,9 +194,9 @@ public class DatabaseManager {
 //        });
     }
 
-    public Observable<ScheduleEntity> isFavourite(final Session session) {
+    public Observable<Result<ScheduleEntity>> isFavourite(final Session session) {
 
-        return store.select(ScheduleEntity.class).where(ScheduleEntity.SESSION.eq(session)).get().toObservable();
+        return store.select(ScheduleEntity.class).where(ScheduleEntity.SESSION.eq(session)).get().toSelfObservable();
 
 //        return RealmObservable.object(context, new Func1<Realm, RealmSchedule>() {
 //            @Override
@@ -268,24 +268,13 @@ public class DatabaseManager {
 //        });
     }
 
-    public Observable<ScheduleCollision> canSessionBeSchedule(final Session session) {
+    public Observable<ScheduleEntity> canSessionBeSchedule(final Session session) {
 
         return store
                 .select(ScheduleEntity.class)
-                .where(ScheduleEntity.SESSION_ID.eq(session.getId()))
+                .where(ScheduleEntity.SCHEDULE_DATE.eq(session.getDate()))
                 .get()
-                .toObservable()
-                .flatMap(new Func1<ScheduleEntity, Observable<ScheduleCollision>>() {
-                    @Override
-                    public Observable<ScheduleCollision> call(ScheduleEntity scheduleEntity) {
-                        if (scheduleEntity == null) {
-                            return Observable.just(new ScheduleCollision(null, false));
-                        } else {
-                            return Observable.just(new ScheduleCollision(scheduleEntity, scheduleEntity.getSession().getId() != session.getId()));
-                        }
-                    }
-                });
-
+                .toObservable();
 
 //        return RealmObservable.object(context, new Func1<Realm, RealmSchedule>() {
 //            @Override
