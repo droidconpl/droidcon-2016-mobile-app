@@ -92,22 +92,7 @@ public class ReminderPersistenceImpl implements ReminderPersistence {
                     @Override
                     public void onNext(NotificationEntity notificationEntity) {
                         topSubscriber.onNext(notificationEntity.getSession());
-//                        databaseManager.session(notificationEntity.getSession().getId())
-//                                .subscribe(new Action1<Session>() {
-//                                    @Override
-//                                    public void call(Session session) {
-//                                        topSubscriber.onNext(session);
-//                                    }
-//                                });
                     }
                 });
-
-//                .subscribe(new Action1<List<NotificationEntity>>() {
-//                    @Override
-//                    public void call(List<NotificationEntity> sessionNotifications) {
-//
-//
-//                    }
-//                });
     }
 }
