@@ -2,7 +2,6 @@ package pl.droidcon.app.ui.fragment.agenda;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.trello.rxlifecycle.components.support.RxFragment;
 
 import javax.inject.Inject;
 
@@ -19,7 +20,6 @@ import io.requery.query.Result;
 import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
-import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.common.SessionDay;
 import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.model.event.NewDataEvent;
@@ -41,7 +41,7 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 
-public class AgendaFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, RecyclerItemClickListener.OnItemClickListener {
+public class AgendaFragment extends RxFragment implements SwipeRefreshLayout.OnRefreshListener, RecyclerItemClickListener.OnItemClickListener {
 
     private static final String TAG = AgendaFragment.class.getSimpleName();
     private static final String SESSION_DAY_KEY = "sessionDay";
@@ -136,7 +136,7 @@ public class AgendaFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private void getSessions() {
         Subscription sessionSubscription = databaseManager.sessions(sessionDay)
                 .subscribeOn(Schedulers.io())
-
+                .compose(this.<Result<SessionEntity>>bindToLifecycle())
                 .flatMap(new Func1<Result<SessionEntity>, Observable<SessionEntity>>() {
                     @Override
                     public Observable<SessionEntity> call(Result<SessionEntity> sessionEntities) {
