@@ -8,8 +8,6 @@ import com.joanzapata.iconify.fonts.FontAwesomeModule;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import pl.droidcon.app.dagger.DroidconInjector;
 
 public class DroidconApp extends Application {
@@ -19,8 +17,7 @@ public class DroidconApp extends Application {
         super.onCreate();
         JodaTimeAndroid.init(this);
         DroidconInjector.init(this);
-        Realm.setDefaultConfiguration(new
-                RealmConfiguration.Builder(this).build());
+
         Iconify.with(new EntypoModule())
                 .with(new FontAwesomeModule());
     }
