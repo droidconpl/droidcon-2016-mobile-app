@@ -22,16 +22,10 @@ import pl.droidcon.app.reminder.ReminderPersistence;
 import pl.droidcon.app.reminder.ReminderPersistenceImpl;
 import pl.droidcon.app.reminder.SessionReminder;
 import pl.droidcon.app.reminder.SessionReminderImpl;
-import pl.droidcon.app.rx.BinderUtil;
 import pl.droidcon.app.rx.DataSubscription;
 
 @Module
 public class LogicModule {
-
-    @Provides
-    public BinderUtil provideBinderUtil() {
-        return new BinderUtil();
-    }
 
     @Provides
     @Singleton
