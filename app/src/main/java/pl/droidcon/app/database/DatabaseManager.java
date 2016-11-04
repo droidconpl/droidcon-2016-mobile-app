@@ -6,12 +6,9 @@ import org.joda.time.DateTime;
 import java.util.Collection;
 import java.util.Date;
 
-import javax.inject.Inject;
-
 import io.requery.Persistable;
 import io.requery.query.Result;
 import io.requery.rx.SingleEntityStore;
-import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.model.common.SessionDay;
 import pl.droidcon.app.model.db.NotificationEntity;
 import pl.droidcon.app.model.db.ScheduleEntity;
@@ -24,11 +21,10 @@ import rx.functions.Func1;
 public class DatabaseManager {
 
 
-    @Inject
     SingleEntityStore<Persistable> store;
 
-    public DatabaseManager() {
-        DroidconInjector.get().inject(this);
+    public DatabaseManager(SingleEntityStore<Persistable> store) {
+        this.store = store;
     }
 
     public Observable<Result<SessionEntity>> sessions(final SessionDay sessionDay) {

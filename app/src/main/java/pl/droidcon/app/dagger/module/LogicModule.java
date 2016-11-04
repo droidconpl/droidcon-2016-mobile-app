@@ -41,8 +41,8 @@ public class LogicModule {
 
     @Singleton
     @Provides
-    public DatabaseManager provideDatabaseManager() {
-        return new DatabaseManager();
+    public DatabaseManager provideDatabaseManager(SingleEntityStore<Persistable> store) {
+        return new DatabaseManager(store);
     }
 
     @Provides
