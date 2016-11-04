@@ -12,7 +12,6 @@ import android.util.Log;
 import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.model.db.Session;
-import pl.droidcon.app.model.common.SessionNotification;
 import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.ui.activity.SessionActivity;
 import rx.android.schedulers.AndroidSchedulers;
