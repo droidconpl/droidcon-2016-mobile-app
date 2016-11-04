@@ -8,17 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.joda.time.DateTime;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import pl.droidcon.app.R;
-import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.db.SessionEntity;
-import pl.droidcon.app.model.db.Speaker;
-import pl.droidcon.app.model.db.SpeakerEntity;
-import pl.droidcon.app.model.db.Utils;
 
 public class AgendaAdapter extends RecyclerView.Adapter<BaseSessionViewHolder> {
 
@@ -68,43 +59,6 @@ public class AgendaAdapter extends RecyclerView.Adapter<BaseSessionViewHolder> {
     }
 
     public void add(SessionEntity sessionEntity) {
-//        Session session = new Session();
-//        session.id = sessionEntity.getId();
-//        session.date = new DateTime(sessionEntity.getDate());
-//        session.dayId = sessionEntity.getDayId();
-//        session.title = sessionEntity.getTitle();
-//        session.description = sessionEntity.getDescription();
-//        session.left = sessionEntity.isLeft();
-//        session.sessionDisplayHour = sessionEntity.getDisplayHour();
-//        session.roomId = sessionEntity.getRoomId();
-//        session.singleItem = sessionEntity.isSingleItem();
-////        session.setSpeakersList(sessionEntity.getSpeaker());
-//
-//        List<Speaker> speakers = sessionEntity.getSpeaker();
-//        ArrayList<pl.droidcon.app.model.api.Speaker> sessionSpeakers = new ArrayList<>();
-//
-//        for (Speaker speaker : speakers) {
-//            SpeakerEntity speakerEntity = Utils.fromSpeaker(speaker);
-//            pl.droidcon.app.model.api.Speaker speakerSession = new pl.droidcon.app.model.api.Speaker();
-//            speakerSession.id = speakerEntity.getId();
-//            speakerSession.firstName = speakerEntity.getFirstName();
-//            speakerSession.lastName = speakerEntity.getLastName();
-//            speakerSession.websiteTitle = speakerEntity.getWebsiteTitle();
-//            speakerSession.bio = speakerEntity.getBio();
-//            speakerSession.websiteLink = speakerEntity.getWebsiteLink();
-//            speakerSession.facebookLink = speakerEntity.getFacebookLink();
-//            speakerSession.twitterHandler = speakerEntity.getTwitterHandler();
-//            speakerSession.githubLink = speakerEntity.getGithubLink();
-//            speakerSession.linkedIn = speakerEntity.getLinkedIn();
-//            speakerSession.googlePlus = speakerEntity.getGooglePlus();
-//            speakerSession.imageUrl = speakerEntity.getImageUrl();
-//
-//            sessionSpeakers.add(speakerSession);
-//        }
-//
-//
-//        session.setSpeakersList(sessionSpeakers);
-
         sessions.add(sessionEntity);
     }
 

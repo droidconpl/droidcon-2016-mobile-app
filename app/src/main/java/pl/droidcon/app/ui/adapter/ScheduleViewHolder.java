@@ -20,10 +20,9 @@ import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.helper.DateTimePrinter;
 import pl.droidcon.app.helper.UrlHelper;
-import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.common.Room;
 import pl.droidcon.app.model.common.Slot;
-import pl.droidcon.app.model.db.SessionEntity;
+import pl.droidcon.app.model.db.Session;
 
 
 public class ScheduleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -128,8 +127,8 @@ public class ScheduleViewHolder extends RecyclerView.ViewHolder implements View.
         image.setImageDrawable(null);
     }
 
-    private void setRoomName(@Nullable Session session){
-        if(session == null){
+    private void setRoomName(@Nullable Session session) {
+        if (session == null) {
             roomName.setText(null);
             return;
         }

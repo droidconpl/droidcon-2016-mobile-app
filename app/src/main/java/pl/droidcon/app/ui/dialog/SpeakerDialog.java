@@ -138,13 +138,6 @@ public class SpeakerDialog extends AppCompatDialogFragment {
         }
     }
 
-//    private SimpleTarget<Bitmap> target = new SimpleTarget<Bitmap>(128, 128) {
-//        @Override
-//        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-
-//        }
-//    };
-
     private Target avatarTarget = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {

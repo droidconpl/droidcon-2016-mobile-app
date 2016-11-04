@@ -136,43 +136,6 @@ public class ScheduleFragment extends Fragment implements ScheduleViewHolder.Sch
                         scheduleAdapter.attachSessionSlots(slot);
                     }
                 });
-
-
-//        Subscription subscription = databaseManager.schedules(sessionDay)
-//                .flatMap(new Func1<List<Schedule>, Observable<List<Session>>>() {
-//                    @Override
-//                    public Observable<List<Session>> call(List<Schedule> schedules) {
-//                        List<Integer> ids = new ArrayList<>();
-//                        for (Schedule schedule : schedules) {
-//                            ids.add(schedule.getSessionId());
-//                        }
-//                        return databaseManager.sessions(ids);
-//                    }
-//                })
-//                .flatMap(new Func1<List<Session>, Observable<List<Slot>>>() {
-//                    @Override
-//                    public Observable<List<Slot>> call(final List<Session> sessions) {
-//                        return Observable.create(new Observable.OnSubscribe<List<Slot>>() {
-//                            @Override
-//                            public void call(Subscriber<? super List<Slot>> subscriber) {
-//                                List<Slot> slots = new ArrayList<>();
-//                                for (Session session : sessions) {
-//                                    slots.add(Slot.ofSession(session));
-//                                }
-//                                subscriber.onNext(slots);
-//                            }
-//                        });
-//                    }
-//                })
-//                .subscribeOn(Schedulers.io())
-//                .subscribeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Action1<List<Slot>>() {
-//                    @Override
-//                    public void call(List<Slot> slots) {
-//                        scheduleAdapter.attachSessionSlots(slots);
-//                        notifyAdapter();
-//                    }
-//                });
         compositeSubscription.add(subscription);
     }
 
