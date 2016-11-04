@@ -1,7 +1,6 @@
 package pl.droidcon.app.ui.adapter;
 
 
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import pl.droidcon.app.R;
-import pl.droidcon.app.model.common.Schedule;
 import pl.droidcon.app.model.common.Slot;
 
 public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleViewHolder> {
@@ -35,32 +33,11 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleViewHolder> {
         holder.attachSlot(getSlot(position));
     }
 
-    public void attachSessionSlots(@NonNull List<Slot> sessionSlots) {
-        for (Slot sessionSlot : sessionSlots) {
-            for (Slot slot : slots) {
-                if (slot.equals(sessionSlot)) {
-                    slots.set(slots.indexOf(slot), sessionSlot);
-                }
-            }
-        }
-    }
-
     public void attachSessionSlots(Slot slotToAdd) {
-            for (Slot slot : slots) {
-                if (slot.equals(slotToAdd)) {
-                    slots.set(slots.indexOf(slot), slotToAdd);
-                    notifyDataSetChanged();
-                }
-            }
-    }
-
-    public void removeScheduleFromSlots(Schedule schedule) {
         for (Slot slot : slots) {
-            if (slot.getSession() == null) {
-                continue;
-            }
-            if (slot.getSession().getId() == schedule.getSessionId()) {
-                slots.set(slots.indexOf(slot), Slot.ofDeletedSchedule(schedule));
+            if (slot.equals(slotToAdd)) {
+                slots.set(slots.indexOf(slot), slotToAdd);
+                notifyDataSetChanged();
             }
         }
     }

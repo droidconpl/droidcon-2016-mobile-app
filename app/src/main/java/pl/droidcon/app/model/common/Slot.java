@@ -63,14 +63,6 @@ public class Slot {
         return slot;
     }
 
-    public static Slot ofDeletedSchedule(Schedule schedule){
-        Slot slot = new Slot();
-        slot.setType(Type.SESSION);
-        slot.setTitle(Type.SESSION.getDescription());
-        slot.setDateTime(schedule.getDateTime());
-        return slot;
-    }
-
     @Inject
     Resources resources;
 
