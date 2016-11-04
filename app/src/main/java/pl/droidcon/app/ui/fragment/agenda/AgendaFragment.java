@@ -21,6 +21,7 @@ import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
 import pl.droidcon.app.model.common.SessionDay;
 import pl.droidcon.app.model.db.SessionEntity;
+import pl.droidcon.app.model.db.SpeakerEntity;
 import pl.droidcon.app.model.ui.SwipeRefreshColorSchema;
 import pl.droidcon.app.ui.activity.SessionActivity;
 import pl.droidcon.app.ui.adapter.AgendaAdapter;
@@ -29,9 +30,9 @@ import pl.droidcon.app.ui.view.RecyclerItemClickListener;
 import pl.droidcon.app.wrapper.SnackbarWrapper;
 import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 
@@ -108,7 +109,13 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
     }
 
     private void getSessions() {
-        databaseManager.sessions(sessionDay)
+        Observable
+                .combineLatest(databaseManager.sessions(sessionDay), databaseManager.speakers(), new Func2<Result<SessionEntity>, Result<SpeakerEntity>, Result<SessionEntity>>() {
+                    @Override
+                    public Result<SessionEntity> call(Result<SessionEntity> sessionEntities, Result<SpeakerEntity> speakerEntities) {
+                        return sessionEntities;
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .compose(this.<Result<SessionEntity>>bindToLifecycle())
                 .flatMap(new Func1<Result<SessionEntity>, Observable<SessionEntity>>() {

@@ -14,6 +14,7 @@ import pl.droidcon.app.model.db.NotificationEntity;
 import pl.droidcon.app.model.db.ScheduleEntity;
 import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.db.SessionEntity;
+import pl.droidcon.app.model.db.SpeakerEntity;
 import rx.Observable;
 import rx.Single;
 import rx.functions.Func1;
@@ -35,6 +36,10 @@ public class DatabaseManager {
                 .select(SessionEntity.class)
                 .where(SessionEntity.DATE.between(beginDate, endOfDate))
                 .get().toSelfObservable();
+    }
+
+    public Observable<Result<SpeakerEntity>> speakers(){
+        return store.select(SpeakerEntity.class).get().toSelfObservable();
     }
 
     public Observable<Result<SessionEntity>> sessions(final Collection<Integer> sessionIds) {

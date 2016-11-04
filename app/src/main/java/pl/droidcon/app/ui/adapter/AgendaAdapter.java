@@ -46,7 +46,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<BaseSessionViewHolder> {
 
         @Override
         public boolean areContentsTheSame(SessionEntity oldItem, SessionEntity newItem) {
-            return oldItem.equals(newItem);
+            return oldItem.equals(newItem) && oldItem.getSpeakers().size() == newItem.getSpeakers().size();
         }
 
         @Override
