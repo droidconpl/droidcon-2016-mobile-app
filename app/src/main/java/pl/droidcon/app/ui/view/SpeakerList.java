@@ -12,7 +12,8 @@ import android.widget.LinearLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import pl.droidcon.app.model.api.Speaker;
+import pl.droidcon.app.model.db.Speaker;
+import pl.droidcon.app.model.db.SpeakerEntity;
 
 public class SpeakerList extends LinearLayout {
 
@@ -49,8 +50,8 @@ public class SpeakerList extends LinearLayout {
 
     private void showStubData() {
         List<Speaker> speakers = new ArrayList<>();
-        speakers.add(new Speaker());
-        speakers.add(new Speaker());
+        speakers.add(new SpeakerEntity());
+        speakers.add(new SpeakerEntity());
         setSpeakers(speakers, null);
     }
 

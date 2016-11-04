@@ -47,13 +47,18 @@ dependencies {
     compile 'org.glassfish:javax.annotation:10.0-b28'
     compile 'com.google.dagger:dagger:2.0.1'
 
+    compile 'io.requery:requery:1.0.1'
+    compile 'io.requery:requery-android:1.0.1' // for android
+    apt 'io.requery:requery-processor:1.0.1'   // use an APT plugin
+
     compile 'net.danlew:android.joda:2.8.2'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.squareup.okhttp:okhttp:2.5.0'
-    compile 'io.reactivex:rxandroid:1.0.1'
-    compile 'io.reactivex:rxjava:1.0.14'
-    compile 'io.realm:realm-android:0.82.2'
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.reactivex:rxjava:1.2.1'
+
+    compile 'com.trello:rxlifecycle-components:1.0'
 
     compile 'com.makeramen:roundedimageview:2.2.0'
     compile 'me.relex:circleindicator:1.1.5@aar'
@@ -63,21 +68,4 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile "org.robolectric:robolectric:3.0"
     testCompile "org.assertj:assertj-core:1.7.0"
-    androidTestCompile 'com.squareup.assertj:assertj-android:1.1.1'
-    androidTestCompile 'org.assertj:assertj-core:1.7.1'
-
-    androidTestCompile 'com.android.support:support-annotations:25.0.0'
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
-    androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2.2'
-    /**
-     * AccessibilityChecks
-     * CountingIdlingResource
-     * DrawerActions
-     * DrawerMatchers
-     * PickerActions (Time and Date picker)
-     * RecyclerViewActions
-     */
-    compile 'junit:junit:4.12'
-
 }

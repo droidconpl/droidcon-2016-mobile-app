@@ -7,29 +7,25 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.requery.query.Result;
 import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
-import pl.droidcon.app.database.DataObserver;
 import pl.droidcon.app.database.DatabaseManager;
 import pl.droidcon.app.factory.SlotFactory;
 import pl.droidcon.app.helper.UrlHelper;
-import pl.droidcon.app.model.api.Session;
-import pl.droidcon.app.model.common.Schedule;
 import pl.droidcon.app.model.common.SessionDay;
 import pl.droidcon.app.model.common.Slot;
+import pl.droidcon.app.model.db.ScheduleEntity;
 import pl.droidcon.app.ui.activity.SessionActivity;
 import pl.droidcon.app.ui.adapter.ScheduleAdapter;
 import pl.droidcon.app.ui.adapter.ScheduleViewHolder;
@@ -37,12 +33,10 @@ import pl.droidcon.app.ui.decoration.ScheduleItemDecoration;
 import pl.droidcon.app.ui.dialog.SessionChooserDialog;
 import pl.droidcon.app.wrapper.SnackbarWrapper;
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
@@ -80,12 +74,10 @@ public class ScheduleFragment extends Fragment implements ScheduleViewHolder.Sch
         super.onCreate(savedInstanceState);
         sessionDay = (SessionDay) getArguments().getSerializable(SESSION_DAY_KEY);
         DroidconInjector.get().inject(this);
-        databaseManager.registerDataObserver(scheduleDataObserver);
     }
 
     @Override
     public void onDestroy() {
-        databaseManager.unregisterDataObserver(scheduleDataObserver);
         super.onDestroy();
     }
 
@@ -123,39 +115,25 @@ public class ScheduleFragment extends Fragment implements ScheduleViewHolder.Sch
     }
 
     private void getSchedules() {
-        Subscription subscription = databaseManager.schedules(sessionDay)
-                .flatMap(new Func1<List<Schedule>, Observable<List<Session>>>() {
+        Subscription subscription = databaseManager
+                .schedules(sessionDay)
+                .flatMap(new Func1<Result<ScheduleEntity>, Observable<ScheduleEntity>>() {
                     @Override
-                    public Observable<List<Session>> call(List<Schedule> schedules) {
-                        List<Integer> ids = new ArrayList<>();
-                        for (Schedule schedule : schedules) {
-                            ids.add(schedule.getSessionId());
-                        }
-                        return databaseManager.sessions(ids);
+                    public Observable<ScheduleEntity> call(Result<ScheduleEntity> scheduleEntities) {
+                        return scheduleEntities.toObservable();
                     }
                 })
-                .flatMap(new Func1<List<Session>, Observable<List<Slot>>>() {
+                .flatMap(new Func1<ScheduleEntity, Observable<Slot>>() {
                     @Override
-                    public Observable<List<Slot>> call(final List<Session> sessions) {
-                        return Observable.create(new Observable.OnSubscribe<List<Slot>>() {
-                            @Override
-                            public void call(Subscriber<? super List<Slot>> subscriber) {
-                                List<Slot> slots = new ArrayList<>();
-                                for (Session session : sessions) {
-                                    slots.add(Slot.ofSession(session));
-                                }
-                                subscriber.onNext(slots);
-                            }
-                        });
+                    public Observable<Slot> call(ScheduleEntity scheduleEntity) {
+                        return Observable.just(Slot.ofSession(scheduleEntity.getSession()));
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<Slot>>() {
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Slot>() {
                     @Override
-                    public void call(List<Slot> slots) {
-                        scheduleAdapter.attachSessionSlots(slots);
-                        notifyAdapter();
+                    public void call(Slot slot) {
+                        scheduleAdapter.attachSessionSlots(slot);
                     }
                 });
         compositeSubscription.add(subscription);
@@ -171,33 +149,10 @@ public class ScheduleFragment extends Fragment implements ScheduleViewHolder.Sch
             } else {
                 SessionActivity.start(getContext(), slot.getSession());
             }
-        } else if(Slot.Type.BARCAMP == slot.getSlotType()){
+        } else if (Slot.Type.BARCAMP == slot.getSlotType()) {
             clickSubject.onNext(clickCounter++);
         }
     }
-
-    private void notifyAdapter() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                scheduleAdapter.notifyDataSetChanged();
-            }
-        });
-    }
-
-
-    private DataObserver<Schedule> scheduleDataObserver = new DataObserver<Schedule>(Schedule.class) {
-        @Override
-        public void onInsert(Schedule data) {
-            getSchedules();
-        }
-
-        @Override
-        public void onDelete(Schedule data) {
-            scheduleAdapter.removeScheduleFromSlots(data);
-            notifyAdapter();
-        }
-    };
 
 
     private void startResetTimer() {

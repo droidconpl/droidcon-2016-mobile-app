@@ -4,7 +4,8 @@ package pl.droidcon.app.ui.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import pl.droidcon.app.model.api.Session;
+import pl.droidcon.app.model.db.Session;
+import pl.droidcon.app.model.db.SessionEntity;
 
 public abstract class BaseSessionViewHolder extends RecyclerView.ViewHolder {
 
@@ -12,7 +13,7 @@ public abstract class BaseSessionViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
     }
 
-    abstract public void attachSession(Session session);
+    abstract public void attachSession(SessionEntity session);
 
     abstract public Session getSession();
 }

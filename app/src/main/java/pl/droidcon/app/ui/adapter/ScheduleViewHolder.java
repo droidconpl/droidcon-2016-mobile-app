@@ -20,9 +20,9 @@ import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.helper.DateTimePrinter;
 import pl.droidcon.app.helper.UrlHelper;
-import pl.droidcon.app.model.api.Session;
 import pl.droidcon.app.model.common.Room;
 import pl.droidcon.app.model.common.Slot;
+import pl.droidcon.app.model.db.Session;
 
 
 public class ScheduleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -127,13 +127,13 @@ public class ScheduleViewHolder extends RecyclerView.ViewHolder implements View.
         image.setImageDrawable(null);
     }
 
-    private void setRoomName(@Nullable Session session){
-        if(session == null){
+    private void setRoomName(@Nullable Session session) {
+        if (session == null) {
             roomName.setText(null);
             return;
         }
 
-        int stringRes = Room.valueOfRoomId(session.roomId).getStringRes();
+        int stringRes = Room.valueOfRoomId(session.getRoomId()).getStringRes();
         String room = resources.getString(stringRes);
         roomName.setText(room);
     }
@@ -143,8 +143,8 @@ public class ScheduleViewHolder extends RecyclerView.ViewHolder implements View.
     }
 
     private void setSessionPhoto(@Nullable Session session) {
-        if (session != null && !session.getSpeakersList().isEmpty()) {
-            String url = UrlHelper.url(session.getSpeakersList().get(0).imageUrl);
+        if (session != null && !session.getSpeakers().isEmpty()) {
+            String url = UrlHelper.url(session.getSpeakers().get(0).getImageUrl());
             Picasso.with(itemView.getContext())
                     .load(url)
                     .resize(512, 512)

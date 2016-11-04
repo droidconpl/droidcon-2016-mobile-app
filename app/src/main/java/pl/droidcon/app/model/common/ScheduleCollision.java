@@ -1,5 +1,6 @@
 package pl.droidcon.app.model.common;
 
+import pl.droidcon.app.model.db.Schedule;
 
 import android.support.annotation.Nullable;
 

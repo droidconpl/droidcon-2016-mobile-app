@@ -5,11 +5,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.joda.time.DateTime;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import pl.droidcon.app.R;
 import pl.droidcon.app.helper.DateTimePrinter;
-import pl.droidcon.app.model.api.Session;
+import pl.droidcon.app.model.db.Session;
+import pl.droidcon.app.model.db.SessionEntity;
 
 public class AgendaNonSessionLargeViewHolder extends BaseSessionViewHolder {
 
@@ -30,14 +33,14 @@ public class AgendaNonSessionLargeViewHolder extends BaseSessionViewHolder {
     }
 
     @Override
-    public void attachSession(Session session) {
+    public void attachSession(SessionEntity session) {
         this.session = session;
 
-        String title = session.title;
+        String title = session.getTitle();
 
         sessionTitle.setText(title);
-        sessionDate.setText(DateTimePrinter.toPrintableStringWithDay(session.date));
-        String lowerCaseTitle = session.title.toLowerCase();
+        sessionDate.setText(DateTimePrinter.toPrintableStringWithDay(new DateTime(session.getDate())));
+        String lowerCaseTitle = session.getTitle().toLowerCase();
         if (lowerCaseTitle.startsWith("registration") || lowerCaseTitle.startsWith("opening") ||
                 lowerCaseTitle.startsWith("closing") || lowerCaseTitle.startsWith("barcamp")) {
             icon.setImageResource(R.drawable.ic_icon_droid_large);

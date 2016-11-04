@@ -11,8 +11,8 @@ import android.util.Log;
 
 import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
-import pl.droidcon.app.model.api.Session;
-import pl.droidcon.app.model.common.SessionNotification;
+import pl.droidcon.app.model.db.Session;
+import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.ui.activity.SessionActivity;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -34,20 +34,21 @@ public class ReminderReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, Intent intent) {
         Log.d(TAG, "received");
-        final Session session = (Session) intent.getExtras().get(SESSION_KEY);
+        final SessionEntity session = (SessionEntity) intent.getExtras().get(SESSION_KEY);
         if (session == null) {
             Log.e(TAG, "Session received null");
             return;
         }
 
         DroidconInjector.get().databaseManager()
-                .removeFromNotification(SessionNotification.of(session))
+                // TODO: this session object needs to be fetched from DB ...
+                .removeFromNotification(session)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Boolean>() {
                     @Override
                     public void call(Boolean aBoolean) {
-                        Log.d(TAG, "Removed remind notification for session " + session.title);
+                        Log.d(TAG, "Removed remind notification for session " + session.getTitle());
                         if (aBoolean) {
                             showNotification(context, session);
                         }
@@ -55,21 +56,21 @@ public class ReminderReceiver extends BroadcastReceiver {
                 });
     }
 
-    private void showNotification(Context context, Session session) {
+    private void showNotification(Context context, SessionEntity session) {
         Intent sessionIntent = SessionActivity.getSessionIntent(context, session);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, session.id, sessionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, session.getId(), sessionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
         Notification notification = builder.setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(context.getString(R.string.app_name))
-                .setContentText(context.getString(R.string.received_session_notification, session.title))
+                .setContentText(context.getString(R.string.received_session_notification, session.getTitle()))
                 .setContentIntent(pendingIntent)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setAutoCancel(true)
                 .build();
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(session.id, notification);
+        notificationManager.notify(session.getId(), notification);
     }
 }

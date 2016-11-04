@@ -6,15 +6,12 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
-import pl.droidcon.app.model.api.Session;
-import pl.droidcon.app.model.common.SessionNotification;
-import pl.droidcon.app.model.db.RealmSessionNotification;
+import pl.droidcon.app.model.db.NotificationEntity;
+import pl.droidcon.app.model.db.Session;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -51,26 +48,26 @@ public class ReminderPersistenceImpl implements ReminderPersistence {
 
     @Override
     public void addSessionToReminding(@NonNull final Session session) {
-        databaseManager.addToNotification(SessionNotification.of(session))
+        databaseManager.addToNotification(session)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RealmSessionNotification>() {
+                .subscribe(new Action1<NotificationEntity>() {
                     @Override
-                    public void call(RealmSessionNotification sessionNotification) {
-                        Log.d(TAG, "Added session " + session.title + " to notifications");
+                    public void call(NotificationEntity notificationEntity) {
+                        Log.d(TAG, "Added session " + session.getTitle() + " to notifications");
                     }
                 });
     }
 
     @Override
     public void removeSessionFromReminding(@NonNull final Session session) {
-        databaseManager.removeFromNotification(SessionNotification.of(session))
+        databaseManager.removeFromNotification(session)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Boolean>() {
                     @Override
                     public void call(Boolean aBoolean) {
-                        Log.d(TAG, "Removed notification for session " + session.title);
+                        Log.d(TAG, "Removed notification for session " + session.getTitle());
                     }
                 });
     }
@@ -80,20 +77,21 @@ public class ReminderPersistenceImpl implements ReminderPersistence {
         databaseManager.notifications()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .subscribe(new Action1<List<SessionNotification>>() {
+
+                .subscribe(new Subscriber<NotificationEntity>() {
                     @Override
-                    public void call(List<SessionNotification> sessionNotifications) {
-                        Log.d(TAG, "sessions notification size=" + sessionNotifications.size());
-                        for (SessionNotification sessionNotification : sessionNotifications) {
-                            databaseManager.session(sessionNotification.getSessionId())
-                                    .subscribe(new Action1<Session>() {
-                                        @Override
-                                        public void call(Session session) {
-                                            topSubscriber.onNext(session);
-                                        }
-                                    });
-                        }
+                    public void onCompleted() {
                         topSubscriber.onCompleted();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(NotificationEntity notificationEntity) {
+                        topSubscriber.onNext(notificationEntity.getSession());
                     }
                 });
     }

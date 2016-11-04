@@ -2,7 +2,7 @@ package pl.droidcon.app.reminder;
 
 import android.support.annotation.NonNull;
 
-import pl.droidcon.app.model.api.Session;
+import pl.droidcon.app.model.db.Session;
 import rx.Subscriber;
 
 public interface ReminderPersistence {

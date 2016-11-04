@@ -1,15 +1,15 @@
 package pl.droidcon.app.ui.adapter;
 
 import android.support.annotation.NonNull;
+import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.util.SortedListAdapterCallback;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.List;
-
 import pl.droidcon.app.R;
-import pl.droidcon.app.model.api.Session;
+import pl.droidcon.app.model.db.SessionEntity;
 
 public class AgendaAdapter extends RecyclerView.Adapter<BaseSessionViewHolder> {
 
@@ -37,10 +37,29 @@ public class AgendaAdapter extends RecyclerView.Adapter<BaseSessionViewHolder> {
         }
     }
 
-    private List<Session> sessions;
 
-    public AgendaAdapter(List<Session> sessions) {
-        this.sessions = sessions;
+    private SortedList<SessionEntity> sessions = new SortedList<>(SessionEntity.class, new SortedListAdapterCallback<SessionEntity>(this) {
+        @Override
+        public int compare(SessionEntity o1, SessionEntity o2) {
+            return (int) (o1.getDate().getTime() - o2.getDate().getTime());
+        }
+
+        @Override
+        public boolean areContentsTheSame(SessionEntity oldItem, SessionEntity newItem) {
+            return oldItem.equals(newItem) && oldItem.getSpeakers().size() == newItem.getSpeakers().size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(SessionEntity item1, SessionEntity item2) {
+            return item1.getId() == item2.getId();
+        }
+    });
+
+    public AgendaAdapter() {
+    }
+
+    public void add(SessionEntity sessionEntity) {
+        sessions.add(sessionEntity);
     }
 
     @Override
@@ -64,11 +83,11 @@ public class AgendaAdapter extends RecyclerView.Adapter<BaseSessionViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        Session sessionByPosition = getSessionByPosition(position);
-        if (!sessionByPosition.singleItem) {
+        SessionEntity sessionByPosition = getSessionByPosition(position);
+        if (!sessionByPosition.isSingleItem()) {
             return ViewType.NORMAL_SESSION.getViewType();
         }
-        if (sessionByPosition.getSpeakersList().isEmpty()) {
+        if (sessionByPosition.getSpeakers().isEmpty()) {
             return ViewType.LARGE_NON_SESSION.getViewType();
         } else {
             return ViewType.LARGE_SESSION.getViewType();
@@ -86,7 +105,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<BaseSessionViewHolder> {
     }
 
     @NonNull
-    public Session getSessionByPosition(int position) {
+    public SessionEntity getSessionByPosition(int position) {
         return sessions.get(position);
     }
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -23,34 +24,41 @@ import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 import com.squareup.picasso.Picasso;
 
+import org.joda.time.DateTime;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.requery.query.Result;
 import me.relex.circleindicator.CircleIndicator;
 import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
 import pl.droidcon.app.helper.DateTimePrinter;
 import pl.droidcon.app.helper.UrlHelper;
-import pl.droidcon.app.model.api.Session;
-import pl.droidcon.app.model.api.Speaker;
 import pl.droidcon.app.model.common.Room;
-import pl.droidcon.app.model.common.Schedule;
 import pl.droidcon.app.model.common.ScheduleCollision;
-import pl.droidcon.app.model.db.RealmSchedule;
+import pl.droidcon.app.model.db.Schedule;
+import pl.droidcon.app.model.db.ScheduleEntity;
+import pl.droidcon.app.model.db.Session;
+import pl.droidcon.app.model.db.SessionEntity;
+import pl.droidcon.app.model.db.Speaker;
 import pl.droidcon.app.reminder.SessionReminder;
 import pl.droidcon.app.ui.dialog.FullScreenPhotoDialog;
 import pl.droidcon.app.ui.dialog.ScheduleOverlapDialog;
 import pl.droidcon.app.ui.dialog.SpeakerDialog;
 import pl.droidcon.app.ui.view.SpeakerList;
 import pl.droidcon.app.wrapper.SnackbarWrapper;
+import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -59,6 +67,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
     private static final String TAG = SessionActivity.class.getSimpleName();
 
     private static final String SESSION_EXTRA = "session";
+//    private static final String SPEAKERS_EXTRA = "speakers";
 
     public static void start(Context context, Session session) {
         Intent intent = getSessionIntent(context, session);
@@ -67,11 +76,13 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
 
     public static Intent getSessionIntent(Context context, Session session) {
         Intent intent = new Intent(context, SessionActivity.class);
-        intent.putExtra(SESSION_EXTRA, session);
+        intent.putExtra(SESSION_EXTRA, session.getId());
+//        intent.putParcelableArrayListExtra(SPEAKERS_EXTRA, new ArrayList<Parcelable>(session.getSpeakers()));
         return intent;
     }
 
-    private Session session;
+    private SessionEntity session;
+    List<Speaker> speakersList;
 
     @Bind(R.id.speaker_photos)
     ViewPager speakerPhotos;
@@ -111,7 +122,9 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
         DroidconInjector.get().inject(this);
         ButterKnife.bind(this);
         setupToolbarBack(toolbar);
-        session = getIntent().getExtras().getParcelable(SESSION_EXTRA);
+        int sessionId = getIntent().getExtras().getInt(SESSION_EXTRA);
+        session = DroidconInjector.get().getDatabase().select(SessionEntity.class).where(SessionEntity.ID.eq(sessionId)).get().first();
+        speakersList = session.getSpeakers();
         compositeSubscription = new CompositeSubscription();
         fillDetails();
         checkIsFavourite();
@@ -125,18 +138,17 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
 
     private void fillDetails() {
         setToolbarTitle(null);
-        title.setText(session.title);
-        List<Speaker> speakersList = session.getSpeakersList();
+        title.setText(session.getTitle());
         speakerPhotos.setAdapter(new SpeakerPhotosAdapter(this, speakersList));
-        description.setText(Html.fromHtml(session.description));
-        date.setText(DateTimePrinter.toPrintableStringWithDay(session.date));
+        description.setText(Html.fromHtml(session.getDescription()));
+        date.setText(DateTimePrinter.toPrintableStringWithDay(new DateTime(session.getDate())));
         indicator.setViewPager(speakerPhotos);
         if (speakersList.size() == 1) {
             indicator.setVisibility(View.INVISIBLE);
         }
         speakerListView.setSpeakers(speakersList, this);
         favouriteButton.setOnClickListener(favouriteClickListener);
-        int stringRes = Room.valueOfRoomId(session.roomId).getStringRes();
+        int stringRes = Room.valueOfRoomId(session.getRoomId()).getStringRes();
         sessionRoom.setText(stringRes);
     }
 
@@ -148,6 +160,18 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
     private void checkIsFavourite() {
         Subscription subscription = databaseManager.isFavourite(session)
                 .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<Result<ScheduleEntity>, Observable<ScheduleEntity>>() {
+                    @Override
+                    public Observable<ScheduleEntity> call(Result<ScheduleEntity> scheduleEntities) {
+                        return scheduleEntities.toObservable();
+                    }
+                })
+                .flatMap(new Func1<ScheduleEntity, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(ScheduleEntity scheduleEntity) {
+                        return Observable.just(scheduleEntity != null);
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Boolean>() {
                     @Override
@@ -182,10 +206,30 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
     private void checkAndAddToFavourite() {
         Subscription subscription = databaseManager.canSessionBeSchedule(session)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<ScheduleCollision>() {
+                .flatMap(new Func1<ScheduleEntity, Observable<ScheduleCollision>>() {
                     @Override
-                    public void call(ScheduleCollision scheduleCollision) {
+                    public Observable<ScheduleCollision> call(ScheduleEntity scheduleEntity) {
+                        if (scheduleEntity == null) {
+                            return Observable.just(new ScheduleCollision(null, false));
+                        } else {
+                            return Observable.just(new ScheduleCollision(scheduleEntity, scheduleEntity.getSession().getId() != session.getId()));
+                        }
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ScheduleCollision>() {
+                    @Override
+                    public void onCompleted() {
+                        addToFavourites();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(ScheduleCollision scheduleCollision) {
                         if (scheduleCollision.isCollision()) {
                             getCollisionSessionAndShowOverlapDialog(scheduleCollision.getSchedule());
                         } else {
@@ -197,7 +241,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
     }
 
     private void getCollisionSessionAndShowOverlapDialog(Schedule schedule) {
-        Subscription subscription = databaseManager.session(schedule.getSessionId())
+        Subscription subscription = databaseManager.session(schedule.getSession().getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Session>() {
@@ -213,7 +257,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
         Subscription subscription = databaseManager.addToFavourite(session)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<RealmSchedule>() {
+                .subscribe(new Subscriber<ScheduleEntity>() {
                     @Override
                     public void onCompleted() {
                         Log.d(TAG, "on completed");
@@ -225,7 +269,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
                     }
 
                     @Override
-                    public void onNext(RealmSchedule realmSchedule) {
+                    public void onNext(ScheduleEntity realmSchedule) {
                         if (realmSchedule != null) {
                             sessionReminder.addSessionToReminding(session);
                             setRightFloatingActionButtonAction(true);
@@ -339,7 +383,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
         public Object instantiateItem(ViewGroup container, int position) {
             View itemView = LayoutInflater.from(context).inflate(R.layout.speaker_pager_item, container, false);
             ImageView imageView = (ImageView) itemView.findViewById(R.id.speaker_photo);
-            String url = UrlHelper.url(speakers.get(position).imageUrl);
+            String url = UrlHelper.url(speakers.get(position).getImageUrl());
             Picasso.with(context)
                     .load(url)
                     .into(imageView);

@@ -11,7 +11,7 @@ import javax.inject.Inject;
 
 import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
-import pl.droidcon.app.model.api.Session;
+import pl.droidcon.app.model.db.Session;
 
 public class Slot {
 
@@ -57,17 +57,9 @@ public class Slot {
     public static Slot ofSession(Session session) {
         Slot slot = new Slot();
         slot.setType(Type.SESSION);
-        slot.setTitle(session.title);
-        slot.setDateTime(session.date);
+        slot.setTitle(session.getTitle());
+        slot.setDateTime(new DateTime(session.getDate()));
         slot.setSession(session);
-        return slot;
-    }
-
-    public static Slot ofDeletedSchedule(Schedule schedule){
-        Slot slot = new Slot();
-        slot.setType(Type.SESSION);
-        slot.setTitle(Type.SESSION.getDescription());
-        slot.setDateTime(schedule.getDateTime());
         return slot;
     }
 

@@ -9,8 +9,9 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import pl.droidcon.app.helper.UrlHelper;
-import pl.droidcon.app.model.api.Session;
-import pl.droidcon.app.model.api.Speaker;
+import pl.droidcon.app.model.db.Session;
+import pl.droidcon.app.model.db.SessionEntity;
+import pl.droidcon.app.model.db.Speaker;
 
 public class SessionListItem extends SimpleListItem {
 
@@ -55,16 +56,16 @@ public class SessionListItem extends SimpleListItem {
         this.sessionClickListener = sessionClickListener;
     }
 
-    public void setSession(Session session) {
+    public void setSession(SessionEntity session) {
         this.session = session;
-        setTitle(session.title);
-        setDescription(session.description);
-        if (session.getSpeakersList().isEmpty()) {
+        setTitle(session.getTitle());
+        setDescription(session.getDescription());
+        if (session.getSpeakers().isEmpty()) {
             return;
         }
-        Speaker speaker = session.getSpeakersList().get(0);
-        if (!TextUtils.isEmpty(speaker.imageUrl)) {
-            setImage(UrlHelper.url(speaker.imageUrl));
+        Speaker speaker = session.getSpeakers().get(0);
+        if (!TextUtils.isEmpty(speaker.getImageUrl())) {
+            setImage(UrlHelper.url(speaker.getImageUrl()));
         }
     }
 

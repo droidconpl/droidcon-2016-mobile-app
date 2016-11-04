@@ -7,7 +7,7 @@ import android.util.Log;
 import javax.inject.Inject;
 
 import pl.droidcon.app.dagger.DroidconInjector;
-import pl.droidcon.app.model.api.Session;
+import pl.droidcon.app.model.db.Session;
 import rx.Subscriber;
 
 public class SessionReminderImpl implements SessionReminder {
