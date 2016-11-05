@@ -2,7 +2,6 @@ package pl.droidcon.app.ui.fragment;
 
 
 import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
 
 import com.trello.rxlifecycle.components.support.RxFragment;
 

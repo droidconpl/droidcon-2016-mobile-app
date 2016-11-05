@@ -15,17 +15,19 @@ import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
 import pl.droidcon.app.model.db.SpeakerEntity;
-import pl.droidcon.app.ui.decoration.SpacesItemDecoration;
+import pl.droidcon.app.ui.dialog.SpeakerDialog;
 import pl.droidcon.app.ui.fragment.BaseFragment;
+import pl.droidcon.app.ui.view.RecyclerItemClickListener;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class SpeakersFragment extends BaseFragment {
+public class SpeakersFragment extends BaseFragment implements RecyclerItemClickListener.OnItemClickListener {
 
     public static final String TAG = SpeakersFragment.class.getSimpleName();
+    private SpeakersAdapter speakersAdapter;
 
     public static SpeakersFragment newInstance() {
         return new SpeakersFragment();
@@ -44,7 +46,7 @@ public class SpeakersFragment extends BaseFragment {
 
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
-        final SpeakersAdapter speakersAdapter = new SpeakersAdapter();
+        speakersAdapter = new SpeakersAdapter();
         GridLayoutManager mLayoutManager = new GridLayoutManager(view.getContext(), 2);
 
         recyclerView.setLayoutManager(mLayoutManager);
@@ -55,7 +57,7 @@ public class SpeakersFragment extends BaseFragment {
 //        recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.addItemDecoration(new SpacesItemDecoration((int) getResources().getDimension(R.dimen.list_element_margin)));
 
-
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), this));
         recyclerView.setAdapter(speakersAdapter);
 
         DatabaseManager store = DroidconInjector.get().databaseManager();
@@ -101,6 +103,11 @@ public class SpeakersFragment extends BaseFragment {
         return TAG;
     }
 
+    @Override
+    public void onItemClick(View view, int position) {
+        SpeakerEntity speakerEntity = speakersAdapter.getSpeakerByPosition(position);
+        SpeakerDialog.newInstance(speakerEntity).show(getFragmentManager(), TAG);;
+    }
 
     public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
         private int space;

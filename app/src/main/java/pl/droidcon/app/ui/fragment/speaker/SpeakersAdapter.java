@@ -1,6 +1,7 @@
 package pl.droidcon.app.ui.fragment.speaker;
 
 
+import android.support.annotation.NonNull;
 import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.util.SortedListAdapterCallback;
@@ -56,6 +57,11 @@ public class SpeakersAdapter extends RecyclerView.Adapter<SpeakersAdapter.Speake
     @Override
     public int getItemCount() {
         return speakers.size();
+    }
+
+    @NonNull
+    public SpeakerEntity getSpeakerByPosition(int position) {
+        return speakers.get(position);
     }
 
     static class SpeakerHolder extends RecyclerView.ViewHolder {
