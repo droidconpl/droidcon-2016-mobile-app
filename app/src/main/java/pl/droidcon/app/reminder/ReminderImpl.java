@@ -27,9 +27,12 @@ public class ReminderImpl implements Reminder {
 
     @Override
     public void setRemind(@NonNull Session session) {
-        PendingIntent pendingIntent = createIntentForRemind(session);
-        DateTime now = DateTime.now();
-        DateTime sessionDate = now.plusSeconds(10);//new DateTime(session.getDate()).minusMinutes(1);//now.plusSeconds(10);//
+        final PendingIntent pendingIntent = createIntentForRemind(session);
+
+        final DateTime now = DateTime.now();
+
+        final DateTime sessionDate = new DateTime(session.getDate()).minusMinutes(1);
+
         if (!sessionDate.isAfter(now)) {
             Log.w(TAG, "Not setting reminder for passed session");
             return;
