@@ -100,13 +100,12 @@ public class SpeakersFragment extends BaseFragment implements RecyclerItemClickL
     public void onItemClick(View view, int position) {
         SpeakerEntity speakerEntity = speakersAdapter.getSpeakerByPosition(position);
         SpeakerDialog.newInstance(speakerEntity).show(getFragmentManager(), TAG);
-        ;
     }
 
-    public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
+    class SpacesItemDecoration extends RecyclerView.ItemDecoration {
         private int space;
 
-        public SpacesItemDecoration(int space) {
+        SpacesItemDecoration(int space) {
             this.space = space;
         }
 
