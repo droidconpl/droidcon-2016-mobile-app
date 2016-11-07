@@ -19,7 +19,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
 
         if (actionBar != null) {
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
