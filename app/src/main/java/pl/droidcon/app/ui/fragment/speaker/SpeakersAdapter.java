@@ -23,7 +23,7 @@ public class SpeakersAdapter extends RecyclerView.Adapter<SpeakersAdapter.Speake
     private SortedList<SpeakerEntity> speakers = new SortedList<>(SpeakerEntity.class, new SortedListAdapterCallback<SpeakerEntity>(this) {
         @Override
         public int compare(SpeakerEntity o1, SpeakerEntity o2) {
-            return o1.getId() - o2.getId();
+            return String.CASE_INSENSITIVE_ORDER.compare(o1.getFirstName(), o2.getFirstName());
         }
 
         @Override
