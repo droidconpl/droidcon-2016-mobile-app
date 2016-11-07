@@ -3,7 +3,6 @@ package pl.droidcon.app.ui.fragment.speaker;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -44,17 +43,11 @@ public class SpeakersFragment extends BaseFragment implements RecyclerItemClickL
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.speakers_list);
 
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-
         speakersAdapter = new SpeakersAdapter();
-        GridLayoutManager mLayoutManager = new GridLayoutManager(view.getContext(), 2);
 
+        GridLayoutManager mLayoutManager = new GridLayoutManager(view.getContext(), 2);
         recyclerView.setLayoutManager(mLayoutManager);
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), mLayoutManager.getOrientation());
-//        recyclerView.addItemDecoration(new SpacesItemDecoration(view.getContext().getResources().getDimension(R.dimen.list_element_margin)));
-
-//        recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.addItemDecoration(new SpacesItemDecoration((int) getResources().getDimension(R.dimen.list_element_margin)));
 
         recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), this));
@@ -106,7 +99,8 @@ public class SpeakersFragment extends BaseFragment implements RecyclerItemClickL
     @Override
     public void onItemClick(View view, int position) {
         SpeakerEntity speakerEntity = speakersAdapter.getSpeakerByPosition(position);
-        SpeakerDialog.newInstance(speakerEntity).show(getFragmentManager(), TAG);;
+        SpeakerDialog.newInstance(speakerEntity).show(getFragmentManager(), TAG);
+        ;
     }
 
     public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
@@ -124,7 +118,7 @@ public class SpeakersFragment extends BaseFragment implements RecyclerItemClickL
 
             // Add top margin only for the first item to avoid double space between items
 //            if(parent.getChildPosition(view) == 0)
-                outRect.top = space;
+            outRect.top = space;
         }
     }
 }
