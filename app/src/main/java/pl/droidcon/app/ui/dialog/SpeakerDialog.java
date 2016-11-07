@@ -23,7 +23,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.joanzapata.iconify.widget.IconButton;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
