@@ -19,8 +19,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.joanzapata.iconify.IconDrawable;
-import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
@@ -186,13 +184,13 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
     }
 
     private void setRightFloatingActionButtonAction(boolean isFavourite) {
-        IconDrawable iconDrawable;
+        int favoriteDrawable;
         if (isFavourite) {
-            iconDrawable = new IconDrawable(this, FontAwesomeIcons.fa_heart);
+            favoriteDrawable = R.drawable.ic_favorite;
         } else {
-            iconDrawable = new IconDrawable(this, FontAwesomeIcons.fa_heart_o);
+            favoriteDrawable = R.drawable.ic_favorite_border;
         }
-        favouriteButton.setImageDrawable(iconDrawable.colorRes(R.color.primaryColor).sizeDp(24));
+        favouriteButton.setImageResource(favoriteDrawable);
         favouriteClickListener.alreadyFavourite = isFavourite;
     }
 

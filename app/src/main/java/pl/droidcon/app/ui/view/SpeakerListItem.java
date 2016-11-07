@@ -54,7 +54,7 @@ public class SpeakerListItem extends SimpleListItem {
     //only stub data
     private void showStubData() {
         setDescription("Stub data with very long text to display. It should ellipsize on the end. Max lines set to 3");
-        description.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_settings_black_24dp, 0, 0, 0);
+        description.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_settings, 0, 0, 0);
     }
 
     public void setSpeakerItemClickListener(@Nullable SpeakerList.SpeakerItemClickListener speakerItemClickListener) {
