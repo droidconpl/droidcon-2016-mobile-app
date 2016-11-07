@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -20,13 +19,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.joanzapata.iconify.IconDrawable;
-import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -158,24 +154,19 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
     }
 
     private void checkIsFavourite() {
-        Subscription subscription = databaseManager.isFavourite(session)
+        final Subscription subscription = databaseManager.isFavourite(session)
+                .map(new Func1<Result<ScheduleEntity>, Boolean>() {
+                    @Override
+                    public Boolean call(Result<ScheduleEntity> scheduleEntities) {
+                        return !(scheduleEntities == null || scheduleEntities.toList().isEmpty());
+                    }
+                })
                 .subscribeOn(Schedulers.io())
-                .flatMap(new Func1<Result<ScheduleEntity>, Observable<ScheduleEntity>>() {
-                    @Override
-                    public Observable<ScheduleEntity> call(Result<ScheduleEntity> scheduleEntities) {
-                        return scheduleEntities.toObservable();
-                    }
-                })
-                .flatMap(new Func1<ScheduleEntity, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(ScheduleEntity scheduleEntity) {
-                        return Observable.just(scheduleEntity != null);
-                    }
-                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Boolean>() {
                     @Override
                     public void onCompleted() {
+
                     }
 
                     @Override
@@ -188,17 +179,18 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
                         setRightFloatingActionButtonAction(isFavourite);
                     }
                 });
+
         compositeSubscription.add(subscription);
     }
 
     private void setRightFloatingActionButtonAction(boolean isFavourite) {
-        IconDrawable iconDrawable;
+        int favoriteDrawable;
         if (isFavourite) {
-            iconDrawable = new IconDrawable(this, FontAwesomeIcons.fa_heart);
+            favoriteDrawable = R.drawable.ic_favorite;
         } else {
-            iconDrawable = new IconDrawable(this, FontAwesomeIcons.fa_heart_o);
+            favoriteDrawable = R.drawable.ic_favorite_border;
         }
-        favouriteButton.setImageDrawable(iconDrawable.colorRes(R.color.primaryColor).sizeDp(24));
+        favouriteButton.setImageResource(favoriteDrawable);
         favouriteClickListener.alreadyFavourite = isFavourite;
     }
 

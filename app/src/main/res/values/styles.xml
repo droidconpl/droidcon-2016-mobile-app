@@ -126,14 +126,13 @@
 
     <style name="IconButton">
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">50dp</item>
-        <item name="android:layout_margin">0dp</item>
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:background">@android:color/transparent</item>
-        <item name="android:textColor">@color/iconify_selector</item>
-        <item name="android:padding">0dp</item>
         <item name="android:paddingStart">@dimen/list_element_margin</item>
         <item name="android:paddingLeft">@dimen/list_element_margin</item>
         <item name="android:textSize">@dimen/icon_button_size</item>
+        <item name="android:tint">@color/iconify_selector</item>
+        <item name="android:padding">16dp</item>
     </style>
 
     <style name="IconButton.First">
@@ -150,6 +149,14 @@
         <item name="android:textColor">@color/primaryColor</item>
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
         <item name="android:textSize">@dimen/agenda_title_text_size</item>
+    </style>
+
+    <style name="SpeakerTitle" parent="AgendaTitle">
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginRight">0dp</item>
+        <item name="android:layout_marginLeft">0dp</item>
+        <item name="android:textSize">@dimen/speakers_title_text_size</item>
+        <item name="android:background">@color/element_background3</item>
     </style>
     
     <style name="AgendaDate">

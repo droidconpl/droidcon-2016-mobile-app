@@ -16,12 +16,13 @@ import pl.droidcon.app.ui.fragment.BaseFragment;
 import pl.droidcon.app.ui.fragment.MapAndInfoFragment;
 import pl.droidcon.app.ui.fragment.agenda.AgendaMainFragment;
 import pl.droidcon.app.ui.fragment.schedule.ScheduleMainFragment;
+import pl.droidcon.app.ui.fragment.speaker.SpeakersFragment;
 
 public class DrawerFragmentFactory {
 
     private static final String CURRENT_FRAGMENT = "current_fragment";
 
-    private static final int FRAGMENTS_SIZE = 5;
+    private static final int FRAGMENTS_SIZE = 6;
 
     private Map<String, BaseFragment> baseFragmentMap = new HashMap<>(FRAGMENTS_SIZE);
 
@@ -72,6 +73,9 @@ public class DrawerFragmentFactory {
             case R.id.drawer_about:
                 fragment = getFragment(AboutFragment.TAG);
                 break;
+            case R.id.drawer_speakers:
+                fragment = getFragment(SpeakersFragment.TAG);
+                break;
             default:
                 throw new UnsupportedOperationException("Unsupported fragment menuId=" + menuItemId);
         }
@@ -80,6 +84,7 @@ public class DrawerFragmentFactory {
 
     private void createFragments() {
         putFragment(AgendaMainFragment.TAG, AgendaMainFragment.newInstance());
+        putFragment(SpeakersFragment.TAG, SpeakersFragment.newInstance());
         putFragment(ScheduleMainFragment.TAG, ScheduleMainFragment.newInstance());
         putFragment(MapAndInfoFragment.TAG, MapAndInfoFragment.newInstance());
         putFragment(AboutFragment.TAG, AboutFragment.newInstance());
@@ -88,6 +93,9 @@ public class DrawerFragmentFactory {
     private void createFragments(@NonNull Bundle savedState, @NonNull FragmentManager fragmentManager) {
         BaseFragment savedAgendaMainFragment = getSavedFragment(fragmentManager, savedState, AgendaMainFragment.TAG);
         BaseFragment agendaMainFragment = savedAgendaMainFragment == null ? AgendaMainFragment.newInstance() : savedAgendaMainFragment;
+
+        BaseFragment savedSpeakersFragment = getSavedFragment(fragmentManager, savedState, SpeakersFragment.TAG);
+        BaseFragment speakersFragment = savedSpeakersFragment == null ? SpeakersFragment.newInstance() : savedSpeakersFragment;
 
         BaseFragment savedFavouritesFragment = getSavedFragment(fragmentManager, savedState, ScheduleMainFragment.TAG);
         BaseFragment favouritesFragment = savedFavouritesFragment == null ? ScheduleMainFragment.newInstance() : savedFavouritesFragment;
@@ -99,6 +107,7 @@ public class DrawerFragmentFactory {
         BaseFragment aboutFragment = savedAboutFragment == null ? AboutFragment.newInstance() : savedAboutFragment;
 
         putFragment(AgendaMainFragment.TAG, agendaMainFragment);
+        putFragment(SpeakersFragment.TAG, speakersFragment);
         putFragment(ScheduleMainFragment.TAG, favouritesFragment);
         putFragment(MapAndInfoFragment.TAG, mapAndInfoFragment);
         putFragment(AboutFragment.TAG, aboutFragment);

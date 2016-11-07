@@ -1,7 +1,7 @@
 <resources>
     <dimen name="screen_edge_margin">16dp</dimen>
 
-    <dimen name="list_element_margin">8dp</dimen>
+    <dimen name="list_element_margin">4dp</dimen>
 
     <dimen name="list_item_height">72dp</dimen>
     <dimen name="list_item_expanded_height">200dp</dimen>
@@ -14,6 +14,7 @@
     <dimen name="agenda_element_height">160dp</dimen>
 
     <dimen name="agenda_title_text_size">14sp</dimen>
+    <dimen name="speakers_title_text_size">16sp</dimen>
     <dimen name="agenda_date_text_size">13sp</dimen>
     <dimen name="speaker_photo_avatar_size">64px</dimen>
     <dimen name="icon_button_size">24sp</dimen>
