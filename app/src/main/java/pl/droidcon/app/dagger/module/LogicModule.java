@@ -29,43 +29,52 @@ public class LogicModule {
 
     @Provides
     @Singleton
-    public DataSubscription provideDatabaseSubscription() {
+    DataSubscription provideDatabaseSubscription() {
         return new DataSubscription();
     }
 
     @Singleton
     @Provides
-    public DatabaseManager provideDatabaseManager(SingleEntityStore<Persistable> store) {
+    DatabaseManager provideDatabaseManager(SingleEntityStore<Persistable> store) {
         return new DatabaseManager(store);
     }
 
     @Provides
     @Singleton
-    public SessionReminder provideSessionReminder() {
+    SessionReminder provideSessionReminder() {
         return new SessionReminderImpl();
     }
 
     @Provides
-    public ReminderPersistence provideReminderPersistence(Context context) {
+    ReminderPersistence provideReminderPersistence(Context context) {
         return new ReminderPersistenceImpl(context);
     }
 
     @Provides
-    public Reminder provideReminder(Context context) {
+    Reminder provideReminder(Context context) {
         return new ReminderImpl(context);
     }
 
     @Singleton
     @Provides
-    public SingleEntityStore<Persistable> provideDatabase(Context context) {
+    SingleEntityStore<Persistable> provideDatabase(EntityDataStore<Persistable> dataStore) {
+
+        return RxSupport.toReactiveStore(
+                dataStore
+        );
+    }
+
+    @Singleton
+    @Provides
+    EntityDataStore<Persistable> provideDataStore(Context context) {
         DatabaseSource source = new DatabaseSource(context, Models.DEFAULT, 1);
         if (BuildConfig.DEBUG) {
             // use this in development mode to drop and recreate the tables on every upgrade
             source.setTableCreationMode(TableCreationMode.DROP_CREATE);
         }
         Configuration configuration = source.getConfiguration();
-        return RxSupport.toReactiveStore(
-                new EntityDataStore<Persistable>(configuration));
+
+        return new EntityDataStore<>(configuration);
     }
 
 }

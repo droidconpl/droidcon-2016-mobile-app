@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.Collection;
+
 import pl.droidcon.app.R;
 import pl.droidcon.app.model.db.SessionEntity;
 
@@ -58,8 +60,9 @@ public class AgendaAdapter extends RecyclerView.Adapter<BaseSessionViewHolder> {
     public AgendaAdapter() {
     }
 
-    public void add(SessionEntity sessionEntity) {
-        sessions.add(sessionEntity);
+    public void addAll(Collection<SessionEntity> sessionEntity) {
+        sessions.clear();
+        sessions.addAll(sessionEntity);
     }
 
     @Override

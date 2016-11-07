@@ -1,6 +1,8 @@
 package pl.droidcon.app.database;
 
 
+import android.support.annotation.NonNull;
+
 import org.joda.time.DateTime;
 
 import java.util.Collection;
@@ -21,10 +23,10 @@ import rx.functions.Func1;
 
 public class DatabaseManager {
 
+    @NonNull
+    private final SingleEntityStore<Persistable> store;
 
-    SingleEntityStore<Persistable> store;
-
-    public DatabaseManager(SingleEntityStore<Persistable> store) {
+    public DatabaseManager(@NonNull SingleEntityStore<Persistable> store) {
         this.store = store;
     }
 
@@ -35,10 +37,11 @@ public class DatabaseManager {
         return store
                 .select(SessionEntity.class)
                 .where(SessionEntity.DATE.between(beginDate, endOfDate))
-                .get().toSelfObservable();
+                .get()
+                .toSelfObservable();
     }
 
-    public Observable<Result<SpeakerEntity>> speakers(){
+    public Observable<Result<SpeakerEntity>> speakers() {
         return store.select(SpeakerEntity.class).get().toSelfObservable();
     }
 
