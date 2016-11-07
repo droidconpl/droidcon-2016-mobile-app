@@ -23,21 +23,16 @@
         android:layout_height="match_parent"
         android:background="@color/element_background"/>
 
-    <LinearLayout
-        style="@style/AgendaDataContainer.Dark"
+    <TextView
+        android:id="@+id/speaker_name"
+        style="@style/SpeakerTitle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp">
-
-        <TextView
-            android:id="@+id/speaker_name"
-            style="@style/SpeakerTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="Data binding"/>
-
-    </LinearLayout>
-
+        android:layout_height="48dp"
+        android:layout_gravity="bottom"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        tools:text="Data binding"/>
 
     <FrameLayout
         android:layout_width="match_parent"

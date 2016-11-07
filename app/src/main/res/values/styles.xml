@@ -154,7 +154,10 @@
 
     <style name="SpeakerTitle" parent="AgendaTitle">
         <item name="android:layout_marginTop">0dp</item>
-        <item name="android:gravity">center</item>
+        <item name="android:layout_marginRight">0dp</item>
+        <item name="android:layout_marginLeft">0dp</item>
+        <item name="android:textSize">@dimen/speakers_title_text_size</item>
+        <item name="android:background">@color/element_background3</item>
     </style>
     
     <style name="AgendaDate">
