@@ -2,6 +2,7 @@ package pl.droidcon.app.ui.fragment.agenda;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -43,12 +44,13 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
     @Bind(R.id.agenda_view)
     RecyclerView agendaList;
 
+    @Bind(R.id.agenda_fragment_swipe_refresh_layout)
+    SwipeRefreshLayout swipeRefreshLayout;
+
     @Inject
     SnackbarWrapper snackbarWrapper;
-
     @Inject
     SwipeRefreshColorSchema swipeRefreshColorSchema;
-
     @Inject
     DatabaseManager databaseManager;
 
@@ -81,22 +83,18 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         ButterKnife.bind(this, view);
-
+        swipeRefreshLayout.setColorSchemeColors(swipeRefreshColorSchema.getColors());
         agendaList.setHasFixedSize(true);
-
-        GridLayoutManager layoutManager = new GridLayoutManager(view.getContext(), 2);
-
-        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+        GridLayoutManager mLayoutManager = new GridLayoutManager(view.getContext(), 2);
+        mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
                 //return 2 for single item as single item occupies all width
                 return agendaAdapter.getSessionByPosition(position).isSingleItem() ? 2 : 1;
             }
         });
-
-        agendaList.setLayoutManager(layoutManager);
+        agendaList.setLayoutManager(mLayoutManager);
         agendaList.addItemDecoration(new SpacesItemDecoration(view.getContext().getResources().getDimension(R.dimen.list_element_margin)));
         agendaList.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), this));
         agendaList.setAdapter(agendaAdapter);
@@ -105,6 +103,7 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
 
     public void showErrorSnackBar() {
         if (getView() != null) {
+            swipeRefreshLayout.setRefreshing(false);
             snackbarWrapper.showSnackbar(getView(), R.string.loading_error);
         }
     }
@@ -129,7 +128,7 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
                 .subscribe(new Subscriber<SessionEntity>() {
                     @Override
                     public void onCompleted() {
-                        //do nothing
+                        swipeRefreshLayout.setRefreshing(false);
                     }
 
                     @Override
