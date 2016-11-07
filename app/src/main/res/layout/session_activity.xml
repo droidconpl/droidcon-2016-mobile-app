@@ -133,6 +133,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/screen_edge_margin"
+        android:src="@drawable/ic_favorite"
+        android:tint="@color/primaryColor"
         app:elevation="6dp"
         app:layout_anchor="@id/appBarLayout"
         app:layout_anchorGravity="bottom|right|end"
