@@ -44,7 +44,7 @@ public class SpeakersAdapter extends RecyclerView.Adapter<SpeakersAdapter.Speake
 
     @Override
     public SpeakersAdapter.SpeakerHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.agenda_element, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.speakers_element, parent, false);
 
         return new SpeakerHolder(v);
     }
@@ -73,8 +73,8 @@ public class SpeakersAdapter extends RecyclerView.Adapter<SpeakersAdapter.Speake
 
         public SpeakerHolder(View itemView) {
             super(itemView);
-            speakerPhoto = (ImageView) itemView.findViewById(R.id.session_picture);
-            speakerName = (TextView) itemView.findViewById(R.id.session_title);
+            speakerPhoto = (ImageView) itemView.findViewById(R.id.speaker_picture);
+            speakerName = (TextView) itemView.findViewById(R.id.speaker_name);
             picasso = Picasso.with(itemView.getContext());
         }
 

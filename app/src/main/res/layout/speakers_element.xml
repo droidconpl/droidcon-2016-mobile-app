@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="@dimen/agenda_element_height"
+             android:background="@drawable/slot_background"
+             android:clickable="true"
+             android:focusable="true">
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/speaker_picture"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/slot_outline_size"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/speaker_photo"
+        android:scaleType="centerCrop"
+        app:riv_corner_radius="@dimen/slot_round_size"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/element_background"/>
+
+    <LinearLayout
+        style="@style/AgendaDataContainer.Dark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/speaker_name"
+            style="@style/SpeakerTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Data binding"/>
+
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/selectableItemBackground"/>
+</FrameLayout>
