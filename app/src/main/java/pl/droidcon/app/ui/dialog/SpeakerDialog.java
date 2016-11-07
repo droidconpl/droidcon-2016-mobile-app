@@ -19,6 +19,7 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -55,17 +56,17 @@ public class SpeakerDialog extends AppCompatDialogFragment {
     @Bind(R.id.speaker_bio)
     TextView speakerBio;
     @Bind(R.id.website_link)
-    IconButton websiteButton;
+    ImageButton websiteButton;
     @Bind(R.id.facebook_link)
-    IconButton facebookButton;
+    ImageButton facebookButton;
     @Bind(R.id.twitter_link)
-    IconButton twitterButton;
+    ImageButton twitterButton;
     @Bind(R.id.github_link)
-    IconButton githubButton;
+    ImageButton githubButton;
     @Bind(R.id.linkedin_link)
-    IconButton linkedInButton;
+    ImageButton linkedInButton;
     @Bind(R.id.google_link)
-    IconButton googleLink;
+    ImageButton googleLink;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

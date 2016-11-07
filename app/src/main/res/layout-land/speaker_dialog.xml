@@ -53,38 +53,37 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <com.joanzapata.iconify.widget.IconButton
+                <ImageButton
                     android:id="@+id/website_link"
-                    style="@style/IconButton.First"
-                    android:text="{entypo-globe}" />
+                    style="@style/IconButton"
+                    android:src="@drawable/ic_website"/>
 
-                <com.joanzapata.iconify.widget.IconButton
+                <ImageButton
                     android:id="@+id/facebook_link"
                     style="@style/IconButton"
-                    android:text="{entypo-facebook}" />
+                    android:src="@drawable/ic_facebook"/>
 
-                <com.joanzapata.iconify.widget.IconButton
+                <ImageButton
                     android:id="@+id/twitter_link"
                     style="@style/IconButton"
-                    android:text="{entypo-twitter}" />
+                    android:src="@drawable/ic_twitter"/>
 
-                <com.joanzapata.iconify.widget.IconButton
+                <ImageButton
                     android:id="@+id/github_link"
                     style="@style/IconButton"
-                    android:text="{entypo-github}" />
+                    android:src="@drawable/ic_github"/>
 
-                <com.joanzapata.iconify.widget.IconButton
+                <ImageButton
                     android:id="@+id/linkedin_link"
                     style="@style/IconButton"
-                    android:text="{entypo-linkedin}" />
+                    android:src="@drawable/ic_linkedin"/>
 
-                <com.joanzapata.iconify.widget.IconButton
+                <ImageButton
                     android:id="@+id/google_link"
                     style="@style/IconButton"
-                    android:text="{entypo-google}" />
+                    android:src="@drawable/ic_google"/>
 
             </LinearLayout>
-
 
         </LinearLayout>
 

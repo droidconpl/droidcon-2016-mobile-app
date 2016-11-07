@@ -126,14 +126,13 @@
 
     <style name="IconButton">
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">50dp</item>
-        <item name="android:layout_margin">0dp</item>
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:background">@android:color/transparent</item>
-        <item name="android:textColor">@color/iconify_selector</item>
-        <item name="android:padding">0dp</item>
         <item name="android:paddingStart">@dimen/list_element_margin</item>
         <item name="android:paddingLeft">@dimen/list_element_margin</item>
         <item name="android:textSize">@dimen/icon_button_size</item>
+        <item name="android:tint">@color/iconify_selector</item>
+        <item name="android:padding">16dp</item>
     </style>
 
     <style name="IconButton.First">
