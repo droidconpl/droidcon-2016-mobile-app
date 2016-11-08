@@ -48,7 +48,7 @@ public class SpeakersFragment extends BaseFragment implements RecyclerItemClickL
         GridLayoutManager mLayoutManager = new GridLayoutManager(view.getContext(), 2);
         recyclerView.setLayoutManager(mLayoutManager);
 
-        recyclerView.addItemDecoration(new SpacesItemDecoration((int) getResources().getDimension(R.dimen.list_element_margin)));
+//        recyclerView.addItemDecoration(new SpacesItemDecoration((int) getResources().getDimension(R.dimen.list_element_margin)));
 
         recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), this));
         recyclerView.setAdapter(speakersAdapter);
