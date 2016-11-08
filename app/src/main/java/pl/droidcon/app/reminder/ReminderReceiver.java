@@ -62,7 +62,7 @@ public class ReminderReceiver extends BroadcastReceiver {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
-        Notification notification = builder.setSmallIcon(R.mipmap.ic_launcher)
+        Notification notification = builder.setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(context.getString(R.string.received_session_notification, session.getTitle()))
                 .setContentIntent(pendingIntent)
