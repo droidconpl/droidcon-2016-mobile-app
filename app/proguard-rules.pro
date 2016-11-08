@@ -31,7 +31,20 @@
 -keep class android.support.v7.** { *; }
 -keep interface android.support.v7.** { *; }
 
-# butterknife
+######################## OkHttp ####################################
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class com.squareup.okhttp.** { *; }
+-keep interface com.squareup.okhttp.** { *; }
+-dontwarn com.squareup.okhttp.**
+-keep class okio.** { *; }
+-dontwarn okio.**
+
+# Retain generated class which implement Unbinder.
+-keep public class * implements butterknife.Unbinder { public <init>(...); }
+
+######################## ButterKnife 7 ########################
+
 -keep class butterknife.** { *; }
 -dontwarn butterknife.internal.**
 -keep class **$$ViewBinder { *; }
@@ -44,56 +57,48 @@
     @butterknife.* <methods>;
 }
 
-# For RoboSpice
-#Results classes that only extend a generic should be preserved as they will be pruned by Proguard
-#as they are "empty", others are kept
--keep class pl.droidcon.app.model.api.**
+######################## Retrofit 1.X ############################
 
--keepclassmembers class pl.droidcon.app.model.api.** {
-      public <fields>;
-}
+-keep class retrofit.** { *; }
+-dontwarn retrofit.**
 
-#RoboSpice requests should be preserved in most cases
--keepclassmembers class pl.droidcon.app.service.api.** {
-  public void set*(***);
-  public *** get*();
-  public *** is*();
-}
+-keep interface com.squareup.okhttp.** { *; }
 
-#Warnings to be removed. Otherwise maven plugin stops, but not dangerous
--dontwarn android.support.**
--dontwarn com.sun.xml.internal.**
--dontwarn com.sun.istack.internal.**
--dontwarn org.codehaus.jackson.**
--dontwarn org.springframework.**
--dontwarn java.awt.**
--dontwarn javax.security.**
--dontwarn java.beans.**
--dontwarn javax.xml.**
--dontwarn java.util.**
--dontwarn org.w3c.dom.**
--dontwarn com.google.common.**
--dontwarn com.octo.android.robospice.persistence.**
--dontwarn com.octo.android.robospice.SpiceService
--dontwarn com.octo.android.robospice.retrofit.**
-
-# Retrofit
--keep class com.octo.android.robospice.retrofit.** { *; }
 -dontwarn rx.**
--dontwarn org.apache.http.**
--dontwarn android.net.http.AndroidHttpClient
--dontwarn retrofit.client.ApacheClient$GenericEntityHttpRequest
--dontwarn retrofit.client.ApacheClient$GenericHttpRequest
--dontwarn retrofit.client.ApacheClient$TypedOutputEntity
 
-# Picasso
--dontwarn com.squareup.okhttp.**
-
--keep public class * implements com.bumptech.glide.module.GlideModule
--keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
-    **[] $VALUES;
-    public *;
+-keepclasseswithmembers class * {
+    @retrofit.http.* <methods>;
 }
 
--keep public class android.support.v7.preference.Preference { *; }
--keep public class * extends android.support.v7.preference.Preference { *; }
+# If in your rest service interface you use methods with Callback argument.
+-keepattributes Exceptions
+
+# If your rest service methods throw custom exceptions, because you've defined an ErrorHandler.
+-keepattributes Signature
+
+# Also you must note that if you are using GSON for conversion from JSON to POJO representation, you must ignore those POJO classes from being obfuscated.
+# Here include the POJO's that have you have created for mapping JSON response to POJO for example.
+-keep class pl.droidcon.app.model.** { *; }
+
+
+######################## rxjava ####################################
+-keep class rx.schedulers.Schedulers {
+    public static <methods>;
+}
+-keep class rx.schedulers.ImmediateScheduler {
+    public <methods>;
+}
+-keep class rx.schedulers.TestScheduler {
+    public <methods>;
+}
+-keep class rx.schedulers.Schedulers {
+    public static ** test();
+}
+-keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
+    long producerIndex;
+    long consumerIndex;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+    long producerNode;
+    long consumerNode;
+}
