@@ -38,7 +38,7 @@ public class DatabaseManager {
                 .get().toSelfObservable();
     }
 
-    public Observable<Result<SpeakerEntity>> speakers(){
+    public Observable<Result<SpeakerEntity>> speakers() {
         return store.select(SpeakerEntity.class).get().toSelfObservable();
     }
 
@@ -105,12 +105,11 @@ public class DatabaseManager {
                 });
     }
 
-    public Observable<ScheduleEntity> canSessionBeSchedule(final Session session) {
+    public Result<ScheduleEntity> canSessionBeSchedule(final Session session) {
         return store
                 .select(ScheduleEntity.class)
                 .where(ScheduleEntity.SCHEDULE_DATE.eq(session.getDate()))
-                .get()
-                .toObservable();
+                .get();
     }
 
     public Observable<NotificationEntity> addToNotification(final Session session) {

@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
@@ -23,34 +24,50 @@ public class ReminderReceiver extends BroadcastReceiver {
 
     private static final String TAG = ReminderReceiver.class.getSimpleName();
 
-    private static final String SESSION_KEY = "session";
+    private static final int DEFAULT_ID = -1;
 
+    private static final String SESSION_ID_KEY = "session_id";
+
+    @NonNull
     public static Intent createReceiverIntent(Context context, Session session) {
-        Intent intent = new Intent(context, ReminderReceiver.class);
-        intent.putExtra(SESSION_KEY, session);
-        return intent;
+        return new Intent(context, ReminderReceiver.class)
+                .putExtra(SESSION_ID_KEY, session.getId());
     }
 
     @Override
     public void onReceive(final Context context, Intent intent) {
         Log.d(TAG, "received");
-        final SessionEntity session = (SessionEntity) intent.getExtras().get(SESSION_KEY);
-        if (session == null) {
-            Log.e(TAG, "Session received null");
+
+        final int sessionId = intent.getIntExtra(SESSION_ID_KEY, DEFAULT_ID);
+
+        if (DEFAULT_ID == sessionId) {
             return;
         }
 
-        DroidconInjector.get().databaseManager()
-                // TODO: this session object needs to be fetched from DB ...
-                .removeFromNotification(session)
+        DroidconInjector.get()
+                .databaseManager()
+                .session(sessionId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<SessionEntity>() {
+                    @Override
+                    public void call(SessionEntity sessionEntity) {
+                        removeNotification(context, sessionEntity);
+                    }
+                });
+    }
+
+    private void removeNotification(final Context context, final SessionEntity sessionEntity) {
+        DroidconInjector.get()
+                .databaseManager()
+                .removeFromNotification(sessionEntity)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Boolean>() {
                     @Override
-                    public void call(Boolean aBoolean) {
-                        Log.d(TAG, "Removed remind notification for session " + session.getTitle());
-                        if (aBoolean) {
-                            showNotification(context, session);
+                    public void call(Boolean removed) {
+                        if (removed) {
+                            showNotification(context, sessionEntity);
                         }
                     }
                 });

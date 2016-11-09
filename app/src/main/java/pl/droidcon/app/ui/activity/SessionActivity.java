@@ -196,32 +196,24 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
 
 
     private void checkAndAddToFavourite() {
-        Subscription subscription = databaseManager.canSessionBeSchedule(session)
-                .subscribeOn(Schedulers.io())
-                .flatMap(new Func1<ScheduleEntity, Observable<ScheduleCollision>>() {
+        final Subscription subscription = Observable
+                .just(databaseManager.canSessionBeSchedule(session))
+                .map(new Func1<Result<ScheduleEntity>, ScheduleCollision>() {
                     @Override
-                    public Observable<ScheduleCollision> call(ScheduleEntity scheduleEntity) {
-                        if (scheduleEntity == null) {
-                            return Observable.just(new ScheduleCollision(null, false));
-                        } else {
-                            return Observable.just(new ScheduleCollision(scheduleEntity, scheduleEntity.getSession().getId() != session.getId()));
+                    public ScheduleCollision call(Result<ScheduleEntity> scheduleEntities) {
+                        if (scheduleEntities == null || scheduleEntities.toList().isEmpty()) {
+                            return new ScheduleCollision(null, false);
                         }
+                        final ScheduleEntity scheduleEntity = scheduleEntities.first();
+
+                        return new ScheduleCollision(scheduleEntity, true);
                     }
                 })
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ScheduleCollision>() {
+                .subscribe(new Action1<ScheduleCollision>() {
                     @Override
-                    public void onCompleted() {
-                        addToFavourites();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(ScheduleCollision scheduleCollision) {
+                    public void call(ScheduleCollision scheduleCollision) {
                         if (scheduleCollision.isCollision()) {
                             getCollisionSessionAndShowOverlapDialog(scheduleCollision.getSchedule());
                         } else {
@@ -273,7 +265,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
     }
 
     private void removeFromFavourites() {
-        Subscription subscription = databaseManager.removeFromFavourite(session)
+        final Subscription subscription = databaseManager.removeFromFavourite(session)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Boolean>() {
@@ -309,7 +301,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
     }
 
     private void replaceSchedule(final Session oldSession) {
-        Subscription subscription = databaseManager.removeFromFavourite(oldSession)
+        final Subscription subscription = databaseManager.removeFromFavourite(oldSession)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe(new Action1<Boolean>() {
@@ -341,7 +333,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
     private class ViewPagerImageClickListener implements View.OnClickListener {
         private String url;
 
-        public ViewPagerImageClickListener(String url) {
+        private ViewPagerImageClickListener(String url) {
             this.url = url;
         }
 
