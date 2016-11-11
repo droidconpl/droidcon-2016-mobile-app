@@ -2,9 +2,7 @@ package pl.droidcon.app.ui.fragment.agenda;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +11,11 @@ import com.trello.rxlifecycle.components.support.RxFragment;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import io.requery.query.Result;
 import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
+import pl.droidcon.app.databinding.AgendaFragmentBinding;
 import pl.droidcon.app.model.common.SessionDay;
 import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.model.db.SpeakerEntity;
@@ -41,12 +38,6 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
     private static final String TAG = AgendaFragment.class.getSimpleName();
     private static final String SESSION_DAY_KEY = "sessionDay";
 
-    @Bind(R.id.agenda_view)
-    RecyclerView agendaList;
-
-    @Bind(R.id.agenda_fragment_swipe_refresh_layout)
-    SwipeRefreshLayout swipeRefreshLayout;
-
     @Inject
     SnackbarWrapper snackbarWrapper;
     @Inject
@@ -57,6 +48,7 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
     private SessionDay sessionDay;
 
     private AgendaAdapter agendaAdapter = new AgendaAdapter();
+    AgendaFragmentBinding binding;
 
     public static AgendaFragment newInstance(SessionDay sessionDay) {
         Bundle args = new Bundle();
@@ -77,15 +69,15 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.agenda_fragment, container, false);
+        binding = AgendaFragmentBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
-        swipeRefreshLayout.setColorSchemeColors(swipeRefreshColorSchema.getColors());
-        agendaList.setHasFixedSize(true);
+        binding.agendaFragmentSwipeRefreshLayout.setColorSchemeColors(swipeRefreshColorSchema.getColors());
+        binding.agendaView.setHasFixedSize(true);
         GridLayoutManager mLayoutManager = new GridLayoutManager(view.getContext(), 2);
         mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -94,16 +86,16 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
                 return agendaAdapter.getSessionByPosition(position).isSingleItem() ? 2 : 1;
             }
         });
-        agendaList.setLayoutManager(mLayoutManager);
-        agendaList.addItemDecoration(new SpacesItemDecoration(view.getContext().getResources().getDimension(R.dimen.list_element_margin)));
-        agendaList.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), this));
-        agendaList.setAdapter(agendaAdapter);
+        binding.agendaView.setLayoutManager(mLayoutManager);
+        binding.agendaView.addItemDecoration(new SpacesItemDecoration(view.getContext().getResources().getDimension(R.dimen.list_element_margin)));
+        binding.agendaView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), this));
+        binding.agendaView.setAdapter(agendaAdapter);
         getSessions();
     }
 
     public void showErrorSnackBar() {
         if (getView() != null) {
-            swipeRefreshLayout.setRefreshing(false);
+            binding.agendaFragmentSwipeRefreshLayout.setRefreshing(false);
             snackbarWrapper.showSnackbar(getView(), R.string.loading_error);
         }
     }
@@ -128,7 +120,7 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
                 .subscribe(new Subscriber<SessionEntity>() {
                     @Override
                     public void onCompleted() {
-                        swipeRefreshLayout.setRefreshing(false);
+                        binding.agendaFragmentSwipeRefreshLayout.setRefreshing(false);
                     }
 
                     @Override
