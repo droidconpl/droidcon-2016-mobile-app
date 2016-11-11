@@ -8,7 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import pl.droidcon.app.R;
+import pl.droidcon.app.databinding.AgendaElementBinding;
+import pl.droidcon.app.databinding.AgendaNonSessionLargeElementBinding;
 import pl.droidcon.app.model.db.SessionEntity;
 
 public class AgendaAdapter extends RecyclerView.Adapter<BaseSessionViewHolder> {
@@ -64,18 +65,16 @@ public class AgendaAdapter extends RecyclerView.Adapter<BaseSessionViewHolder> {
 
     @Override
     public BaseSessionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         ViewType type = ViewType.of(viewType);
         View v;
         switch (type) {
             case NORMAL_SESSION:
-                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.agenda_element, parent, false);
-                return new AgendaSessionViewHolder(v);
+                return new AgendaSessionViewHolder(AgendaElementBinding.inflate(inflater, parent, false));
             case LARGE_NON_SESSION:
-                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.agenda_non_session_large_element, parent, false);
-                return new AgendaNonSessionLargeViewHolder(v);
+                return new AgendaNonSessionLargeViewHolder(AgendaNonSessionLargeElementBinding.inflate(inflater, parent, false));
             case LARGE_SESSION:
-                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.agenda_session_large_element, parent, false);
-                return new AgendaSessionViewHolder(v);
+                return new AgendaSessionViewHolder(AgendaElementBinding.inflate(inflater, parent, false));
         }
 
         throw new IllegalStateException("Not valid viewType");

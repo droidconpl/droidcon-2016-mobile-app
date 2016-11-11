@@ -1,42 +1,29 @@
 package pl.droidcon.app.ui.adapter;
 
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import pl.droidcon.app.R;
+import pl.droidcon.app.databinding.AgendaElementBinding;
 import pl.droidcon.app.helper.DateTimePrinter;
 import pl.droidcon.app.helper.UrlHelper;
+import pl.droidcon.app.model.common.Room;
 import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.model.db.Speaker;
-import pl.droidcon.app.model.common.Room;
 
 public class AgendaSessionViewHolder extends BaseSessionViewHolder {
 
-    @Bind(R.id.session_picture)
-    ImageView sessionPicture;
-
-    @Bind(R.id.session_title)
-    TextView sessionTitle;
-    @Bind(R.id.session_date)
-    TextView sessionDate;
-    @Bind(R.id.session_room)
-    TextView sessionRoom;
+    AgendaElementBinding binding;
 
     private Session session;
 
-    public AgendaSessionViewHolder(View itemView) {
-        super(itemView);
-        ButterKnife.bind(this, itemView);
+    public AgendaSessionViewHolder(AgendaElementBinding binding) {
+        super(binding.getRoot());
+        this.binding = binding;
     }
 
     @Override
@@ -44,19 +31,19 @@ public class AgendaSessionViewHolder extends BaseSessionViewHolder {
         this.session = session;
 
         Room room = Room.valueOfRoomId(session.getRoomId());
-        sessionRoom.setText(room.getStringRes());
-        sessionTitle.setText(session.getTitle());
+        binding.sessionRoom.setText(room.getStringRes());
+        binding.sessionTitle.setText(session.getTitle());
 
-        sessionDate.setText(DateTimePrinter.toPrintableString(new DateTime(session.getDate())));
+        binding.sessionDate.setText(DateTimePrinter.toPrintableString(new DateTime(session.getDate())));
 
         List<Speaker> realSpeakerList = session.getSpeakers();
         if (realSpeakerList.isEmpty()) {
-            sessionPicture.setImageResource(R.drawable.droidcon_krakow_logo);
+            binding.sessionPicture.setImageResource(R.drawable.droidcon_krakow_logo);
         } else {
             String url = UrlHelper.url(realSpeakerList.get(0).getImageUrl());
-            Picasso.with(sessionPicture.getContext())
+            Picasso.with(binding.sessionPicture.getContext())
                     .load(url)
-                    .into(sessionPicture);
+                    .into(binding.sessionPicture);
         }
     }
 
