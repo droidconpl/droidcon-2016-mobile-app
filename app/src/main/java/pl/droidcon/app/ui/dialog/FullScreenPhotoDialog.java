@@ -7,21 +7,17 @@ import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-
 
 import com.squareup.picasso.Picasso;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import pl.droidcon.app.R;
+import pl.droidcon.app.databinding.FullScreenSpeakerPhotoDialogBinding;
 
 public class FullScreenPhotoDialog extends AppCompatDialogFragment {
 
     private static final String TAG = FullScreenPhotoDialog.class.getSimpleName();
 
     private static final String PHOTO_URL_KEY = "photo";
+    private FullScreenSpeakerPhotoDialogBinding binding;
 
     public static FullScreenPhotoDialog newInstance(String photoUrl) {
         Bundle args = new Bundle();
@@ -30,9 +26,6 @@ public class FullScreenPhotoDialog extends AppCompatDialogFragment {
         fragment.setArguments(args);
         return fragment;
     }
-
-    @Bind(R.id.full_screen_photo)
-    ImageView fullScreenPhoto;
 
     private String photoUrl;
 
@@ -46,16 +39,23 @@ public class FullScreenPhotoDialog extends AppCompatDialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.full_screen_speaker_photo_dialog, container);
+        binding = FullScreenSpeakerPhotoDialogBinding.inflate(inflater, container, false);
+        binding.fullScreenPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+
         Picasso.with(getContext())
                 .load(photoUrl)
-                .into(fullScreenPhoto);
+                .into(binding.fullScreenPhoto);
     }
 
     @Override
@@ -72,12 +72,7 @@ public class FullScreenPhotoDialog extends AppCompatDialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Picasso.with(getContext()).cancelRequest(fullScreenPhoto);
-        ButterKnife.unbind(this);
+        Picasso.with(getContext()).cancelRequest(binding.fullScreenPhoto);
     }
 
-    @OnClick(R.id.full_screen_photo)
-    void onClicked() {
-        dismiss();
-    }
 }
