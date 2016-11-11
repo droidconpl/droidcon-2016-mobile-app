@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +14,11 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import io.requery.query.Result;
 import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
+import pl.droidcon.app.databinding.ScheduleFragmentBinding;
 import pl.droidcon.app.factory.SlotFactory;
 import pl.droidcon.app.helper.UrlHelper;
 import pl.droidcon.app.model.common.SessionDay;
@@ -47,6 +45,7 @@ public class ScheduleFragment extends Fragment implements ScheduleViewHolder.Sch
     private static final String SESSION_DAY_KEY = "sessionDay";
     private ScheduleAdapter scheduleAdapter;
     private Subscription timerSubscription;
+    private ScheduleFragmentBinding binding;
 
     public static ScheduleFragment newInstance(SessionDay sessionDay) {
         Bundle args = new Bundle();
@@ -55,9 +54,6 @@ public class ScheduleFragment extends Fragment implements ScheduleViewHolder.Sch
         fragment.setArguments(args);
         return fragment;
     }
-
-    @Bind(R.id.schedule_list)
-    RecyclerView scheduleList;
 
     @Inject
     DatabaseManager databaseManager;
@@ -84,19 +80,20 @@ public class ScheduleFragment extends Fragment implements ScheduleViewHolder.Sch
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.schedule_fragment, container, false);
+        binding = ScheduleFragmentBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
-        scheduleList.setHasFixedSize(true);
+
+        binding.scheduleList.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new GridLayoutManager(getContext(), 1);
-        scheduleList.setLayoutManager(linearLayoutManager);
-        scheduleList.addItemDecoration(new ScheduleItemDecoration(view.getContext().getResources().getDimension(R.dimen.list_element_margin)));
+        binding.scheduleList.setLayoutManager(linearLayoutManager);
+        binding.scheduleList.addItemDecoration(new ScheduleItemDecoration(view.getContext().getResources().getDimension(R.dimen.list_element_margin)));
         scheduleAdapter = new ScheduleAdapter(SlotFactory.createSlotsForDay(sessionDay), this);
-        scheduleList.setAdapter(scheduleAdapter);
+        binding.scheduleList.setAdapter(scheduleAdapter);
         compositeSubscription = new CompositeSubscription();
         clickSubject.subscribe(new Action1<Integer>() {
             @Override
@@ -110,7 +107,6 @@ public class ScheduleFragment extends Fragment implements ScheduleViewHolder.Sch
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
         compositeSubscription.clear();
     }
 
