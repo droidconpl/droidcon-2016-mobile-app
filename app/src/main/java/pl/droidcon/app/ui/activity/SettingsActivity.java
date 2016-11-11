@@ -3,6 +3,7 @@ package pl.droidcon.app.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
@@ -15,11 +16,10 @@ import android.view.View;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import pl.droidcon.app.R;
-import pl.droidcon.app.reminder.SessionReminder;
 import pl.droidcon.app.dagger.DroidconInjector;
+import pl.droidcon.app.databinding.SettingsActivityBinding;
+import pl.droidcon.app.reminder.SessionReminder;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -28,15 +28,11 @@ public class SettingsActivity extends AppCompatActivity {
         context.startActivity(intent);
     }
 
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.settings_activity);
-        ButterKnife.bind(this);
-        setupToolbarBack(toolbar);
+        SettingsActivityBinding binding = DataBindingUtil.setContentView(this, R.layout.settings_activity);
+        setupToolbarBack(binding.settingsToolbar.toolbar);
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
             supportActionBar.setTitle(R.string.settings);
