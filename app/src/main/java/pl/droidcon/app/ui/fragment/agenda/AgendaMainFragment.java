@@ -2,20 +2,18 @@ package pl.droidcon.app.ui.fragment.agenda;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import org.joda.time.DateTime;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 import pl.droidcon.app.R;
+import pl.droidcon.app.databinding.AgendaMainFragmentBinding;
 import pl.droidcon.app.helper.DateTimePrinter;
 import pl.droidcon.app.model.common.SessionDay;
 import pl.droidcon.app.ui.fragment.BaseFragment;
@@ -24,6 +22,7 @@ import pl.droidcon.app.ui.fragment.BaseFragment;
 public class AgendaMainFragment extends BaseFragment {
 
     public static final String TAG = AgendaMainFragment.class.getSimpleName();
+    private AgendaMainFragmentBinding binding;
 
     public static AgendaMainFragment newInstance() {
         Bundle args = new Bundle();
@@ -32,25 +31,19 @@ public class AgendaMainFragment extends BaseFragment {
         return fragment;
     }
 
-    @Bind(R.id.tabs)
-    TabLayout tabLayout;
-
-    @Bind(R.id.viewpager)
-    ViewPager viewPager;
-
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.agenda_main_fragment, container, false);
+        binding = AgendaMainFragmentBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ButterKnife.bind(this, getView());
-        viewPager.setAdapter(new AgendaFragmentAdapter(getChildFragmentManager()));
-        tabLayout.setupWithViewPager(viewPager);
+        binding.viewpager.setAdapter(new AgendaFragmentAdapter(getChildFragmentManager()));
+        binding.tabs.setupWithViewPager(binding.viewpager);
     }
 
     @Override
