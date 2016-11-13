@@ -8,14 +8,15 @@ import java.util.List;
 
 import pl.droidcon.app.model.api.SessionRow;
 
-public class Utils {
+public final class Utils {
 
-    public static final int ID_DELTA = 1000;
+    private static final int ID_DELTA = 1000;
 
-    public static List<SessionEntity> toSessions(@NonNull SessionRow sessionRow) {
-        List<SessionEntity> sessions = new ArrayList<>();
+    @NonNull
+    private static List<SessionEntity> toSessions(@NonNull SessionRow sessionRow) {
+        final List<SessionEntity> sessions = new ArrayList<>();
 
-        SessionEntity leftSession = new SessionEntity();
+        final SessionEntity leftSession = new SessionEntity();
         leftSession.setDate(sessionRow.sessionDate.toDate());
         leftSession.setId(sessionRow.id);
         leftSession.setDayId(sessionRow.dayId);
@@ -24,7 +25,7 @@ public class Utils {
         leftSession.setTitle(sessionRow.sessionTitle.get(0));
         leftSession.setDescription(sessionRow.sessionDescription.get(0));
 
-        List<Integer> speakerIdsLeft = sessionRow.speakerIds.get(0);
+        final List<Integer> speakerIdsLeft = sessionRow.speakerIds.get(0);
         for (Integer speakerId : speakerIdsLeft) {
             SpeakerEntity speakerEntity = new SpeakerEntity();
             speakerEntity.setId(speakerId);
@@ -34,7 +35,7 @@ public class Utils {
         leftSession.setRoomId(sessionRow.roomId.get(0));
         leftSession.setLeft(true);
 
-        SessionEntity rightSession = new SessionEntity();
+        final SessionEntity rightSession = new SessionEntity();
         rightSession.setDate(sessionRow.sessionDate.toDate());
         rightSession.setId(sessionRow.id + ID_DELTA);
         rightSession.setDayId(sessionRow.dayId);
@@ -44,7 +45,7 @@ public class Utils {
         rightSession.setTitle(sessionRow.sessionTitle.get(1));
         rightSession.setDescription(sessionRow.sessionDescription.get(1));
 
-        List<Integer> speakerIdsRight = sessionRow.speakerIds.get(1);
+        final List<Integer> speakerIdsRight = sessionRow.speakerIds.get(1);
         for (Integer speakerId : speakerIdsRight) {
             SpeakerEntity speakerEntity = new SpeakerEntity();
             speakerEntity.setId(speakerId);
@@ -64,8 +65,10 @@ public class Utils {
         return sessions;
     }
 
-    public static SpeakerEntity fromSpeaker(Speaker speaker) {
-        SpeakerEntity speakerEntity = new SpeakerEntity();
+    @NonNull
+    public static SpeakerEntity fromSpeaker(@NonNull Speaker speaker) {
+        final SpeakerEntity speakerEntity = new SpeakerEntity();
+
         speakerEntity.setId(speaker.getId());
         speakerEntity.setFirstName(speaker.getFirstName());
         speakerEntity.setLastName(speaker.getLastName());
@@ -78,6 +81,23 @@ public class Utils {
         speakerEntity.setGithubLink(speaker.getGithubLink());
         speakerEntity.setLinkedIn(speaker.getLinkedIn());
         speakerEntity.setGooglePlus(speaker.getGooglePlus());
+
         return speakerEntity;
+    }
+
+    @NonNull
+    public static Iterable<SessionEntity> toSessions(@NonNull Iterable<SessionRow> sessionRows) {
+        final List<SessionEntity> sessionEntities = new ArrayList<>();
+
+        for (SessionRow sessionRow : sessionRows) {
+            sessionEntities.addAll(
+                    toSessions(sessionRow)
+            );
+        }
+
+        return sessionEntities;
+    }
+
+    private Utils() {
     }
 }

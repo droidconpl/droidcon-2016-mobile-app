@@ -1,7 +1,10 @@
 package pl.droidcon.app.rx;
 
 
+import android.support.annotation.NonNull;
 import android.util.Log;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -17,8 +20,12 @@ import pl.droidcon.app.model.db.SpeakerEntity;
 import pl.droidcon.app.model.db.Utils;
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
+import rx.subjects.BehaviorSubject;
+import rx.subjects.SerializedSubject;
 
 public class DataSubscription {
 
@@ -26,16 +33,116 @@ public class DataSubscription {
 
     @Inject
     RestService restService;
+
     @Inject
     DatabaseManager databaseManager;
+
+    private SerializedSubject<DataReady, DataReady> readyBridge = BehaviorSubject
+            .<DataReady>create()
+            .toSerialized();
+
+    public static class DataReady {
+
+        private final boolean success;
+
+        private DataReady(boolean success) {
+            this.success = success;
+        }
+
+        @NonNull
+        private static DataReady success() {
+            return new DataReady(true);
+        }
+
+        @NonNull
+        private static DataReady failure() {
+            return new DataReady(false);
+        }
+
+        public boolean isSuccess() {
+            return success;
+        }
+    }
 
     public DataSubscription() {
         DroidconInjector.get().inject(this);
     }
 
+    @NonNull
+    public Observable<DataReady> observeReadyData() {
+        return readyBridge.asObservable();
+    }
 
     public void fetchData() {
-        restService.getSpeakers()
+        readyBridge = BehaviorSubject.<DataReady>create().toSerialized();
+
+        final Observable<Iterable<SpeakerEntity>> speakers = getSpeakerEntityObservable();
+
+        final Observable<Iterable<SessionEntity>> sessions = getSessionEntityObservable();
+
+
+        Observable
+                .zip(speakers, sessions,
+                        new Func2<Iterable<SpeakerEntity>, Iterable<SessionEntity>, DataReady>() {
+                            @Override
+                            public DataReady call(Iterable<SpeakerEntity> speakerEntities,
+                                                  Iterable<SessionEntity> sessionEntities) {
+                                return DataReady.success();
+                            }
+                        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<DataReady>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(TAG, "onCompleted() called");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        readyBridge.onNext(DataReady.failure());
+                    }
+
+                    @Override
+                    public void onNext(DataReady dataReady) {
+                        readyBridge.onNext(dataReady);
+                    }
+                });
+    }
+
+    @NonNull
+    private Observable<Iterable<SessionEntity>> getSessionEntityObservable() {
+        return restService.getAgenda()
+                .map(new Func1<AgendaResponse, Iterable<SessionRow>>() {
+                    @Override
+                    public List<SessionRow> call(AgendaResponse agendaResponse) {
+                        return agendaResponse.sessions;
+                    }
+                })
+                .flatMap(new Func1<Iterable<SessionRow>, Observable<Iterable<SessionEntity>>>() {
+                    @Override
+                    public Observable<Iterable<SessionEntity>> call(Iterable<SessionRow> sessionRows) {
+                        return Observable.just(
+                                Utils.toSessions(sessionRows)
+                        );
+                    }
+                })
+                .map(new Func1<Iterable<SessionEntity>, Iterable<SessionEntity>>() {
+                    @Override
+                    public Iterable<SessionEntity> call(Iterable<SessionEntity> sessionEntities) {
+                        return DroidconInjector
+                                .get()
+                                .getDatabase()
+                                .upsert(sessionEntities)
+                                .toBlocking()
+                                .value();
+                    }
+                });
+    }
+
+    @NonNull
+    private Observable<Iterable<SpeakerEntity>> getSpeakerEntityObservable() {
+        return restService.getSpeakers()
                 .flatMap(new Func1<SpeakerResponse, Observable<SpeakerEntity>>() {
                     @Override
                     public Observable<SpeakerEntity> call(SpeakerResponse speakerResponse) {
@@ -45,62 +152,20 @@ public class DataSubscription {
                 .flatMap(new Func1<Speaker, Observable<SpeakerEntity>>() {
                     @Override
                     public Observable<SpeakerEntity> call(Speaker speaker) {
-                        return DroidconInjector.get().getDatabase().upsert(Utils.fromSpeaker(speaker)).toObservable();
+                        return Observable
+                                .just(Utils.fromSpeaker(speaker));
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<SpeakerEntity>() {
+                .toList()
+                .map(new Func1<Iterable<SpeakerEntity>, Iterable<SpeakerEntity>>() {
                     @Override
-                    public void onCompleted() {
-                        Log.d(TAG, "onCompleted() called");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(TAG, "onError() called with: e = [" + e + "]");
-                    }
-
-                    @Override
-                    public void onNext(SpeakerEntity speakerEntity) {
-                        Log.d(TAG, "onNext() called with: speakerEntity = [" + speakerEntity.getId() + "]");
-                    }
-                });
-
-
-        restService.getAgenda()
-                .flatMap(new Func1<AgendaResponse, Observable<SessionRow>>() {
-                    @Override
-                    public Observable<SessionRow> call(AgendaResponse agendaResponse) {
-                        return Observable.from(agendaResponse.sessions);
-                    }
-                })
-                .flatMap(new Func1<SessionRow, Observable<SessionEntity>>() {
-                    @Override
-                    public Observable<SessionEntity> call(SessionRow sessionRow) {
-                        return Observable.from(Utils.toSessions(sessionRow));
-                    }
-                })
-                .flatMap(new Func1<SessionEntity, Observable<SessionEntity>>() {
-                    @Override
-                    public Observable<SessionEntity> call(SessionEntity sessionEntity) {
-                        return DroidconInjector.get().getDatabase().upsert(sessionEntity).toObservable();
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<SessionEntity>() {
-                    @Override
-                    public void onCompleted() {
-                        Log.d(TAG, "onCompleted() called");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(TAG, "onError() called with: e = [" + e + "]");
-                    }
-
-                    @Override
-                    public void onNext(SessionEntity sessionEntity) {
-                        Log.d(TAG, "onNext() called with: sessionEntity = [" + sessionEntity + "]");
+                    public Iterable<SpeakerEntity> call(Iterable<SpeakerEntity> speakerEntities) {
+                        return DroidconInjector
+                                .get()
+                                .getDatabase()
+                                .upsert(speakerEntities)
+                                .toBlocking()
+                                .value();
                     }
                 });
     }

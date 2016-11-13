@@ -1,6 +1,7 @@
 package pl.droidcon.app.ui.fragment.agenda;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -23,6 +24,7 @@ import pl.droidcon.app.model.common.SessionDay;
 import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.model.db.SpeakerEntity;
 import pl.droidcon.app.model.ui.SwipeRefreshColorSchema;
+import pl.droidcon.app.rx.DataSubscription;
 import pl.droidcon.app.ui.activity.SessionActivity;
 import pl.droidcon.app.ui.adapter.AgendaAdapter;
 import pl.droidcon.app.ui.decoration.SpacesItemDecoration;
@@ -31,14 +33,13 @@ import pl.droidcon.app.wrapper.SnackbarWrapper;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 
-public class AgendaFragment extends RxFragment implements RecyclerItemClickListener.OnItemClickListener {
+public class AgendaFragment extends RxFragment implements RecyclerItemClickListener.OnItemClickListener,
+        SwipeRefreshLayout.OnRefreshListener {
 
-    private static final String TAG = AgendaFragment.class.getSimpleName();
     private static final String SESSION_DAY_KEY = "sessionDay";
 
     @Bind(R.id.agenda_view)
@@ -49,15 +50,21 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
 
     @Inject
     SnackbarWrapper snackbarWrapper;
+
     @Inject
     SwipeRefreshColorSchema swipeRefreshColorSchema;
+
     @Inject
     DatabaseManager databaseManager;
+
+    @Inject
+    DataSubscription dataSubscription;
 
     private SessionDay sessionDay;
 
     private AgendaAdapter agendaAdapter = new AgendaAdapter();
 
+    @NonNull
     public static AgendaFragment newInstance(SessionDay sessionDay) {
         Bundle args = new Bundle();
         args.putSerializable(SESSION_DAY_KEY, sessionDay);
@@ -69,9 +76,16 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle arguments = getArguments();
-        sessionDay = (SessionDay) arguments.getSerializable(SESSION_DAY_KEY);
+
+        getSessionDay();
+
         DroidconInjector.get().inject(this);
+    }
+
+    private void getSessionDay() {
+        final Bundle arguments = getArguments();
+
+        sessionDay = (SessionDay) arguments.getSerializable(SESSION_DAY_KEY);
     }
 
     @Nullable
@@ -83,52 +97,56 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         ButterKnife.bind(this, view);
+
         swipeRefreshLayout.setColorSchemeColors(swipeRefreshColorSchema.getColors());
+        swipeRefreshLayout.setOnRefreshListener(this);
+
         agendaList.setHasFixedSize(true);
-        GridLayoutManager mLayoutManager = new GridLayoutManager(view.getContext(), 2);
-        mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+
+        final GridLayoutManager layoutManager = new GridLayoutManager(view.getContext(), 2);
+
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
                 //return 2 for single item as single item occupies all width
                 return agendaAdapter.getSessionByPosition(position).isSingleItem() ? 2 : 1;
             }
         });
-        agendaList.setLayoutManager(mLayoutManager);
+
+        agendaList.setLayoutManager(layoutManager);
         agendaList.addItemDecoration(new SpacesItemDecoration(view.getContext().getResources().getDimension(R.dimen.list_element_margin)));
         agendaList.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), this));
+
         agendaList.setAdapter(agendaAdapter);
-        getSessions();
+
+        observeData();
     }
 
     public void showErrorSnackBar() {
         if (getView() != null) {
-            swipeRefreshLayout.setRefreshing(false);
+            setNotRefreshing();
             snackbarWrapper.showSnackbar(getView(), R.string.loading_error);
         }
     }
 
     private void getSessions() {
         Observable
-                .combineLatest(databaseManager.sessions(sessionDay), databaseManager.speakers(), new Func2<Result<SessionEntity>, Result<SpeakerEntity>, Result<SessionEntity>>() {
-                    @Override
-                    public Result<SessionEntity> call(Result<SessionEntity> sessionEntities, Result<SpeakerEntity> speakerEntities) {
-                        return sessionEntities;
-                    }
-                })
-                .subscribeOn(Schedulers.io())
+                .combineLatest(databaseManager.sessions(sessionDay), databaseManager.speakers(),
+                        new Func2<Result<SessionEntity>, Result<SpeakerEntity>, Result<SessionEntity>>() {
+                            @Override
+                            public Result<SessionEntity> call(Result<SessionEntity> sessionEntities, Result<SpeakerEntity> speakerEntities) {
+                                return sessionEntities;
+                            }
+                        })
                 .compose(this.<Result<SessionEntity>>bindToLifecycle())
-                .flatMap(new Func1<Result<SessionEntity>, Observable<SessionEntity>>() {
-                    @Override
-                    public Observable<SessionEntity> call(Result<SessionEntity> sessionEntities) {
-                        return sessionEntities.toObservable();
-                    }
-                })
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<SessionEntity>() {
+                .subscribe(new Subscriber<Result<SessionEntity>>() {
                     @Override
                     public void onCompleted() {
-                        swipeRefreshLayout.setRefreshing(false);
+                        setNotRefreshing();
                     }
 
                     @Override
@@ -137,18 +155,60 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
                     }
 
                     @Override
-                    public void onNext(SessionEntity sessionEntity) {
-                        agendaAdapter.add(sessionEntity);
+                    public void onNext(Result<SessionEntity> sessionEntities) {
+                        setNotRefreshing();
+                        agendaAdapter.addAll(
+                                sessionEntities.toList()
+                        );
                     }
                 });
     }
 
+    private void observeData() {
+
+        swipeRefreshLayout.setRefreshing(true);
+
+        dataSubscription.observeReadyData()
+                .compose(this.<DataSubscription.DataReady>bindToLifecycle())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<DataSubscription.DataReady>() {
+                    @Override
+                    public void onCompleted() {
+                        setNotRefreshing();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        showErrorSnackBar();
+                    }
+
+                    @Override
+                    public void onNext(DataSubscription.DataReady dataReady) {
+                        getSessions();
+                        if (!dataReady.isSuccess()) {
+                            showErrorSnackBar();
+                        }
+                    }
+                });
+    }
+
+    private void setNotRefreshing() {
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
     @Override
     public void onItemClick(View view, int position) {
-        SessionEntity session = agendaAdapter.getSessionByPosition(position);
+        final SessionEntity session = agendaAdapter.getSessionByPosition(position);
         if (session.getSpeakers().isEmpty()) {
             return;
         }
         SessionActivity.start(getContext(), session);
+    }
+
+    @Override
+    public void onRefresh() {
+        dataSubscription.fetchData();
+        observeData();
     }
 }

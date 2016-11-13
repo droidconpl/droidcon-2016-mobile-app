@@ -15,10 +15,10 @@ import butterknife.ButterKnife;
 import pl.droidcon.app.R;
 import pl.droidcon.app.helper.DateTimePrinter;
 import pl.droidcon.app.helper.UrlHelper;
+import pl.droidcon.app.model.common.Room;
 import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.model.db.Speaker;
-import pl.droidcon.app.model.common.Room;
 
 public class AgendaSessionViewHolder extends BaseSessionViewHolder {
 
@@ -34,7 +34,7 @@ public class AgendaSessionViewHolder extends BaseSessionViewHolder {
 
     private Session session;
 
-    public AgendaSessionViewHolder(View itemView) {
+    AgendaSessionViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }
