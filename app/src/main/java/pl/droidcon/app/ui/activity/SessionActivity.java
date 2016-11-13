@@ -11,7 +11,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +34,7 @@ import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
 import pl.droidcon.app.helper.DateTimePrinter;
+import pl.droidcon.app.helper.HtmlCompat;
 import pl.droidcon.app.helper.UrlHelper;
 import pl.droidcon.app.model.common.Room;
 import pl.droidcon.app.model.common.ScheduleCollision;
@@ -63,52 +63,60 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
     private static final String TAG = SessionActivity.class.getSimpleName();
 
     private static final String SESSION_EXTRA = "session";
-//    private static final String SPEAKERS_EXTRA = "speakers";
 
-    public static void start(Context context, Session session) {
+    public static void start(Context context, @NonNull Session session) {
         Intent intent = getSessionIntent(context, session);
         context.startActivity(intent);
     }
 
+    @NonNull
     public static Intent getSessionIntent(Context context, Session session) {
-        Intent intent = new Intent(context, SessionActivity.class);
-        intent.putExtra(SESSION_EXTRA, session.getId());
-//        intent.putParcelableArrayListExtra(SPEAKERS_EXTRA, new ArrayList<Parcelable>(session.getSpeakers()));
-        return intent;
+        return new Intent(context, SessionActivity.class)
+                .putExtra(SESSION_EXTRA, session.getId());
     }
 
     private SessionEntity session;
-    List<Speaker> speakersList;
 
     @Bind(R.id.speaker_photos)
     ViewPager speakerPhotos;
+
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+
     @Bind(R.id.session_description)
     TextView description;
+
     @Bind(R.id.session_title)
     TextView title;
+
     @Bind(R.id.session_date)
     TextView date;
+
     @Bind(R.id.session_room)
     TextView sessionRoom;
+
     @Bind(R.id.indicator)
     CircleIndicator indicator;
+
     @Bind(R.id.speakers)
     SpeakerList speakerListView;
+
     @Bind(R.id.favourite_button)
     FloatingActionButton favouriteButton;
+
     @Bind(R.id.root_view)
     CoordinatorLayout rootView;
 
     @Inject
     DatabaseManager databaseManager;
+
     @Inject
     SnackbarWrapper snackbarWrapper;
+
     @Inject
     SessionReminder sessionReminder;
 
-    private CompositeSubscription compositeSubscription;
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private FavouriteClickListener favouriteClickListener = new FavouriteClickListener();
 
     @Override
@@ -119,9 +127,12 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
         ButterKnife.bind(this);
         setupToolbarBack(toolbar);
         int sessionId = getIntent().getExtras().getInt(SESSION_EXTRA);
-        session = DroidconInjector.get().getDatabase().select(SessionEntity.class).where(SessionEntity.ID.eq(sessionId)).get().first();
-        speakersList = session.getSpeakers();
-        compositeSubscription = new CompositeSubscription();
+        session = DroidconInjector.get().getDatabase()
+                .select(SessionEntity.class)
+                .where(SessionEntity.ID.eq(sessionId))
+                .get()
+                .first();
+
         fillDetails();
         checkIsFavourite();
     }
@@ -133,18 +144,26 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
     }
 
     private void fillDetails() {
+        final List<Speaker> speakersList = session.getSpeakers();
+
         setToolbarTitle(null);
+
         title.setText(session.getTitle());
+
         speakerPhotos.setAdapter(new SpeakerPhotosAdapter(this, speakersList));
-        description.setText(Html.fromHtml(session.getDescription()));
+        description.setText(HtmlCompat.fromHtml(session.getDescription()));
         date.setText(DateTimePrinter.toPrintableStringWithDay(new DateTime(session.getDate())));
+
         indicator.setViewPager(speakerPhotos);
+
         if (speakersList.size() == 1) {
-            indicator.setVisibility(View.INVISIBLE);
+            indicator.setAlpha(0f);
         }
+
         speakerListView.setSpeakers(speakersList, this);
         favouriteButton.setOnClickListener(favouriteClickListener);
-        int stringRes = Room.valueOfRoomId(session.getRoomId()).getStringRes();
+
+        final int stringRes = Room.valueOfRoomId(session.getRoomId()).getStringRes();
         sessionRoom.setText(stringRes);
     }
 
