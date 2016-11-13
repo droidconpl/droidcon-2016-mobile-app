@@ -16,26 +16,20 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import pl.droidcon.app.R;
+import pl.droidcon.app.databinding.SpeakerListItemBinding;
 
 
 public class SimpleListItem extends LinearLayout {
 
     private static final String TAG = SimpleListItem.class.getSimpleName();
 
-    @Bind(R.id.speaker_list_item_text)
-    TextView description;
-    @Bind(R.id.speaker_list_item_full_name)
-    TextView title;
-
     private int avatarSize;
+    protected SpeakerListItemBinding binding;
 
     public SimpleListItem(Context context) {
         this(context, null);
@@ -58,8 +52,7 @@ public class SimpleListItem extends LinearLayout {
 
 
     protected void init(Context context, AttributeSet attributeSet, int defStyleAttr, int defStyleRes) {
-        LayoutInflater.from(context).inflate(R.layout.speaker_list_item, this, true);
-        ButterKnife.bind(this, this);
+        binding = SpeakerListItemBinding.inflate(LayoutInflater.from(context), this, true);
         setGravity(Gravity.CENTER_VERTICAL);
         setOrientation(VERTICAL);
         TypedValue typedValue = new TypedValue();
@@ -96,7 +89,7 @@ public class SimpleListItem extends LinearLayout {
     }
 
     protected void setTitle(String text) {
-        title.setText(text);
+        binding.speakerListItemFullName.setText(text);
     }
 
     protected void setImage(@NonNull String imageUrl) {
@@ -108,7 +101,7 @@ public class SimpleListItem extends LinearLayout {
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                         RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
                         roundedBitmapDrawable.setCircular(true);
-                        description.setCompoundDrawablesWithIntrinsicBounds(roundedBitmapDrawable, null, null, null);
+                        binding.speakerListItemText.setCompoundDrawablesWithIntrinsicBounds(roundedBitmapDrawable, null, null, null);
                     }
 
                     @Override
@@ -124,7 +117,7 @@ public class SimpleListItem extends LinearLayout {
     }
 
     protected void setDescription(String text) {
-        description.setText(Html.fromHtml(text));
+        binding.speakerListItemText.setText(Html.fromHtml(text));
     }
 
 }

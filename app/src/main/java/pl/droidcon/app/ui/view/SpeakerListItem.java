@@ -38,9 +38,6 @@ public class SpeakerListItem extends SimpleListItem {
     protected void init(Context context, AttributeSet attributeSet, int defStyleAttr, int defStyleRes) {
         super.init(context, attributeSet, defStyleAttr, defStyleRes);
 
-        if (isInEditMode()) {
-            showStubData();
-        }
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,19 +48,12 @@ public class SpeakerListItem extends SimpleListItem {
         });
     }
 
-    //only stub data
-    private void showStubData() {
-        setDescription("Stub data with very long text to display. It should ellipsize on the end. Max lines set to 3");
-        description.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_settings, 0, 0, 0);
-    }
-
     public void setSpeakerItemClickListener(@Nullable SpeakerList.SpeakerItemClickListener speakerItemClickListener) {
         this.speakerItemClickListener = speakerItemClickListener;
     }
 
     public void setSpeaker(Speaker speaker) {
         if (isInEditMode()) {
-            showStubData();
             return;
         }
         this.speaker = speaker;
