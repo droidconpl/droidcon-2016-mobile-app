@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 
 import org.joda.time.DateTime;
 
-import butterknife.ButterKnife;
 import pl.droidcon.app.R;
 import pl.droidcon.app.databinding.AgendaMainFragmentBinding;
 import pl.droidcon.app.helper.DateTimePrinter;
@@ -41,7 +40,6 @@ public class AgendaMainFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ButterKnife.bind(this, getView());
         binding.viewpager.setAdapter(new AgendaFragmentAdapter(getChildFragmentManager()));
         binding.tabs.setupWithViewPager(binding.viewpager);
     }
