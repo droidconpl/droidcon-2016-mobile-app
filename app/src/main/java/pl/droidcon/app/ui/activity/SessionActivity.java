@@ -116,7 +116,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
         binding.sessionTitle.setText(session.getTitle());
 
         binding.speakerPhotos.setAdapter(new SpeakerPhotosAdapter(this, speakersList));
-        binding.sessionDescription.setText((HtmlCompat.fromHtml(session.getDescription()));
+        binding.sessionDescription.setText(HtmlCompat.fromHtml(session.getDescription()));
         binding.sessionDate.setText(DateTimePrinter.toPrintableStringWithDay(new DateTime(session.getDate())));
         binding.indicator.setViewPager(binding.speakerPhotos);
 
