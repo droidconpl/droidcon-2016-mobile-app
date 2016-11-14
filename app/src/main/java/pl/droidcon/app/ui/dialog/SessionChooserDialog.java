@@ -6,17 +6,14 @@ import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import org.joda.time.DateTime;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
+import pl.droidcon.app.databinding.SessionChooserDialogBinding;
 import pl.droidcon.app.helper.DateTimePrinter;
 import pl.droidcon.app.model.db.ScheduleEntity;
 import pl.droidcon.app.model.db.Session;
@@ -35,6 +32,7 @@ public class SessionChooserDialog extends AppCompatDialogFragment implements Ses
     private static final String TAG = SessionChooserDialog.class.getSimpleName();
 
     private static final String SESSION_DATE_KEY = "session_date";
+    private SessionChooserDialogBinding binding;
 
     public static SessionChooserDialog newInstance(DateTime sessionDate) {
         Bundle args = new Bundle();
@@ -51,12 +49,6 @@ public class SessionChooserDialog extends AppCompatDialogFragment implements Ses
     DatabaseManager databaseManager;
     @Inject
     SessionReminder sessionReminder;
-
-    @Bind(R.id.session_date)
-    TextView sessionDateTextView;
-    @Bind(R.id.sessions)
-    SessionList sessionList;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,25 +68,24 @@ public class SessionChooserDialog extends AppCompatDialogFragment implements Ses
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.session_chooser_dialog, container, false);
+        binding = SessionChooserDialogBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        sessionDateTextView.setText(DateTimePrinter.toPrintableStringWithDay(sessionDate));
+        binding.sessionDate.setText(DateTimePrinter.toPrintableStringWithDay(sessionDate));
         getSessions();
     }
 
@@ -105,7 +96,7 @@ public class SessionChooserDialog extends AppCompatDialogFragment implements Ses
                 .subscribe(new Subscriber<SessionEntity>() {
                     @Override
                     public void onCompleted() {
-                        sessionList.show(SessionChooserDialog.this);
+                        binding.sessions.show(SessionChooserDialog.this);
                     }
 
                     @Override
@@ -115,7 +106,7 @@ public class SessionChooserDialog extends AppCompatDialogFragment implements Ses
 
                     @Override
                     public void onNext(SessionEntity session) {
-                        sessionList.addSession(session);
+                        binding.sessions.addSession(session);
                     }
                 });
         compositeSubscription.add(subscribe);

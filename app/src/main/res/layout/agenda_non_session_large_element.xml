@@ -1,63 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/list_item_height"
-    android:background="@color/accentColor"
-    android:clickable="true"
-    android:focusable="true">
-
-    <com.makeramen.roundedimageview.RoundedImageView
-        android:id="@+id/session_picture"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/slot_outline_size"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/speaker_photo"
-        android:scaleType="centerCrop"
-        app:riv_corner_radius="@dimen/slot_round_size" />
-
-    <ImageView
-        android:id="@+id/agenda_large_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/list_element_margin"
-        android:layout_gravity="center_vertical|end"
-        tools:src="@drawable/ic_icon_fork_large" />
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/element_background" />
+        android:layout_height="@dimen/list_item_height"
+        android:background="@color/accentColor"
+        android:clickable="true"
+        android:focusable="true">
 
-    <LinearLayout
-        style="@style/AgendaDataContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:background="@null">
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/session_picture"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/slot_outline_size"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/speaker_photo"
+            android:scaleType="centerCrop"
+            app:riv_corner_radius="@dimen/slot_round_size"/>
 
-        <TextView
-            android:id="@+id/session_title"
-            style="@style/AgendaTitle"
+        <ImageView
+            android:id="@+id/agenda_large_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Data binding" />
+            android:layout_gravity="center_vertical|end"
+            android:layout_margin="@dimen/list_element_margin"
+            tools:src="@drawable/ic_icon_fork_large"/>
 
-        <TextView
-            android:id="@+id/session_date"
-            style="@style/AgendaDate"
-            android:textColor="@color/textColorHeader"
-            android:layout_width="wrap_content"
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/element_background"/>
+
+        <LinearLayout
+            style="@style/AgendaDataContainer"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="Fr. 12:40" />
+            android:layout_gravity="center_vertical"
+            android:background="@null">
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/session_title"
+                style="@style/AgendaTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Data binding"/>
+
+            <TextView
+                android:id="@+id/session_date"
+                style="@style/AgendaDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/textColorHeader"
+                tools:text="Fr. 12:40"/>
+
+        </LinearLayout>
 
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?attr/selectableItemBackground" />
-</FrameLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"/>
+    </FrameLayout>
+</layout>

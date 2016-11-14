@@ -3,12 +3,11 @@ package pl.droidcon.app.ui.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
 
-import pl.droidcon.app.R;
+import pl.droidcon.app.databinding.ScheduleElementBinding;
 import pl.droidcon.app.model.common.Slot;
 
 public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleViewHolder> {
@@ -24,8 +23,12 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleViewHolder> {
 
     @Override
     public ScheduleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.schedule_element, parent, false);
-        return new ScheduleViewHolder(view, scheduleClickListener);
+        return new ScheduleViewHolder(
+                ScheduleElementBinding.inflate(
+                        LayoutInflater.from(parent.getContext()),
+                        parent,
+                        false
+                ), scheduleClickListener);
     }
 
     @Override

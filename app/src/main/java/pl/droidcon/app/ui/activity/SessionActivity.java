@@ -4,19 +4,15 @@ package pl.droidcon.app.ui.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -26,13 +22,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import io.requery.query.Result;
-import me.relex.circleindicator.CircleIndicator;
 import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
+import pl.droidcon.app.databinding.SessionActivityBinding;
 import pl.droidcon.app.helper.DateTimePrinter;
 import pl.droidcon.app.helper.HtmlCompat;
 import pl.droidcon.app.helper.UrlHelper;
@@ -75,37 +69,8 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
                 .putExtra(SESSION_EXTRA, session.getId());
     }
 
-    private SessionEntity session;
-
-    @Bind(R.id.speaker_photos)
-    ViewPager speakerPhotos;
-
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
-
-    @Bind(R.id.session_description)
-    TextView description;
-
-    @Bind(R.id.session_title)
-    TextView title;
-
-    @Bind(R.id.session_date)
-    TextView date;
-
-    @Bind(R.id.session_room)
-    TextView sessionRoom;
-
-    @Bind(R.id.indicator)
-    CircleIndicator indicator;
-
-    @Bind(R.id.speakers)
-    SpeakerList speakerListView;
-
-    @Bind(R.id.favourite_button)
-    FloatingActionButton favouriteButton;
-
-    @Bind(R.id.root_view)
-    CoordinatorLayout rootView;
+    SessionEntity session;
+    SessionActivityBinding binding;
 
     @Inject
     DatabaseManager databaseManager;
@@ -122,10 +87,9 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.session_activity);
+        binding = DataBindingUtil.setContentView(this, R.layout.session_activity);
         DroidconInjector.get().inject(this);
-        ButterKnife.bind(this);
-        setupToolbarBack(toolbar);
+        setupToolbarBack(binding.toolbar);
         int sessionId = getIntent().getExtras().getInt(SESSION_EXTRA);
         session = DroidconInjector.get().getDatabase()
                 .select(SessionEntity.class)
@@ -148,23 +112,22 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
 
         setToolbarTitle(null);
 
-        title.setText(session.getTitle());
+        binding.sessionTitle.setText(session.getTitle());
 
-        speakerPhotos.setAdapter(new SpeakerPhotosAdapter(this, speakersList));
-        description.setText(HtmlCompat.fromHtml(session.getDescription()));
-        date.setText(DateTimePrinter.toPrintableStringWithDay(new DateTime(session.getDate())));
-
-        indicator.setViewPager(speakerPhotos);
+        binding.speakerPhotos.setAdapter(new SpeakerPhotosAdapter(this, speakersList));
+        binding.sessionDescription.setText(HtmlCompat.fromHtml(session.getDescription()));
+        binding.sessionDate.setText(DateTimePrinter.toPrintableStringWithDay(new DateTime(session.getDate())));
+        binding.indicator.setViewPager(binding.speakerPhotos);
 
         if (speakersList.size() == 1) {
-            indicator.setAlpha(0f);
+            binding.indicator.setAlpha(0f);
         }
 
-        speakerListView.setSpeakers(speakersList, this);
-        favouriteButton.setOnClickListener(favouriteClickListener);
+        binding.speakers.setSpeakers(speakersList, this);
+        binding.favouriteButton.setOnClickListener(favouriteClickListener);
 
-        final int stringRes = Room.valueOfRoomId(session.getRoomId()).getStringRes();
-        sessionRoom.setText(stringRes);
+        int stringRes = Room.valueOfRoomId(session.getRoomId()).getStringRes();
+        binding.sessionRoom.setText(stringRes);
     }
 
     @Override
@@ -209,7 +172,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
         } else {
             favoriteDrawable = R.drawable.ic_favorite_border;
         }
-        favouriteButton.setImageResource(favoriteDrawable);
+        binding.favouriteButton.setImageResource(favoriteDrawable);
         favouriteClickListener.alreadyFavourite = isFavourite;
     }
 
@@ -276,7 +239,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
                         if (realmSchedule != null) {
                             sessionReminder.addSessionToReminding(session);
                             setRightFloatingActionButtonAction(true);
-                            snackbarWrapper.showSnackbar(rootView, R.string.fav_added);
+                            snackbarWrapper.showSnackbar(binding.rootView, R.string.fav_added);
                         }
                     }
                 });
@@ -302,7 +265,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
                     public void onNext(Boolean removeResult) {
                         sessionReminder.removeSessionFromReminding(session);
                         setRightFloatingActionButtonAction(!removeResult);
-                        snackbarWrapper.showSnackbar(rootView, R.string.fav_removed);
+                        snackbarWrapper.showSnackbar(binding.rootView, R.string.fav_removed);
                     }
                 });
         compositeSubscription.add(subscription);

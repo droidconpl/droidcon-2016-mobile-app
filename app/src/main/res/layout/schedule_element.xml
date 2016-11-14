@@ -1,98 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/list_item_height"
-    android:orientation="horizontal">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/screen_edge_margin"
-        android:layout_marginTop="@dimen/list_element_margin"
-        android:layout_marginRight="@dimen/screen_edge_margin"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_item_height"
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/slot_view_hour"
-            style="@style/SlotViewHour"
-            tools:text="8:00" />
-
-
-        <TextView
-            android:id="@+id/slot_room_name"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/screen_edge_margin"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:textColor="@color/textColorSecondary"
-            android:textAllCaps="true"
-            tools:text="room 1"/>
+            android:layout_marginLeft="@dimen/screen_edge_margin"
+            android:layout_marginRight="@dimen/screen_edge_margin"
+            android:layout_marginTop="@dimen/list_element_margin"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/slot_view_hour"
+                style="@style/SlotViewHour"
+                tools:text="8:00"/>
+
+
+            <TextView
+                android:id="@+id/slot_room_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/screen_edge_margin"
+                android:textAllCaps="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:textColor="@color/textColorSecondary"
+                tools:text="room 1"/>
+
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/slot_view_clickable"
+            style="@style/SlotViewClickableArea">
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/slot_view_speaker_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:layout_margin="@dimen/slot_outline_size"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/speaker_photo"
+                android:scaleType="centerCrop"
+                app:riv_corner_radius="@dimen/slot_round_size"/>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/slot_background_element"/>
+
+            <TextView
+                android:id="@+id/slot_view_title"
+                style="@style/SlotViewTitle"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/schedule_icon"
+                android:layout_toStartOf="@+id/schedule_icon"
+                tools:text="Data binding"
+                tools:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/slot_view_session_title"
+                style="@style/SlotViewSessionTitle"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                tools:text="Data binding"
+                tools:visibility="visible"/>
+
+            <ImageView
+                android:id="@+id/schedule_icon"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/list_element_margin"
+                android:layout_marginRight="@dimen/list_element_margin"
+                android:contentDescription="@string/slot_type_icon"/>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackground"/>
+
+        </RelativeLayout>
 
     </LinearLayout>
-
-
-
-    <RelativeLayout
-        android:id="@+id/slot_view_clickable"
-        style="@style/SlotViewClickableArea">
-
-        <com.makeramen.roundedimageview.RoundedImageView
-            android:id="@+id/slot_view_speaker_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:layout_margin="@dimen/slot_outline_size"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/speaker_photo"
-            android:scaleType="centerCrop"
-            app:riv_corner_radius="@dimen/slot_round_size" />
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/slot_background_element" />
-
-        <TextView
-            android:id="@+id/slot_view_title"
-            style="@style/SlotViewTitle"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/schedule_icon"
-            android:layout_toStartOf="@+id/schedule_icon"
-            tools:text="Data binding"
-            tools:visibility="gone" />
-
-        <TextView
-            android:id="@+id/slot_view_session_title"
-            style="@style/SlotViewSessionTitle"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:gravity="center"
-            tools:text="Data binding"
-            tools:visibility="visible" />
-
-        <ImageView
-            android:id="@+id/schedule_icon"
-            android:layout_width="34dp"
-            android:layout_height="34dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/list_element_margin"
-            android:layout_marginRight="@dimen/list_element_margin"
-            android:contentDescription="@string/slot_type_icon" />
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="?attr/selectableItemBackground" />
-
-    </RelativeLayout>
-
-</LinearLayout>
+</layout>

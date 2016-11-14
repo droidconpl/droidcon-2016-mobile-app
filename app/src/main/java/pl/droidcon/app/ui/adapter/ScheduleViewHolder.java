@@ -6,18 +6,15 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
+import pl.droidcon.app.databinding.ScheduleElementBinding;
 import pl.droidcon.app.helper.DateTimePrinter;
 import pl.droidcon.app.helper.UrlHelper;
 import pl.droidcon.app.model.common.Room;
@@ -27,49 +24,34 @@ import pl.droidcon.app.model.db.Session;
 
 public class ScheduleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    private static final String TAG = ScheduleViewHolder.class.getSimpleName();
-
     public interface ScheduleClickListener {
         void onScheduleClicked(View view, int position);
     }
 
-    @Bind(R.id.slot_view_hour)
-    TextView hour;
-    @Bind(R.id.slot_view_speaker_image)
-    ImageView image;
-    @Bind(R.id.slot_view_title)
-    TextView title;
-    @Bind(R.id.slot_view_clickable)
-    View clickable;
-    @Bind(R.id.schedule_icon)
-    ImageView icon;
-    @Bind(R.id.slot_view_session_title)
-    TextView sessionTitle;
-    @Bind(R.id.slot_room_name)
-    TextView roomName;
-
     @Inject
     Resources resources;
 
+    ScheduleElementBinding binding;
     private ScheduleClickListener scheduleClickListener;
 
-    public ScheduleViewHolder(View itemView, ScheduleClickListener scheduleClickListener) {
-        super(itemView);
+    public ScheduleViewHolder(ScheduleElementBinding binding, ScheduleClickListener scheduleClickListener) {
+        super(binding.getRoot());
+        this.binding = binding;
         this.scheduleClickListener = scheduleClickListener;
-        ButterKnife.bind(this, itemView);
+
         DroidconInjector.get().inject(this);
-        clickable.setOnClickListener(this);
+        binding.slotViewClickable.setOnClickListener(this);
     }
 
     public void attachSlot(Slot slot) {
         ViewGroup.LayoutParams layoutParams = itemView.getLayoutParams();
-        hour.setText(DateTimePrinter.toPrintableString(slot.getDateTime()));
-        title.setText(slot.getDisplayTitle());
-        sessionTitle.setText(slot.getDisplayTitle());
+        binding.slotViewHour.setText(DateTimePrinter.toPrintableString(slot.getDateTime()));
+        binding.slotViewTitle.setText(slot.getDisplayTitle());
+        binding.slotViewSessionTitle.setText(slot.getDisplayTitle());
         // be sure to reset title widget
         // show & hide
-        title.setVisibility(View.VISIBLE);
-        sessionTitle.setVisibility(View.GONE);
+        binding.slotViewTitle.setVisibility(View.VISIBLE);
+        binding.slotViewSessionTitle.setVisibility(View.GONE);
         setRoomName(slot.getSession());
 
         int resId = -1;
@@ -102,17 +84,17 @@ public class ScheduleViewHolder extends RecyclerView.ViewHolder implements View.
                 break;
         }
         if (resId != -1) {
-            icon.setVisibility(View.VISIBLE);
-            icon.setImageResource(resId);
-            title.setSingleLine(true);
-            title.setEllipsize(TextUtils.TruncateAt.END);
-            title.setMaxLines(1);
+            binding.scheduleIcon.setVisibility(View.VISIBLE);
+            binding.scheduleIcon.setImageResource(resId);
+            binding.slotViewTitle.setSingleLine(true);
+            binding.slotViewTitle.setEllipsize(TextUtils.TruncateAt.END);
+            binding.slotViewTitle.setMaxLines(1);
         } else {
-            title.setSingleLine(false);
-            title.setEllipsize(null);
-            title.setMaxLines(2);
-            icon.setVisibility(View.GONE);
-            icon.setImageDrawable(null);
+            binding.slotViewTitle.setSingleLine(false);
+            binding.slotViewTitle.setEllipsize(null);
+            binding.slotViewTitle.setMaxLines(2);
+            binding.scheduleIcon.setVisibility(View.GONE);
+            binding.scheduleIcon.setImageDrawable(null);
         }
         layoutParams.height = height;
         itemView.setLayoutParams(layoutParams);
@@ -124,18 +106,18 @@ public class ScheduleViewHolder extends RecyclerView.ViewHolder implements View.
     }
 
     private void resetPhoto() {
-        image.setImageDrawable(null);
+        binding.slotViewSpeakerImage.setImageDrawable(null);
     }
 
     private void setRoomName(@Nullable Session session) {
         if (session == null) {
-            roomName.setText(null);
+            binding.slotRoomName.setText(null);
             return;
         }
 
         int stringRes = Room.valueOfRoomId(session.getRoomId()).getStringRes();
         String room = resources.getString(stringRes);
-        roomName.setText(room);
+        binding.slotRoomName.setText(room);
     }
 
     private int getSessionSlotHeight(@Nullable Session session, int defaultValue) {
@@ -149,7 +131,7 @@ public class ScheduleViewHolder extends RecyclerView.ViewHolder implements View.
                     .load(url)
                     .resize(512, 512)
                     .centerCrop()
-                    .into(image, avatarCallback);
+                    .into(binding.slotViewSpeakerImage, avatarCallback);
         } else {
             resetPhoto();
         }
@@ -158,11 +140,11 @@ public class ScheduleViewHolder extends RecyclerView.ViewHolder implements View.
     Callback avatarCallback = new Callback() {
         @Override
         public void onSuccess() {
-            title.setVisibility(View.GONE);
-            sessionTitle.setVisibility(View.VISIBLE);
-            sessionTitle.setSingleLine(false);
-            sessionTitle.setEllipsize(null);
-            sessionTitle.setMaxLines(2);
+            binding.slotViewTitle.setVisibility(View.GONE);
+            binding.slotViewSessionTitle.setVisibility(View.VISIBLE);
+            binding.slotViewSessionTitle.setSingleLine(false);
+            binding.slotViewSessionTitle.setEllipsize(null);
+            binding.slotViewSessionTitle.setMaxLines(2);
         }
 
         @Override
