@@ -4,6 +4,7 @@ import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -70,11 +71,11 @@ public class MainActivity extends BaseActivity {
                 R.string.drawer_open,
                 R.string.drawer_close);
 
-        binding.drawerLayout.setDrawerListener(actionBarDrawerToggle);
+        binding.drawerLayout.addDrawerListener(actionBarDrawerToggle);
 
         binding.navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 binding.drawerLayout.closeDrawers();
                 boolean checked = openDrawerMenu(menuItem.getItemId());
                 checkRightDrawerMenuItem(menuItem, checked);

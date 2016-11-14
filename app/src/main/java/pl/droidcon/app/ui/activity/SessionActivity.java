@@ -70,7 +70,6 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
     }
 
     SessionEntity session;
-    List<Speaker> speakersList;
     SessionActivityBinding binding;
 
     @Inject
@@ -122,7 +121,6 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
 
         if (speakersList.size() == 1) {
             binding.indicator.setAlpha(0f);
-            ;
         }
 
         binding.speakers.setSpeakers(speakersList, this);
