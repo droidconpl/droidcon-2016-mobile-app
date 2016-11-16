@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.util.SortedListAdapterCallback;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +53,7 @@ public class AgendaAdapter extends RecyclerView.Adapter<BaseSessionViewHolder> {
 
         @Override
         public boolean areItemsTheSame(SessionEntity item1, SessionEntity item2) {
-            return item1.getId() == item2.getId();
+            return item1.getId() == item2.getId() && item1.getSpeakers().size() == item2.getSpeakers().size();
         }
     });
 
