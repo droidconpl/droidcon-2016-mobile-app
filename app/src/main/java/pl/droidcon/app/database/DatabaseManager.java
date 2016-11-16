@@ -92,17 +92,12 @@ public class DatabaseManager {
                 .toObservable();
     }
 
-    public Single<Boolean> removeFromFavourite(final Session session) {
-        return store.delete(ScheduleEntity.class)
+    public Observable<Boolean> removeFromFavourite(final Session session) {
+        return Observable
+                .just(store.delete(ScheduleEntity.class)
                 .where(ScheduleEntity.SESSION_ID.eq(session.getId()))
                 .get()
-                .toSingle()
-                .flatMap(new Func1<Integer, Single<Boolean>>() {
-                    @Override
-                    public Single<Boolean> call(Integer integer) {
-                        return Single.just(integer > 0);
-                    }
-                });
+                .value() > 0);
     }
 
     public Result<ScheduleEntity> canSessionBeSchedule(final Session session) {

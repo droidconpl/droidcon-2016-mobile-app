@@ -50,6 +50,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subjects.BehaviorSubject;
 import rx.subscriptions.CompositeSubscription;
 
 public class SessionActivity extends BaseActivity implements SpeakerList.SpeakerItemClickListener {
@@ -83,6 +84,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private FavouriteClickListener favouriteClickListener = new FavouriteClickListener();
+    BehaviorSubject<Boolean> favorite = BehaviorSubject.create(false);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,33 +138,74 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
     }
 
     private void checkIsFavourite() {
-        final Subscription subscription = databaseManager.isFavourite(session)
+//        final Subscription subscription = databaseManager.isFavourite(session)
+//                .map(new Func1<Result<ScheduleEntity>, Boolean>() {
+//                    @Override
+//                    public Boolean call(Result<ScheduleEntity> scheduleEntities) {
+//                        return !(scheduleEntities == null || scheduleEntities.toList().isEmpty());
+//                    }
+//                })
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Subscriber<Boolean>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        Log.e(TAG, "favourite check exception", e);
+//                    }
+//
+//                    @Override
+//                    public void onNext(Boolean isFavourite) {
+//                        setRightFloatingActionButtonAction(isFavourite);
+//                    }
+//                });
+//
+//        compositeSubscription.add(subscription);
+
+        favorite.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                setRightFloatingActionButtonAction(aBoolean);
+
+                if (aBoolean) {
+                    sessionReminder.addSessionToReminding(session);
+                    snackbarWrapper.showSnackbar(binding.rootView, R.string.fav_added);
+                } else {
+                    sessionReminder.removeSessionFromReminding(session);
+                    snackbarWrapper.showSnackbar(binding.rootView, R.string.fav_removed);
+                }
+            }
+        });
+
+
+        databaseManager
+                .isFavourite(session)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<Result<ScheduleEntity>, Boolean>() {
                     @Override
                     public Boolean call(Result<ScheduleEntity> scheduleEntities) {
                         return !(scheduleEntities == null || scheduleEntities.toList().isEmpty());
                     }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Boolean>() {
-                    @Override
-                    public void onCompleted() {
+                }).subscribe(favorite);
 
-                    }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, "favourite check exception", e);
-                    }
-
-                    @Override
-                    public void onNext(Boolean isFavourite) {
-                        setRightFloatingActionButtonAction(isFavourite);
-                    }
-                });
-
-        compositeSubscription.add(subscription);
+//        favorite.onNext(true);
     }
 
     private void setRightFloatingActionButtonAction(boolean isFavourite) {
@@ -178,6 +221,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
 
 
     private void checkAndAddToFavourite() {
+
         final Subscription subscription = Observable
                 .just(databaseManager.canSessionBeSchedule(session))
                 .map(new Func1<Result<ScheduleEntity>, ScheduleCollision>() {
@@ -221,54 +265,73 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
 
     private void addToFavourites() {
         Subscription subscription = databaseManager.addToFavourite(session)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ScheduleEntity>() {
+                .map(new Func1<ScheduleEntity, Boolean>() {
                     @Override
-                    public void onCompleted() {
-                        Log.d(TAG, "on completed");
+                    public Boolean call(ScheduleEntity scheduleEntity) {
+                        return scheduleEntity != null;
                     }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, "error adding to favourites", e);
-                    }
-
-                    @Override
-                    public void onNext(ScheduleEntity realmSchedule) {
-                        if (realmSchedule != null) {
-                            sessionReminder.addSessionToReminding(session);
-                            setRightFloatingActionButtonAction(true);
-                            snackbarWrapper.showSnackbar(binding.rootView, R.string.fav_added);
-                        }
-                    }
-                });
-        compositeSubscription.add(subscription);
+                }).subscribe(favorite);
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Subscriber<ScheduleEntity>() {
+//                    @Override
+//                    public void onCompleted() {
+//                        Log.d(TAG, "on completed");
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        Log.e(TAG, "error adding to favourites", e);
+//                    }
+//
+//                    @Override
+//                    public void onNext(ScheduleEntity realmSchedule) {
+//                        if (realmSchedule != null) {
+//                            setRightFloatingActionButtonAction(true);
+//                            sessionReminder.addSessionToReminding(session);
+//                            snackbarWrapper.showSnackbar(binding.rootView, R.string.fav_added);
+//                        }
+//                    }
+//                });
+//        compositeSubscription.add(subscription);
     }
 
     private void removeFromFavourites() {
-        final Subscription subscription = databaseManager.removeFromFavourite(session)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Boolean>() {
-                    @Override
-                    public void onCompleted() {
+//        favorite.onNext(false);
+        final Subscription subscription =
+                databaseManager
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, "error removing from favourites", e);
-                    }
-
-                    @Override
-                    public void onNext(Boolean removeResult) {
-                        sessionReminder.removeSessionFromReminding(session);
-                        setRightFloatingActionButtonAction(!removeResult);
-                        snackbarWrapper.showSnackbar(binding.rootView, R.string.fav_removed);
-                    }
-                });
-        compositeSubscription.add(subscription);
+                        .removeFromFavourite(session)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .map(new Func1<Boolean, Boolean>() {
+                            @Override
+                            public Boolean call(Boolean aBoolean) {
+                                return aBoolean;
+                            }
+                        })
+                        .subscribe(favorite);
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Subscriber<Boolean>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        Log.e(TAG, "error removing from favourites", e);
+//                    }
+//
+//                    @Override
+//                    public void onNext(Boolean removeResult) {
+//                        sessionReminder.removeSessionFromReminding(session);
+//                        setRightFloatingActionButtonAction(!removeResult);
+//                        snackbarWrapper.showSnackbar(binding.rootView, R.string.fav_removed);
+//                    }
+//                });
+//        compositeSubscription.add(subscription);
     }
 
     private void showOverlapDialog(final Session collisionSession) {
@@ -289,10 +352,12 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
                 .subscribe(new Action1<Boolean>() {
                     @Override
                     public void call(Boolean removed) {
+
                         sessionReminder.removeSessionFromReminding(oldSession);
-                        if (removed) {
-                            addToFavourites();
-                        }
+//                        if (removed) {
+//                            addToFavourites();
+//                        }
+
                     }
                 });
         compositeSubscription.add(subscription);
