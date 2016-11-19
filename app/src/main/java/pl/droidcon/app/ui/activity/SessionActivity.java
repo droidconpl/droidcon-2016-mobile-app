@@ -166,31 +166,33 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
 //
 //        compositeSubscription.add(subscription);
 
-        favorite.observeOn(AndroidSchedulers.mainThread())
+        favorite
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
+                    @Override
+                    public void onCompleted() {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
 
-            }
+                    }
 
-            @Override
-            public void onNext(Boolean aBoolean) {
-                setRightFloatingActionButtonAction(aBoolean);
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        setRightFloatingActionButtonAction(aBoolean);
 
-                if (aBoolean) {
-                    sessionReminder.addSessionToReminding(session);
-                    snackbarWrapper.showSnackbar(binding.rootView, R.string.fav_added);
-                } else {
-                    sessionReminder.removeSessionFromReminding(session);
-                    snackbarWrapper.showSnackbar(binding.rootView, R.string.fav_removed);
-                }
-            }
-        });
+                        if (aBoolean) {
+                            sessionReminder.addSessionToReminding(session);
+                            snackbarWrapper.showSnackbar(binding.rootView, R.string.fav_added);
+                        } else {
+                            sessionReminder.removeSessionFromReminding(session);
+                            snackbarWrapper.showSnackbar(binding.rootView, R.string.fav_removed);
+                        }
+                    }
+                });
 
 
         databaseManager
@@ -264,11 +266,15 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
     }
 
     private void addToFavourites() {
-        Subscription subscription = databaseManager.addToFavourite(session)
-                .map(new Func1<ScheduleEntity, Boolean>() {
+//        Subscription subscription =
+                databaseManager
+                .addToFavourite(session)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<ScheduleEntity, Observable<Boolean>>() {
                     @Override
-                    public Boolean call(ScheduleEntity scheduleEntity) {
-                        return scheduleEntity != null;
+                    public Observable<Boolean> call(ScheduleEntity scheduleEntity) {
+                        return Observable.just(scheduleEntity != null);
                     }
                 }).subscribe(favorite);
 //                .subscribeOn(Schedulers.io())
@@ -295,19 +301,23 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
 //                });
 //        compositeSubscription.add(subscription);
     }
-
     private void removeFromFavourites() {
 //        favorite.onNext(false);
-        final Subscription subscription =
-                databaseManager
+//        final Subscription subscription =
+
+
+        
+        databaseManager
 
                         .removeFromFavourite(session)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .map(new Func1<Boolean, Boolean>() {
+                        .flatMap(new Func1<Boolean, Observable<Boolean>>() {
                             @Override
-                            public Boolean call(Boolean aBoolean) {
-                                return aBoolean;
+                            public Observable<Boolean> call(Boolean aBoolean) {
+//                                favorite.onNext(aBoolean);
+//                                favorite.onNext(aBoolean);
+                                return Observable.just(!aBoolean);
                             }
                         })
                         .subscribe(favorite);

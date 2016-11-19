@@ -93,11 +93,12 @@ public class DatabaseManager {
     }
 
     public Observable<Boolean> removeFromFavourite(final Session session) {
-        return Observable
-                .just(store.delete(ScheduleEntity.class)
+        Integer value = store.delete(ScheduleEntity.class)
                 .where(ScheduleEntity.SESSION_ID.eq(session.getId()))
                 .get()
-                .value() > 0);
+                .value();
+        return Observable
+                .just(value > 0);
     }
 
     public Result<ScheduleEntity> canSessionBeSchedule(final Session session) {
