@@ -144,10 +144,11 @@
         <item name="android:layout_marginLeft">@dimen/list_element_margin</item>
         <item name="android:layout_marginRight">@dimen/list_element_margin</item>
         <item name="android:layout_marginTop">@dimen/list_element_margin</item>
-        <item name="android:maxLines">2</item>
+        <item name="android:maxLines">3</item>
         <item name="android:ellipsize">end</item>
         <item name="android:textColor">@color/primaryColor</item>
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
+        <item name="android:textStyle">normal</item>
         <item name="android:textSize">@dimen/agenda_title_text_size</item>
     </style>
 

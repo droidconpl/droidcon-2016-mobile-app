@@ -78,12 +78,12 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
         super.onViewCreated(view, savedInstanceState);
         binding.agendaFragmentSwipeRefreshLayout.setColorSchemeColors(swipeRefreshColorSchema.getColors());
         binding.agendaView.setHasFixedSize(true);
-        GridLayoutManager mLayoutManager = new GridLayoutManager(view.getContext(), 2);
+        GridLayoutManager mLayoutManager = new GridLayoutManager(view.getContext(), 3);
         mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
                 //return 2 for single item as single item occupies all width
-                return agendaAdapter.getSessionByPosition(position).isSingleItem() ? 2 : 1;
+                return agendaAdapter.getSessionByPosition(position).isSingleItem() ? 3 : 1;
             }
         });
         binding.agendaView.setLayoutManager(mLayoutManager);

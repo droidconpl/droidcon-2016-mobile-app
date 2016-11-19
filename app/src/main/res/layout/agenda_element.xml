@@ -27,15 +27,18 @@
 
         <LinearLayout
             style="@style/AgendaDataContainer.Dark"
-            android:layout_width="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="60dp">
 
             <TextView
+                android:padding="2dp"
                 android:id="@+id/session_title"
-                style="@style/AgendaTitle"
 
+                style="@style/AgendaTitle"
+android:fontFamily="sans-serif-normal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Data binding"/>
+                tools:text="Data binding\ntext\nererdfghhg"/>
 
             <View
                 android:layout_width="0dp"
@@ -43,6 +46,7 @@
                 android:layout_weight="1"/>
 
             <LinearLayout
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
