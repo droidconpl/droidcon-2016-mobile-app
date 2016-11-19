@@ -6,7 +6,7 @@
     <color name="primaryColorLight">#C8E6C9</color>
     <color name="accentColor">#3d3d3d</color>
 
-    <color name="textColorPrimary">#282828</color>
+    <color name="textColorPrimary">#1f1f1f</color>
     <color name="textColorSecondary">#727272</color>
     <color name="textColorHeader">#FFF</color>
 
