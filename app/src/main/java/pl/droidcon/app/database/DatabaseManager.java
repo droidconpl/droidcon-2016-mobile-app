@@ -35,6 +35,7 @@ public class DatabaseManager {
         return store
                 .select(SessionEntity.class)
                 .where(SessionEntity.DATE.between(beginDate, endOfDate))
+                .orderBy(SessionEntity.LEFT)
                 .get().toSelfObservable();
     }
 
