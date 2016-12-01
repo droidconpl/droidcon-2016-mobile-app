@@ -2,6 +2,7 @@ package pl.droidcon.app.ui.fragment.agenda;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import pl.droidcon.app.model.common.SessionDay;
 import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.model.db.SpeakerEntity;
 import pl.droidcon.app.model.ui.SwipeRefreshColorSchema;
+import pl.droidcon.app.rx.DataSubscription;
 import pl.droidcon.app.ui.activity.SessionActivity;
 import pl.droidcon.app.ui.adapter.AgendaAdapter;
 import pl.droidcon.app.ui.decoration.SpacesItemDecoration;
@@ -44,7 +46,8 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
     SwipeRefreshColorSchema swipeRefreshColorSchema;
     @Inject
     DatabaseManager databaseManager;
-
+    @Inject
+    DataSubscription dataSubscription;
     private SessionDay sessionDay;
 
     private AgendaAdapter agendaAdapter = new AgendaAdapter();
@@ -77,6 +80,13 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         binding.agendaFragmentSwipeRefreshLayout.setColorSchemeColors(swipeRefreshColorSchema.getColors());
+        binding.agendaFragmentSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                dataSubscription.fetchData();
+                binding.agendaFragmentSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
         binding.agendaView.setHasFixedSize(true);
         GridLayoutManager mLayoutManager = new GridLayoutManager(view.getContext(), 2);
         mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -120,7 +130,7 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
                 .subscribe(new Subscriber<SessionEntity>() {
                     @Override
                     public void onCompleted() {
-                        binding.agendaFragmentSwipeRefreshLayout.setRefreshing(false);
+
                     }
 
                     @Override
@@ -131,6 +141,7 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
                     @Override
                     public void onNext(SessionEntity sessionEntity) {
                         agendaAdapter.add(sessionEntity);
+                        binding.agendaFragmentSwipeRefreshLayout.setRefreshing(false);
                     }
                 });
     }
