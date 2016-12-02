@@ -12,6 +12,7 @@ import pl.droidcon.app.database.DatabaseManager;
 import pl.droidcon.app.http.RestService;
 import pl.droidcon.app.model.api.AgendaResponse;
 import pl.droidcon.app.model.api.SessionRow;
+import pl.droidcon.app.model.api.AgendaRow;
 import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.model.db.Speaker;
 import pl.droidcon.app.model.db.SpeakerEntity;
@@ -104,5 +105,31 @@ public class DataSubscription {
                         Log.d(TAG, "onNext() called with: sessionEntity = [" + sessionEntity + "]");
                     }
                 });
+
+        restService.getData()
+                .flatMap(new Func1<List<AgendaRow>, Observable<AgendaRow>>() {
+                    @Override
+                    public Observable<AgendaRow> call(List<AgendaRow> agendaRows) {
+                        return Observable.from(agendaRows);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Subscriber<AgendaRow>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(AgendaRow sessionRow2) {
+
+                    }
+                });
+
     }
 }
