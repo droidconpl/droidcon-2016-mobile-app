@@ -3,6 +3,12 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="session"
+            type="pl.droidcon.app.model.db.Session"/>
+    </data>
+
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/root_view"
         android:layout_width="match_parent"
@@ -63,6 +69,7 @@
                     android:gravity="center_vertical"
                     android:padding="@dimen/list_element_margin"
                     android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                    android:text="@{session.title}"
                     tools:text="RxJava"/>
 
                 <LinearLayout

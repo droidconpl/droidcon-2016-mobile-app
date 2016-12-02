@@ -1,5 +1,6 @@
 package pl.droidcon.app.model.db;
 
+import android.databinding.Bindable;
 import android.os.Parcelable;
 
 import java.util.Date;
@@ -12,7 +13,7 @@ import io.requery.ManyToMany;
 import io.requery.OneToOne;
 
 @Entity
-public interface Session extends Parcelable {
+public interface Session extends Parcelable, android.databinding.Observable {
 
     @Key
     int getId();
@@ -20,6 +21,7 @@ public interface Session extends Parcelable {
     @Column(name = "start_time")
     Date getDate();
 
+    @Bindable
     String getTitle();
 
     String getDescription();
