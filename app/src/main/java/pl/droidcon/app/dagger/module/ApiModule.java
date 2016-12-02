@@ -24,7 +24,7 @@ import retrofit.converter.GsonConverter;
 @Module
 public class ApiModule {
 
-    private final static String BASE_URL = "https://raw.githubusercontent.com/droidconpl/droidcon-2015-web/master";
+    private final static String BASE_URL = "https://raw.githubusercontent.com/droidconpl/droidconPL-web/master";
 
     @Provides
     @Singleton

@@ -7,7 +7,7 @@ import android.net.Uri;
 
 public final class UrlHelper {
 
-    private static final String BASE_URL = "https://raw.githubusercontent.com/droidconpl/droidcon-2015-web/master/";
+    private static final String BASE_URL = "https://raw.githubusercontent.com/droidconpl/droidconPL-web/master/assets/photos/speakers/";
 
     private UrlHelper() {
 

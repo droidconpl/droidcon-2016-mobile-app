@@ -3,6 +3,8 @@ package pl.droidcon.app.rx;
 
 import android.util.Log;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import pl.droidcon.app.dagger.DroidconInjector;
@@ -10,7 +12,6 @@ import pl.droidcon.app.database.DatabaseManager;
 import pl.droidcon.app.http.RestService;
 import pl.droidcon.app.model.api.AgendaResponse;
 import pl.droidcon.app.model.api.SessionRow;
-import pl.droidcon.app.model.api.SpeakerResponse;
 import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.model.db.Speaker;
 import pl.droidcon.app.model.db.SpeakerEntity;
@@ -36,10 +37,10 @@ public class DataSubscription {
 
     public void fetchData() {
         restService.getSpeakers()
-                .flatMap(new Func1<SpeakerResponse, Observable<SpeakerEntity>>() {
+                .flatMap(new Func1<List<SpeakerEntity>, Observable<SpeakerEntity>>() {
                     @Override
-                    public Observable<SpeakerEntity> call(SpeakerResponse speakerResponse) {
-                        return Observable.from(speakerResponse.speakers);
+                    public Observable<SpeakerEntity> call(List<SpeakerEntity> speakerEntities) {
+                        return Observable.from(speakerEntities);
                     }
                 })
                 .flatMap(new Func1<Speaker, Observable<SpeakerEntity>>() {
