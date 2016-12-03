@@ -10,6 +10,7 @@ import java.util.List;
 import pl.droidcon.app.R;
 import pl.droidcon.app.databinding.AgendaElementNewBinding;
 import pl.droidcon.app.databinding.AgendaElementSingleSessionBinding;
+import pl.droidcon.app.helper.HtmlCompat;
 import pl.droidcon.app.helper.UrlHelper;
 import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.db.SessionRowEntity;
@@ -45,7 +46,7 @@ public class AgendaSessionRowViewHolder extends BaseSessionViewHolder {
 
     void setRoom(final Session session, AgendaElementSingleSessionBinding agendaElementBinding) {
         if (session == null) {
-            agendaElementBinding.sessionTitle.setText(sessionRowEnity.rowTitle());
+            agendaElementBinding.sessionTitle.setText(HtmlCompat.fromHtml(sessionRowEnity.rowTitle()));
             agendaElementBinding.sessionPicture.setImageResource(R.drawable.droidcon_krakow_logo);
             return;
         }
