@@ -4,6 +4,7 @@
         xmlns:tools="http://schemas.android.com/tools">
 
     <FrameLayout
+        android:layout_marginTop="2dp"
         android:layout_width="match_parent"
         android:layout_height="@dimen/list_item_height"
         android:background="@color/accentColor"
