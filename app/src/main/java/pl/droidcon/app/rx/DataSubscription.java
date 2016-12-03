@@ -227,6 +227,8 @@ public class DataSubscription {
         sessionRowEntity.rowTitle(firstNotEmpty(room1.slotTitle, room2.slotTitle, room3.slotTitle));
         sessionRowEntity.rowPicture(firstNotEmpty(room1.slotPicture, room2.slotPicture, room3.slotPicture));
 
+        sessionRowEntity.sessionType(agendaRow.sessionType);
+
         return DroidconInjector.get().getDatabase().upsert(sessionRowEntity);
     }
 

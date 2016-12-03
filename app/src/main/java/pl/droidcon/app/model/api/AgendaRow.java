@@ -11,6 +11,7 @@ public class AgendaRow {
     public int slotId;
     public String slotStart;
     public String slotEnd;
+    public String sessionType;
     public List<AgendaRowDetails> slotArray;
 
 

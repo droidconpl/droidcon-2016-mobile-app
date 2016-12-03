@@ -12,5 +12,6 @@ public class SessionResponse {
     public String sessionTitle;
     public String sessionDescription;
 
-    public Integer sessionLength;
+    public Float sessionLength;
+    public Integer workshopCapacity;
 }

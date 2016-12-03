@@ -24,6 +24,8 @@ public interface SessionRow {
 
     String rowPicture();
 
+    String sessionType();
+
     @ForeignKey
     @OneToOne
     Session room1();

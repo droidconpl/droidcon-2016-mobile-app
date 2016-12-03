@@ -84,7 +84,8 @@ public class AgendaAdapterNew extends RecyclerView.Adapter<BaseSessionViewHolder
     public int getItemViewType(int position) {
         SessionRowEntity sessionByPosition = getSessionByPosition(position);
 
-        if(sessionByPosition.room1() == null)
+        if("singleSlot".equals(sessionByPosition.sessionType()))
+//        if(sessionByPosition.room1() == null)
             return ViewType.LARGE_NON_SESSION.getViewType();
         else
             return ViewType.NORMAL_SESSION.getViewType();
