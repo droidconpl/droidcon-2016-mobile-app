@@ -36,7 +36,6 @@
                 style="@style/AgendaTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-normal"
                 android:maxLines="3"
                 android:minHeight="42dp"
                 android:padding="2dp"

@@ -4,9 +4,9 @@
         xmlns:tools="http://schemas.android.com/tools">
 
     <FrameLayout
-        android:layout_marginTop="2dp"
         android:layout_width="match_parent"
         android:layout_height="@dimen/list_item_height"
+        android:layout_marginTop="2dp"
         android:background="@color/accentColor"
         android:clickable="true"
         android:focusable="true">
@@ -27,6 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|end"
             android:layout_margin="@dimen/list_element_margin"
+            android:paddingRight="16dp"
             tools:src="@drawable/ic_icon_fork_large"/>
 
         <FrameLayout
@@ -39,7 +40,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:background="@null">
+            android:background="@null"
+            android:paddingLeft="16dp">
 
             <TextView
                 android:id="@+id/session_title"
@@ -47,14 +49,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="Data binding"/>
-
-            <TextView
-                android:id="@+id/session_date"
-                style="@style/AgendaDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/textColorHeader"
-                tools:text="Fr. 12:40"/>
 
         </LinearLayout>
 

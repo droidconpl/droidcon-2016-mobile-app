@@ -146,6 +146,7 @@
         <item name="android:textColor">@color/primaryColor</item>
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
         <item name="android:textSize">@dimen/agenda_title_text_size</item>
+        <item name="android:fontFamily">sans-serif-normal</item>
     </style>
 
     <style name="SpeakerTitle" parent="AgendaTitle">
