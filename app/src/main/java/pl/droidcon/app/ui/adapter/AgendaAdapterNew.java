@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import pl.droidcon.app.databinding.AgendaElementBinding;
+import pl.droidcon.app.databinding.AgendaElementNewBinding;
 import pl.droidcon.app.databinding.AgendaNonSessionLargeElementBinding;
 import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.model.db.SessionRowEntity;
@@ -71,7 +72,7 @@ public class AgendaAdapterNew extends RecyclerView.Adapter<BaseSessionViewHolder
         View v;
         switch (type) {
             case NORMAL_SESSION:
-                return new AgendaSessionViewHolder(AgendaElementBinding.inflate(inflater, parent, false));
+                return new AgendaSessionRowViewHolder(AgendaElementNewBinding.inflate(inflater, parent, false));
             case LARGE_NON_SESSION:
                 return new AgendaNonSessionLargeViewHolder(AgendaNonSessionLargeElementBinding.inflate(inflater, parent, false));
             case LARGE_SESSION:

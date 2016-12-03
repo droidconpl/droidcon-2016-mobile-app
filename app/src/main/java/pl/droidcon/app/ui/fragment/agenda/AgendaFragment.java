@@ -3,7 +3,7 @@ package pl.droidcon.app.ui.fragment.agenda;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,24 +14,18 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.requery.query.Result;
 import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
 import pl.droidcon.app.databinding.AgendaFragmentBinding;
 import pl.droidcon.app.model.common.SessionDay;
+import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.model.db.SessionRowEntity;
 import pl.droidcon.app.model.ui.SwipeRefreshColorSchema;
 import pl.droidcon.app.rx.DataSubscription;
 import pl.droidcon.app.ui.adapter.AgendaAdapterNew;
-import pl.droidcon.app.ui.decoration.SpacesItemDecoration;
 import pl.droidcon.app.ui.view.RecyclerItemClickListener;
 import pl.droidcon.app.wrapper.SnackbarWrapper;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 
 public class AgendaFragment extends RxFragment implements RecyclerItemClickListener.OnItemClickListener {
@@ -87,7 +81,7 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
             }
         });
         binding.agendaView.setHasFixedSize(true);
-        GridLayoutManager mLayoutManager = new GridLayoutManager(view.getContext(), 3);
+//        GridLayoutManager mLayoutManager = new GridLayoutManager(view.getContext(), 3);
 //        mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
 //            @Override
 //            public int getSpanSize(int position) {
@@ -95,7 +89,7 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
 //                return agendaAdapter.getSessionByPosition(position).isSingleItem() ? 2 : 1;
 //            }
 //        });
-        binding.agendaView.setLayoutManager(mLayoutManager);
+        binding.agendaView.setLayoutManager(new LinearLayoutManager(getContext()));
 //        binding.agendaView.addItemDecoration(new SpacesItemDecoration(view.getContext().getResources().getDimension(R.dimen.list_element_margin)));
         binding.agendaView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), this));
         binding.agendaView.setAdapter(agendaAdapter);
@@ -147,13 +141,19 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
 //                });
 //
 
-        List<SessionRowEntity> sessionRowEntities = DroidconInjector.get().getDatabase().select(SessionRowEntity.class).get().toList();
+        List<SessionRowEntity> sessionRowEntities =
+                DroidconInjector.get().getDatabase()
+                        .select(SessionRowEntity.class)
+                        .where(SessionEntity.DAY_ID.eq(sessionDay.ordinal() + 1))
+                        .orderBy(SessionRowEntity.SLOT_ID)
+                        .get()
+                        .toList();
 
 
         for (SessionRowEntity sessionRowEntity : sessionRowEntities) {
 
-            if(sessionRowEntity.room1() != null)
-            agendaAdapter.add(sessionRowEntity);
+            if (sessionRowEntity.room1() != null)
+                agendaAdapter.add(sessionRowEntity);
         }
 
     }
