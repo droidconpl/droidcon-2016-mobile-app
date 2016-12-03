@@ -69,6 +69,7 @@ public class AgendaSessionRowViewHolder extends BaseSessionViewHolder {
             String url = UrlHelper.url(realSpeakerList.get(0).getImageUrl());
             Picasso.with(sessionPicture.getContext())
                     .load(url)
+                    .placeholder(R.drawable.droidcon_krakow_logo)
                     .into(sessionPicture);
         }
     }
