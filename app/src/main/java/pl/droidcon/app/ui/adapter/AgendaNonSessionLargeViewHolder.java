@@ -8,6 +8,7 @@ import pl.droidcon.app.databinding.AgendaNonSessionLargeElementBinding;
 import pl.droidcon.app.helper.DateTimePrinter;
 import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.db.SessionEntity;
+import pl.droidcon.app.model.db.SessionRowEntity;
 
 public class AgendaNonSessionLargeViewHolder extends BaseSessionViewHolder {
 
@@ -52,5 +53,10 @@ public class AgendaNonSessionLargeViewHolder extends BaseSessionViewHolder {
     @Override
     public Session getSession() {
         return session;
+    }
+
+    @Override
+    public void attachSession(SessionRowEntity sessionRowEntity) {
+
     }
 }

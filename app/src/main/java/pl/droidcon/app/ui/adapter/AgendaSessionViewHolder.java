@@ -13,6 +13,7 @@ import pl.droidcon.app.helper.UrlHelper;
 import pl.droidcon.app.model.common.Room;
 import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.db.SessionEntity;
+import pl.droidcon.app.model.db.SessionRowEntity;
 import pl.droidcon.app.model.db.Speaker;
 
 public class AgendaSessionViewHolder extends BaseSessionViewHolder {
@@ -49,5 +50,23 @@ public class AgendaSessionViewHolder extends BaseSessionViewHolder {
 
     public Session getSession() {
         return session;
+    }
+
+    @Override
+    public void attachSession(SessionRowEntity sessionRowEntity) {
+        Session session = sessionRowEntity.room1();
+        binding.sessionTitle.setText(session.getTitle());
+
+//        binding.sessionDate.setText(DateTimePrinter.toPrintableString(new DateTime(session.getDate())));
+
+        List<Speaker> realSpeakerList = session.getSpeakers();
+        if (realSpeakerList.isEmpty()) {
+            binding.sessionPicture.setImageResource(R.drawable.droidcon_krakow_logo);
+        } else {
+            String url = UrlHelper.url(realSpeakerList.get(0).getImageUrl());
+            Picasso.with(binding.sessionPicture.getContext())
+                    .load(url)
+                    .into(binding.sessionPicture);
+        }
     }
 }

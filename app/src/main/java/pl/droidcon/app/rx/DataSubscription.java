@@ -56,17 +56,17 @@ public class DataSubscription {
                 .subscribe(new Subscriber<SpeakerEntity>() {
                     @Override
                     public void onCompleted() {
-                        Log.d(TAG, "onCompleted() called");
+//                        Log.d(TAG, "onCompleted() called");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d(TAG, "onError() called with: e = [" + e + "]");
+//                        Log.d(TAG, "onError() called with: e = [" + e + "]");
                     }
 
                     @Override
                     public void onNext(SpeakerEntity speakerEntity) {
-                        Log.d(TAG, "onNext() called with: speakerEntity = [" + speakerEntity.getId() + "]");
+//                        Log.d(TAG, "onNext() called with: speakerEntity = [" + speakerEntity.getId() + "]");
                     }
                 });
 

@@ -1,6 +1,8 @@
 package pl.droidcon.app.model.db;
 
 
+import com.google.gson.annotations.SerializedName;
+
 import io.requery.Entity;
 import io.requery.ForeignKey;
 import io.requery.Key;
@@ -34,7 +36,7 @@ public interface SessionRow {
 
 
     // Either Talk or break
-    String type();
+//    String type();
 
 //    String title();
 //    String picture();

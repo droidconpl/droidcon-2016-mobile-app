@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 
 import com.trello.rxlifecycle.components.support.RxFragment;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import io.requery.query.Result;
@@ -18,12 +20,10 @@ import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
 import pl.droidcon.app.databinding.AgendaFragmentBinding;
 import pl.droidcon.app.model.common.SessionDay;
-import pl.droidcon.app.model.db.SessionEntity;
-import pl.droidcon.app.model.db.SpeakerEntity;
+import pl.droidcon.app.model.db.SessionRowEntity;
 import pl.droidcon.app.model.ui.SwipeRefreshColorSchema;
 import pl.droidcon.app.rx.DataSubscription;
-import pl.droidcon.app.ui.activity.SessionActivity;
-import pl.droidcon.app.ui.adapter.AgendaAdapter;
+import pl.droidcon.app.ui.adapter.AgendaAdapterNew;
 import pl.droidcon.app.ui.decoration.SpacesItemDecoration;
 import pl.droidcon.app.ui.view.RecyclerItemClickListener;
 import pl.droidcon.app.wrapper.SnackbarWrapper;
@@ -31,7 +31,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 
@@ -50,7 +49,7 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
     DataSubscription dataSubscription;
     private SessionDay sessionDay;
 
-    private AgendaAdapter agendaAdapter = new AgendaAdapter();
+    private AgendaAdapterNew agendaAdapter = new AgendaAdapterNew();
     AgendaFragmentBinding binding;
 
     public static AgendaFragment newInstance(SessionDay sessionDay) {
@@ -88,16 +87,16 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
             }
         });
         binding.agendaView.setHasFixedSize(true);
-        GridLayoutManager mLayoutManager = new GridLayoutManager(view.getContext(), 2);
-        mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                //return 2 for single item as single item occupies all width
-                return agendaAdapter.getSessionByPosition(position).isSingleItem() ? 2 : 1;
-            }
-        });
+        GridLayoutManager mLayoutManager = new GridLayoutManager(view.getContext(), 3);
+//        mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+//            @Override
+//            public int getSpanSize(int position) {
+        //return 2 for single item as single item occupies all width
+//                return agendaAdapter.getSessionByPosition(position).isSingleItem() ? 2 : 1;
+//            }
+//        });
         binding.agendaView.setLayoutManager(mLayoutManager);
-        binding.agendaView.addItemDecoration(new SpacesItemDecoration(view.getContext().getResources().getDimension(R.dimen.list_element_margin)));
+//        binding.agendaView.addItemDecoration(new SpacesItemDecoration(view.getContext().getResources().getDimension(R.dimen.list_element_margin)));
         binding.agendaView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), this));
         binding.agendaView.setAdapter(agendaAdapter);
         getSessions();
@@ -111,47 +110,60 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
     }
 
     private void getSessions() {
-        Observable
-                .combineLatest(databaseManager.sessions(sessionDay), databaseManager.speakers(), new Func2<Result<SessionEntity>, Result<SpeakerEntity>, Result<SessionEntity>>() {
-                    @Override
-                    public Result<SessionEntity> call(Result<SessionEntity> sessionEntities, Result<SpeakerEntity> speakerEntities) {
-                        return sessionEntities;
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .compose(this.<Result<SessionEntity>>bindToLifecycle())
-                .flatMap(new Func1<Result<SessionEntity>, Observable<SessionEntity>>() {
-                    @Override
-                    public Observable<SessionEntity> call(Result<SessionEntity> sessionEntities) {
-                        return sessionEntities.toObservable();
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<SessionEntity>() {
-                    @Override
-                    public void onCompleted() {
+//        Observable
+//                .combineLatest(databaseManager.sessionRows(0), databaseManager.speakers(), new Func2<Result<SessionRowEntity>, Result<SpeakerEntity>, Result<SessionRowEntity>>() {
+//                    @Override
+//                    public Result<SessionRowEntity> call(Result<SessionRowEntity> sessionEntities, Result<SpeakerEntity> speakerEntities) {
+//                        return sessionEntities;
+//                    }
+//                })
+//        databaseManager.
+//                sessionRows(0)
+//                .flatMap(new Func1<Result<SessionRowEntity>, Observable<SessionRowEntity>>() {
+//                    @Override
+//                    public Observable<SessionRowEntity> call(Result<SessionRowEntity> sessionRowEntities) {
+//                        return sessionRowEntities.toObservable();
+//                    }
+//                })
+//                .compose(this.<SessionRowEntity>bindToLifecycle())
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Subscriber<SessionRowEntity>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        showErrorSnackBar();
+//                    }
+//
+//                    @Override
+//                    public void onNext(SessionRowEntity sessionEntity) {
+//                        agendaAdapter.add(sessionEntity);
+//                        binding.agendaFragmentSwipeRefreshLayout.setRefreshing(false);
+//                    }
+//                });
+//
 
-                    }
+        List<SessionRowEntity> sessionRowEntities = DroidconInjector.get().getDatabase().select(SessionRowEntity.class).get().toList();
 
-                    @Override
-                    public void onError(Throwable e) {
-                        showErrorSnackBar();
-                    }
 
-                    @Override
-                    public void onNext(SessionEntity sessionEntity) {
-                        agendaAdapter.add(sessionEntity);
-                        binding.agendaFragmentSwipeRefreshLayout.setRefreshing(false);
-                    }
-                });
+        for (SessionRowEntity sessionRowEntity : sessionRowEntities) {
+
+            if(sessionRowEntity.room1() != null)
+            agendaAdapter.add(sessionRowEntity);
+        }
+
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        SessionEntity session = agendaAdapter.getSessionByPosition(position);
-        if (session.getSpeakers().isEmpty()) {
+        SessionRowEntity session = agendaAdapter.getSessionByPosition(position);
+        if (session.room1().getSpeakers().isEmpty()) {
             return;
         }
-        SessionActivity.start(getContext(), session);
+//        SessionActivity.start(getContext(), session);
     }
 }

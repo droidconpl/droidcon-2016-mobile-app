@@ -6,6 +6,7 @@ import android.view.View;
 
 import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.db.SessionEntity;
+import pl.droidcon.app.model.db.SessionRowEntity;
 
 public abstract class BaseSessionViewHolder extends RecyclerView.ViewHolder {
 
@@ -16,4 +17,6 @@ public abstract class BaseSessionViewHolder extends RecyclerView.ViewHolder {
     abstract public void attachSession(SessionEntity session);
 
     abstract public Session getSession();
+
+    public abstract void attachSession(SessionRowEntity sessionRowEntity);
 }
