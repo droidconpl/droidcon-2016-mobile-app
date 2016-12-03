@@ -49,7 +49,7 @@ public class AgendaAdapterNew extends RecyclerView.Adapter<BaseSessionViewHolder
 
         @Override
         public boolean areContentsTheSame(SessionRowEntity oldItem, SessionRowEntity newItem) {
-            return oldItem.equals(newItem);
+            return oldItem.getId() == newItem.getId();
         }
 
         @Override
@@ -108,6 +108,12 @@ public class AgendaAdapterNew extends RecyclerView.Adapter<BaseSessionViewHolder
     @Override
     public void onBindViewHolder(BaseSessionViewHolder holder, int position) {
         holder.attachSession(sessions.get(position));
+    }
+
+    @Override
+    public void onViewRecycled(BaseSessionViewHolder holder) {
+        super.onViewRecycled(holder);
+        holder.unSubscribe();
     }
 
     @Override

@@ -74,6 +74,20 @@ public class DatabaseManager {
                 .get().toObservable();
     }
 
+    public Observable<Result<SessionEntity>> observableSession(final int sessionId) {
+        return store.
+                select(SessionEntity.class)
+                .where(SessionEntity.ID.eq(sessionId))
+                .get().toSelfObservable();
+    }
+
+    public Observable<Result<SpeakerEntity>> observableSpeaker(final int speakerId) {
+        return store.
+                select(SpeakerEntity.class)
+                .where(SpeakerEntity.ID.eq(speakerId))
+                .get().toSelfObservable();
+    }
+
     public Observable<Result<ScheduleEntity>> schedules(final SessionDay sessionDay) {
         return store
                 .select(ScheduleEntity.class)

@@ -17,4 +17,8 @@ public abstract class BaseSessionViewHolder extends RecyclerView.ViewHolder {
     abstract public Session getSession();
 
     public abstract void attachSession(SessionRowEntity sessionRowEntity);
+
+    public void unSubscribe(){
+
+    }
 }

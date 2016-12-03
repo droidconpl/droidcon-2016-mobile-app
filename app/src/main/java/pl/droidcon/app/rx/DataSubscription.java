@@ -204,6 +204,13 @@ public class DataSubscription {
             room1Entity.setId(Integer.parseInt(room1.slotSession));
 
             sessionRowEntity.room1(room1Entity);
+        } else {
+            SessionEntity room1Entity = new SessionEntity();
+
+            room1Entity.setId(room1.slotTitle.hashCode());
+            room1Entity.setTitle(room1.slotTitle);
+
+            sessionRowEntity.room1(room1Entity);
         }
 
         AgendaRowDetails room2 = agendaRow.slotArray.get(1);
@@ -213,6 +220,13 @@ public class DataSubscription {
             room2Entity.setId(Integer.parseInt(room2.slotSession));
 
             sessionRowEntity.room2(room2Entity);
+        } else {
+            SessionEntity room2Entity = new SessionEntity();
+
+            room2Entity.setId(room2.slotTitle.hashCode());
+            room2Entity.setTitle(room2.slotTitle);
+
+            sessionRowEntity.room2(room2Entity);
         }
 
         AgendaRowDetails room3 = agendaRow.slotArray.get(2);
@@ -220,6 +234,13 @@ public class DataSubscription {
         if (room3.slotSession.length() > 0) {
             SessionEntity room3Entity = new SessionEntity();
             room3Entity.setId(Integer.parseInt(room3.slotSession));
+
+            sessionRowEntity.room3(room3Entity);
+        } else {
+            SessionEntity room3Entity = new SessionEntity();
+
+            room3Entity.setId(room3.slotTitle.hashCode());
+            room3Entity.setTitle(room3.slotTitle);
 
             sessionRowEntity.room3(room3Entity);
         }
