@@ -1,52 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-
-        <FrameLayout
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="4dp"
-            android:layout_weight="1">
+            android:orientation="horizontal">
 
-            <include
-                android:id="@+id/agenda_element_room1"
-                layout="@layout/agenda_element_single_session"
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:background="@android:color/background_dark"/>
+
+            <TextView
+                android:id="@+id/agenda_element_start_time"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/agenda_element_height"/>
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:padding="4dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                tools:text="9:00"/>
 
-        </FrameLayout>
+            <View
+                android:layout_width="5dp"
+                android:layout_height="1dp"
+                android:layout_gravity="center_vertical"
+                android:background="@android:color/background_dark"/>
 
-        <FrameLayout
-            android:layout_width="0dp"
+            <TextView
+                android:id="@+id/agenda_element_end_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:padding="4dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                tools:text="11:15"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:background="@android:color/background_dark"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="4dp"
-            android:layout_weight="1">
+            android:orientation="horizontal">
 
-            <include
-                android:id="@+id/agenda_element_room2"
-                layout="@layout/agenda_element_single_session"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/agenda_element_height"/>
-        </FrameLayout>
 
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                android:layout_weight="1">
 
-            <include
-                android:id="@+id/agenda_element_room3"
-                layout="@layout/agenda_element_single_session"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/agenda_element_height"/>
+                <include
+                    android:id="@+id/agenda_element_room1"
+                    layout="@layout/agenda_element_single_session"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/agenda_element_height"/>
 
-        </FrameLayout>
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                android:layout_weight="1">
+
+                <include
+                    android:id="@+id/agenda_element_room2"
+                    layout="@layout/agenda_element_single_session"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/agenda_element_height"/>
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <include
+                    android:id="@+id/agenda_element_room3"
+                    layout="@layout/agenda_element_single_session"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/agenda_element_height"/>
+
+            </FrameLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
-
 </layout>

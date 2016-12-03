@@ -35,6 +35,9 @@ public class AgendaSessionRowViewHolder extends BaseSessionViewHolder {
     @Override
     public void attachSession(SessionRowEntity sessionRowEntity) {
         this.sessionRowEnity = sessionRowEntity;
+        binding.agendaElementStartTime.setText(sessionRowEntity.slotStart());
+        binding.agendaElementEndTime.setText(sessionRowEntity.slotEnd());
+
         setRoom(sessionRowEntity.room1(), binding.agendaElementRoom1);
         setRoom(sessionRowEntity.room2(), binding.agendaElementRoom2);
         setRoom(sessionRowEntity.room3(), binding.agendaElementRoom3);
