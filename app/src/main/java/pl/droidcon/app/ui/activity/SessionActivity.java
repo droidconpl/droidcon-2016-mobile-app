@@ -111,7 +111,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
 
         setToolbarTitle(null);
 
-        binding.sessionTitle.setText(session.getTitle());
+        binding.sessionTitle.setText(HtmlCompat.fromHtml(session.getTitle()));
 
         binding.speakerPhotos.setAdapter(new SpeakerPhotosAdapter(this, speakersList));
         binding.sessionDescription.setText(HtmlCompat.fromHtml(session.getDescription()));

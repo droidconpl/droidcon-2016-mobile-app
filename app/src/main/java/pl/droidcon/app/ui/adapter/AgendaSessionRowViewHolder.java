@@ -50,7 +50,7 @@ public class AgendaSessionRowViewHolder extends BaseSessionViewHolder {
             agendaElementBinding.sessionPicture.setImageResource(R.drawable.droidcon_krakow_logo);
             return;
         }
-        agendaElementBinding.sessionTitle.setText(session.getTitle());
+        agendaElementBinding.sessionTitle.setText(HtmlCompat.fromHtml(session.getTitle()));
 
         setPicture(session.getSpeakers(), agendaElementBinding.sessionPicture);
 
