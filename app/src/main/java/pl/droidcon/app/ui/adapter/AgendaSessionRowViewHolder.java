@@ -59,14 +59,15 @@ public class AgendaSessionRowViewHolder extends BaseSessionViewHolder {
         setRoom(sessionRowEntity.room3(), binding.agendaElementRoom3);
     }
 
-    void setRoom(Session session, AgendaElementSingleSessionBinding agendaElementRoom1) {
+    void setRoom(Session session, AgendaElementSingleSessionBinding agendaElementBinding) {
         if (session == null) {
-            agendaElementRoom1.sessionTitle.setText(sessionRowEnity.rowTitle());
+            agendaElementBinding.sessionTitle.setText(sessionRowEnity.rowTitle());
+            agendaElementBinding.sessionPicture.setImageResource(R.drawable.droidcon_krakow_logo);
             return;
         }
-        agendaElementRoom1.sessionTitle.setText(session.getTitle());
+        agendaElementBinding.sessionTitle.setText(session.getTitle());
 
-        setPicture(session.getSpeakers(), agendaElementRoom1.sessionPicture);
+        setPicture(session.getSpeakers(), agendaElementBinding.sessionPicture);
     }
 
     private void setPicture(List<Speaker> realSpeakerList, RoundedImageView sessionPicture) {

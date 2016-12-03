@@ -1,6 +1,8 @@
 package pl.droidcon.app.rx;
 
 
+import android.text.TextUtils;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -222,9 +224,19 @@ public class DataSubscription {
             sessionRowEntity.room3(room3Entity);
         }
 
-        sessionRowEntity.rowTitle(room1.slotTitle + room2.slotTitle + room3.slotTitle);
-        sessionRowEntity.rowPicture(room1.slotPicture + room2.slotPicture + room3.slotPicture);
+        sessionRowEntity.rowTitle(firstNotEmpty(room1.slotTitle, room2.slotTitle, room3.slotTitle));
+        sessionRowEntity.rowPicture(firstNotEmpty(room1.slotPicture, room2.slotPicture, room3.slotPicture));
 
         return DroidconInjector.get().getDatabase().upsert(sessionRowEntity);
+    }
+
+    String firstNotEmpty(String... texts) {
+
+        for (String text : texts) {
+            if (!TextUtils.isEmpty(text))
+                return text;
+        }
+
+        return "";
     }
 }
