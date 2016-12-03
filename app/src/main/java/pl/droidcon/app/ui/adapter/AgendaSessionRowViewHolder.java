@@ -1,5 +1,7 @@
 package pl.droidcon.app.ui.adapter;
 
+import android.view.View;
+
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 
@@ -12,6 +14,7 @@ import pl.droidcon.app.helper.UrlHelper;
 import pl.droidcon.app.model.db.Session;
 import pl.droidcon.app.model.db.SessionRowEntity;
 import pl.droidcon.app.model.db.Speaker;
+import pl.droidcon.app.ui.activity.SessionActivity;
 
 public class AgendaSessionRowViewHolder extends BaseSessionViewHolder {
 
@@ -37,7 +40,7 @@ public class AgendaSessionRowViewHolder extends BaseSessionViewHolder {
         setRoom(sessionRowEntity.room3(), binding.agendaElementRoom3);
     }
 
-    void setRoom(Session session, AgendaElementSingleSessionBinding agendaElementBinding) {
+    void setRoom(final Session session, AgendaElementSingleSessionBinding agendaElementBinding) {
         if (session == null) {
             agendaElementBinding.sessionTitle.setText(sessionRowEnity.rowTitle());
             agendaElementBinding.sessionPicture.setImageResource(R.drawable.droidcon_krakow_logo);
@@ -46,6 +49,13 @@ public class AgendaSessionRowViewHolder extends BaseSessionViewHolder {
         agendaElementBinding.sessionTitle.setText(session.getTitle());
 
         setPicture(session.getSpeakers(), agendaElementBinding.sessionPicture);
+
+        agendaElementBinding.getRoot().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SessionActivity.start(view.getContext(), session);
+            }
+        });
     }
 
     private void setPicture(List<Speaker> realSpeakerList, RoundedImageView sessionPicture) {

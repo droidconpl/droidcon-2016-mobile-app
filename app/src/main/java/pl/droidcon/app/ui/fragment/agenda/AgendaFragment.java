@@ -28,7 +28,7 @@ import pl.droidcon.app.ui.view.RecyclerItemClickListener;
 import pl.droidcon.app.wrapper.SnackbarWrapper;
 
 
-public class AgendaFragment extends RxFragment implements RecyclerItemClickListener.OnItemClickListener {
+public class AgendaFragment extends RxFragment {
 
     private static final String TAG = AgendaFragment.class.getSimpleName();
     private static final String SESSION_DAY_KEY = "sessionDay";
@@ -91,7 +91,7 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
 //        });
         binding.agendaView.setLayoutManager(new LinearLayoutManager(getContext()));
 //        binding.agendaView.addItemDecoration(new SpacesItemDecoration(view.getContext().getResources().getDimension(R.dimen.list_element_margin)));
-        binding.agendaView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), this));
+//        binding.agendaView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), this));
         binding.agendaView.setAdapter(agendaAdapter);
         getSessions();
     }
@@ -156,12 +156,12 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
 
     }
 
-    @Override
-    public void onItemClick(View view, int position) {
-        SessionRowEntity session = agendaAdapter.getSessionByPosition(position);
-        if (session.room1().getSpeakers().isEmpty()) {
-            return;
-        }
+//    @Override
+//    public void onItemClick(View view, int position) {
+//        SessionRowEntity session = agendaAdapter.getSessionByPosition(position);
+//        if (session.room1().getSpeakers().isEmpty()) {
+//            return;
+//        }
 //        SessionActivity.start(getContext(), session);
-    }
+//    }
 }

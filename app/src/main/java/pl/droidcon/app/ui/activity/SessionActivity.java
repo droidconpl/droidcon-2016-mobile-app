@@ -30,7 +30,6 @@ import pl.droidcon.app.databinding.SessionActivityBinding;
 import pl.droidcon.app.helper.DateTimePrinter;
 import pl.droidcon.app.helper.HtmlCompat;
 import pl.droidcon.app.helper.UrlHelper;
-import pl.droidcon.app.model.common.Room;
 import pl.droidcon.app.model.common.ScheduleCollision;
 import pl.droidcon.app.model.db.Schedule;
 import pl.droidcon.app.model.db.ScheduleEntity;
@@ -116,7 +115,6 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
 
         binding.speakerPhotos.setAdapter(new SpeakerPhotosAdapter(this, speakersList));
         binding.sessionDescription.setText(HtmlCompat.fromHtml(session.getDescription()));
-        binding.sessionDate.setText(DateTimePrinter.toPrintableStringWithDay(new DateTime(session.getDate())));
         binding.indicator.setViewPager(binding.speakerPhotos);
 
         if (speakersList.size() == 1) {
@@ -125,9 +123,6 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
 
         binding.speakers.setSpeakers(speakersList, this);
         binding.favouriteButton.setOnClickListener(favouriteClickListener);
-
-        int stringRes = Room.valueOfRoomId(session.getRoomId()).getStringRes();
-        binding.sessionRoom.setText(stringRes);
     }
 
     @Override
