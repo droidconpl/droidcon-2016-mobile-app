@@ -10,7 +10,6 @@ import pl.droidcon.app.databinding.AgendaElementNewBinding;
 import pl.droidcon.app.databinding.AgendaElementSingleSessionBinding;
 import pl.droidcon.app.helper.UrlHelper;
 import pl.droidcon.app.model.db.Session;
-import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.model.db.SessionRowEntity;
 import pl.droidcon.app.model.db.Speaker;
 
@@ -24,27 +23,6 @@ public class AgendaSessionRowViewHolder extends BaseSessionViewHolder {
     public AgendaSessionRowViewHolder(AgendaElementNewBinding binding) {
         super(binding.getRoot());
         this.binding = binding;
-    }
-
-    @Override
-    public void attachSession(SessionEntity session) {
-//        this.session = session;
-//
-//        Room room = Room.valueOfRoomId(session.getRoomId());
-//        binding.sessionRoom.setText(room.getStringRes());
-//        binding.sessionTitle.setText(session.getTitle());
-//
-//        binding.sessionDate.setText(DateTimePrinter.toPrintableString(new DateTime(session.getDate())));
-//
-//        List<Speaker> realSpeakerList = session.getSpeakers();
-//        if (realSpeakerList.isEmpty()) {
-//            binding.sessionPicture.setImageResource(R.drawable.droidcon_krakow_logo);
-//        } else {
-//            String url = UrlHelper.url(realSpeakerList.get(0).getImageUrl());
-//            Picasso.with(binding.sessionPicture.getContext())
-//                    .load(url)
-//                    .into(binding.sessionPicture);
-//        }
     }
 
     public Session getSession() {

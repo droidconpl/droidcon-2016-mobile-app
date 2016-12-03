@@ -75,8 +75,6 @@ public class AgendaAdapterNew extends RecyclerView.Adapter<BaseSessionViewHolder
                 return new AgendaSessionRowViewHolder(AgendaElementNewBinding.inflate(inflater, parent, false));
             case LARGE_NON_SESSION:
                 return new AgendaNonSessionLargeViewHolder(AgendaNonSessionLargeElementBinding.inflate(inflater, parent, false));
-            case LARGE_SESSION:
-                return new AgendaSessionViewHolder(AgendaElementBinding.inflate(inflater, parent, false));
         }
 
         throw new IllegalStateException("Not valid viewType");
