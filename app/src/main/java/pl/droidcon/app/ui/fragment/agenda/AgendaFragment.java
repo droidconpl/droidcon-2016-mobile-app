@@ -10,22 +10,24 @@ import android.view.ViewGroup;
 
 import com.trello.rxlifecycle.components.support.RxFragment;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
+import io.requery.query.Result;
 import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
 import pl.droidcon.app.databinding.AgendaFragmentBinding;
 import pl.droidcon.app.model.common.SessionDay;
-import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.model.db.SessionRowEntity;
 import pl.droidcon.app.model.ui.SwipeRefreshColorSchema;
 import pl.droidcon.app.rx.DataSubscription;
 import pl.droidcon.app.ui.adapter.AgendaAdapterNew;
-import pl.droidcon.app.ui.view.RecyclerItemClickListener;
 import pl.droidcon.app.wrapper.SnackbarWrapper;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 
 public class AgendaFragment extends RxFragment {
@@ -111,57 +113,33 @@ public class AgendaFragment extends RxFragment {
 //                        return sessionEntities;
 //                    }
 //                })
-//        databaseManager.
-//                sessionRows(0)
-//                .flatMap(new Func1<Result<SessionRowEntity>, Observable<SessionRowEntity>>() {
-//                    @Override
-//                    public Observable<SessionRowEntity> call(Result<SessionRowEntity> sessionRowEntities) {
-//                        return sessionRowEntities.toObservable();
-//                    }
-//                })
-//                .compose(this.<SessionRowEntity>bindToLifecycle())
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Subscriber<SessionRowEntity>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        showErrorSnackBar();
-//                    }
-//
-//                    @Override
-//                    public void onNext(SessionRowEntity sessionEntity) {
-//                        agendaAdapter.add(sessionEntity);
-//                        binding.agendaFragmentSwipeRefreshLayout.setRefreshing(false);
-//                    }
-//                });
-//
+        databaseManager.
+                sessionRows(sessionDay.ordinal() + 1)
+                .subscribeOn(Schedulers.io())
+                .compose(this.<Result<SessionRowEntity>>bindToLifecycle())
+                .flatMap(new Func1<Result<SessionRowEntity>, Observable<SessionRowEntity>>() {
+                    @Override
+                    public Observable<SessionRowEntity> call(Result<SessionRowEntity> sessionRowEntities) {
+                        return sessionRowEntities.toObservable();
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<SessionRowEntity>() {
+                    @Override
+                    public void onCompleted() {
 
-        List<SessionRowEntity> sessionRowEntities =
-                DroidconInjector.get().getDatabase()
-                        .select(SessionRowEntity.class)
-                        .where(SessionEntity.DAY_ID.eq(sessionDay.ordinal() + 1))
-                        .orderBy(SessionRowEntity.SLOT_ID)
-                        .get()
-                        .toList();
+                    }
 
+                    @Override
+                    public void onError(Throwable e) {
+                        showErrorSnackBar();
+                    }
 
-        for (SessionRowEntity sessionRowEntity : sessionRowEntities) {
-            agendaAdapter.add(sessionRowEntity);
-        }
-
+                    @Override
+                    public void onNext(SessionRowEntity sessionEntity) {
+                        agendaAdapter.add(sessionEntity);
+                        binding.agendaFragmentSwipeRefreshLayout.setRefreshing(false);
+                    }
+                });
     }
-
-//    @Override
-//    public void onItemClick(View view, int position) {
-//        SessionRowEntity session = agendaAdapter.getSessionByPosition(position);
-//        if (session.room1().getSpeakers().isEmpty()) {
-//            return;
-//        }
-//        SessionActivity.start(getContext(), session);
-//    }
 }

@@ -22,6 +22,7 @@ import com.squareup.picasso.Target;
 
 import pl.droidcon.app.R;
 import pl.droidcon.app.databinding.SpeakerListItemBinding;
+import pl.droidcon.app.helper.HtmlCompat;
 
 
 public class SimpleListItem extends LinearLayout {
@@ -117,7 +118,7 @@ public class SimpleListItem extends LinearLayout {
     }
 
     protected void setDescription(String text) {
-        binding.speakerListItemText.setText(Html.fromHtml(text));
+        binding.speakerListItemText.setText(HtmlCompat.fromHtml(text));
     }
 
 }

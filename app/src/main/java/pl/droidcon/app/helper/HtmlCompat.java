@@ -4,6 +4,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.TextUtils;
 
 
 public final class HtmlCompat {
@@ -20,7 +21,7 @@ public final class HtmlCompat {
     }
 
     private static String handleDelTag(String source) {
-        return source.replaceAll("&ltdel", "&ltstrike");
+        return TextUtils.isEmpty(source) ? "" : source.replaceAll("&ltdel", "&ltstrike");
     }
 
     private HtmlCompat() {
