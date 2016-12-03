@@ -1,8 +1,6 @@
 package pl.droidcon.app.rx;
 
 
-import android.util.Log;
-
 import java.util.List;
 
 import javax.inject.Inject;
@@ -224,6 +222,8 @@ public class DataSubscription {
             sessionRowEntity.room3(room3Entity);
         }
 
+        sessionRowEntity.rowTitle(room1.slotTitle + room2.slotTitle + room3.slotTitle);
+        sessionRowEntity.rowPicture(room1.slotPicture + room2.slotPicture + room3.slotPicture);
 
         return DroidconInjector.get().getDatabase().upsert(sessionRowEntity);
     }

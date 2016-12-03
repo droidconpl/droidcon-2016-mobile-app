@@ -151,9 +151,7 @@ public class AgendaFragment extends RxFragment implements RecyclerItemClickListe
 
 
         for (SessionRowEntity sessionRowEntity : sessionRowEntities) {
-
-            if (sessionRowEntity.room1() != null)
-                agendaAdapter.add(sessionRowEntity);
+            agendaAdapter.add(sessionRowEntity);
         }
 
     }

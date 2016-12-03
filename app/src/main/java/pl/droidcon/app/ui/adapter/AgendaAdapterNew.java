@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.util.SortedListAdapterCallback;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,6 @@ import android.view.ViewGroup;
 import pl.droidcon.app.databinding.AgendaElementBinding;
 import pl.droidcon.app.databinding.AgendaElementNewBinding;
 import pl.droidcon.app.databinding.AgendaNonSessionLargeElementBinding;
-import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.model.db.SessionRowEntity;
 
 public class AgendaAdapterNew extends RecyclerView.Adapter<BaseSessionViewHolder> {
@@ -44,17 +44,17 @@ public class AgendaAdapterNew extends RecyclerView.Adapter<BaseSessionViewHolder
     private SortedList<SessionRowEntity> sessions = new SortedList<>(SessionRowEntity.class, new SortedListAdapterCallback<SessionRowEntity>(this) {
         @Override
         public int compare(SessionRowEntity o1, SessionRowEntity o2) {
-            return (int) (o1.slotId() - o2.slotId());
+            return o1.slotId() - o2.slotId();
         }
 
         @Override
         public boolean areContentsTheSame(SessionRowEntity oldItem, SessionRowEntity newItem) {
-            return oldItem.equals(newItem) && oldItem.room1().getSpeakers().size() == newItem.room1().getSpeakers().size();
+            return oldItem.equals(newItem);
         }
 
         @Override
         public boolean areItemsTheSame(SessionRowEntity item1, SessionRowEntity item2) {
-            return item1.getId() == item2.getId() && item1.room1().getSpeakers().size() == item2.room1().getSpeakers().size();
+            return item1.getId() == item2.getId();
         }
     });
 
@@ -85,7 +85,17 @@ public class AgendaAdapterNew extends RecyclerView.Adapter<BaseSessionViewHolder
     @Override
     public int getItemViewType(int position) {
         SessionRowEntity sessionByPosition = getSessionByPosition(position);
-        return ViewType.NORMAL_SESSION.getViewType();
+
+        if(sessionByPosition.room1() == null)
+            return ViewType.LARGE_NON_SESSION.getViewType();
+        else
+            return ViewType.NORMAL_SESSION.getViewType();
+
+//        if (TextUtils.isEmpty(sessionByPosition.rowTitle()))
+//            return ViewType.NORMAL_SESSION.getViewType();
+//        else
+//            return ViewType.LARGE_NON_SESSION.getViewType();
+
 //        if (!sessionByPosition.isSingleItem()) {
 //            return ViewType.NORMAL_SESSION.getViewType();
 //        }

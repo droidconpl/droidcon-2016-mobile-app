@@ -1,8 +1,6 @@
 package pl.droidcon.app.model.db;
 
 
-import com.google.gson.annotations.SerializedName;
-
 import io.requery.Entity;
 import io.requery.ForeignKey;
 import io.requery.Key;
@@ -21,6 +19,10 @@ public interface SessionRow {
     String slotStart();
 
     String slotEnd();
+
+    String rowTitle();
+
+    String rowPicture();
 
     @ForeignKey
     @OneToOne

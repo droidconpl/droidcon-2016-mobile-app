@@ -60,7 +60,10 @@ public class AgendaSessionRowViewHolder extends BaseSessionViewHolder {
     }
 
     void setRoom(Session session, AgendaElementSingleSessionBinding agendaElementRoom1) {
-        if (session == null) return;
+        if (session == null) {
+            agendaElementRoom1.sessionTitle.setText(sessionRowEnity.rowTitle());
+            return;
+        }
         agendaElementRoom1.sessionTitle.setText(session.getTitle());
 
         setPicture(session.getSpeakers(), agendaElementRoom1.sessionPicture);
