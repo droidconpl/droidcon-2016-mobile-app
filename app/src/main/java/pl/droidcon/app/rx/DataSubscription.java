@@ -10,10 +10,9 @@ import javax.inject.Inject;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.database.DatabaseManager;
 import pl.droidcon.app.http.RestService;
-import pl.droidcon.app.model.api.AgendaResponse;
-import pl.droidcon.app.model.api.AgendaRowDetails;
-import pl.droidcon.app.model.api.SessionRow;
 import pl.droidcon.app.model.api.AgendaRow;
+import pl.droidcon.app.model.api.AgendaRowDetails;
+import pl.droidcon.app.model.api.SessionResponse;
 import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.model.db.SessionRowEntity;
 import pl.droidcon.app.model.db.Speaker;
@@ -72,22 +71,67 @@ public class DataSubscription {
                 });
 
 
-        restService.getAgenda()
-                .flatMap(new Func1<AgendaResponse, Observable<SessionRow>>() {
+//        restService.getAgenda()
+//                .flatMap(new Func1<AgendaResponse, Observable<SessionRow>>() {
+//                    @Override
+//                    public Observable<SessionRow> call(AgendaResponse agendaResponse) {
+//                        return Observable.from(agendaResponse.sessions);
+//                    }
+//                })
+//                .flatMap(new Func1<SessionRow, Observable<SessionEntity>>() {
+//                    @Override
+//                    public Observable<SessionEntity> call(SessionRow sessionRow) {
+//                        return Observable.from(Utils.toSessions(sessionRow));
+//                    }
+//                })
+//                .flatMap(new Func1<SessionEntity, Observable<SessionEntity>>() {
+//                    @Override
+//                    public Observable<SessionEntity> call(SessionEntity sessionEntity) {
+//                        return DroidconInjector.get().getDatabase().upsert(sessionEntity).toObservable();
+//                    }
+//                })
+//                .subscribeOn(Schedulers.io())
+//                .subscribe(new Subscriber<SessionEntity>() {
+//                    @Override
+//                    public void onCompleted() {
+//                        Log.d(TAG, "onCompleted() called");
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        Log.d(TAG, "onError() called with: e = [" + e + "]");
+//                    }
+//
+//                    @Override
+//                    public void onNext(SessionEntity sessionEntity) {
+//                        Log.d(TAG, "onNext() called with: sessionEntity = [" + sessionEntity + "]");
+//                    }
+//                });
+
+
+        restService.getSessions()
+                .flatMap(new Func1<List<SessionResponse>, Observable<SessionResponse>>() {
                     @Override
-                    public Observable<SessionRow> call(AgendaResponse agendaResponse) {
-                        return Observable.from(agendaResponse.sessions);
+                    public Observable<SessionResponse> call(List<SessionResponse> sessions) {
+                        return Observable.from(sessions);
                     }
                 })
-                .flatMap(new Func1<SessionRow, Observable<SessionEntity>>() {
+                .flatMap(new Func1<SessionResponse, Observable<SessionEntity>>() {
                     @Override
-                    public Observable<SessionEntity> call(SessionRow sessionRow) {
-                        return Observable.from(Utils.toSessions(sessionRow));
-                    }
-                })
-                .flatMap(new Func1<SessionEntity, Observable<SessionEntity>>() {
-                    @Override
-                    public Observable<SessionEntity> call(SessionEntity sessionEntity) {
+                    public Observable<SessionEntity> call(SessionResponse sessionResponse) {
+                        SessionEntity sessionEntity = new SessionEntity();
+                        sessionEntity.setId(sessionResponse.sessionId);
+                        sessionEntity.setTitle(sessionResponse.sessionTitle);
+                        sessionEntity.setDescription(sessionResponse.sessionDescription);
+
+
+                        for (Integer integer : sessionResponse.speakerId) {
+                            SpeakerEntity speakerEntity = new SpeakerEntity();
+                            speakerEntity.setId(integer);
+                            sessionEntity.getSpeakers().add(speakerEntity);
+                        }
+
+
                         return DroidconInjector.get().getDatabase().upsert(sessionEntity).toObservable();
                     }
                 })
@@ -95,17 +139,17 @@ public class DataSubscription {
                 .subscribe(new Subscriber<SessionEntity>() {
                     @Override
                     public void onCompleted() {
-                        Log.d(TAG, "onCompleted() called");
+
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d(TAG, "onError() called with: e = [" + e + "]");
+
                     }
 
                     @Override
-                    public void onNext(SessionEntity sessionEntity) {
-                        Log.d(TAG, "onNext() called with: sessionEntity = [" + sessionEntity + "]");
+                    public void onNext(SessionEntity session) {
+
                     }
                 });
 
@@ -155,7 +199,7 @@ public class DataSubscription {
 
         AgendaRowDetails room1 = agendaRow.slotArray.get(0);
 
-        if(room1.slotSession.length() > 0 ){
+        if (room1.slotSession.length() > 0) {
             SessionEntity room1Entity = new SessionEntity();
             room1Entity.setId(Integer.parseInt(room1.slotSession));
 
@@ -164,7 +208,7 @@ public class DataSubscription {
 
         AgendaRowDetails room2 = agendaRow.slotArray.get(1);
 
-        if(room2.slotSession.length() > 0 ){
+        if (room2.slotSession.length() > 0) {
             SessionEntity room2Entity = new SessionEntity();
             room2Entity.setId(Integer.parseInt(room2.slotSession));
 
@@ -173,7 +217,7 @@ public class DataSubscription {
 
         AgendaRowDetails room3 = agendaRow.slotArray.get(2);
 
-        if(room3.slotSession.length() > 0 ){
+        if (room3.slotSession.length() > 0) {
             SessionEntity room3Entity = new SessionEntity();
             room3Entity.setId(Integer.parseInt(room3.slotSession));
 
