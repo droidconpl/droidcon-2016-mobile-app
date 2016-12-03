@@ -43,4 +43,7 @@ public interface Session extends Parcelable {
 
     @OneToOne
     Notification getNotification();
+
+    @OneToOne
+    SessionRow sessionRow();
 }
