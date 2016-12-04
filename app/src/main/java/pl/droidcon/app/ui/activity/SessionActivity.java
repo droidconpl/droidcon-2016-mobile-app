@@ -138,7 +138,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
                         return !(scheduleEntities == null || scheduleEntities.toList().isEmpty());
                     }
                 })
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Boolean>() {
                     @Override
@@ -186,7 +186,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
                         return new ScheduleCollision(scheduleEntity, true);
                     }
                 })
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<ScheduleCollision>() {
                     @Override
@@ -203,7 +203,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
 
     private void getCollisionSessionAndShowOverlapDialog(Schedule schedule) {
         Subscription subscription = databaseManager.session(schedule.getSession().getId())
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Session>() {
                     @Override
@@ -216,7 +216,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
 
     private void addToFavourites() {
         Subscription subscription = databaseManager.addToFavourite(session)
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<ScheduleEntity>() {
                     @Override
@@ -243,7 +243,7 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
 
     private void removeFromFavourites() {
         final Subscription subscription = databaseManager.removeFromFavourite(session)
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Boolean>() {
                     @Override
@@ -279,8 +279,8 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
 
     private void replaceSchedule(final Session oldSession) {
         final Subscription subscription = databaseManager.removeFromFavourite(oldSession)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(Schedulers.newThread())
                 .subscribe(new Action1<Boolean>() {
                     @Override
                     public void call(Boolean removed) {

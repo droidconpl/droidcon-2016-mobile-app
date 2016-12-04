@@ -115,7 +115,7 @@ public class SessionChooserDialog extends AppCompatDialogFragment implements Ses
     @Override
     public void onSessionClicked(final Session session) {
         Subscription subscription = databaseManager.addToFavourite(session)
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<ScheduleEntity>() {
                     @Override
