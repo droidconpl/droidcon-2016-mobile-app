@@ -8,12 +8,13 @@ import pl.droidcon.app.R;
 public enum Room {
 
     ROOM_1(R.string.room_1, 1),
-    ROOM_2(R.string.room_2, 2);
+    ROOM_2(R.string.room_2, 2),
+    ROOM_3(R.string.room_3, 3);
 
     @StringRes
     private int stringRes;
 
-    private int id;
+    public int id;
 
     Room(int stringRes, int id) {
         this.stringRes = stringRes;
@@ -32,6 +33,6 @@ public enum Room {
             }
         }
 
-        throw new IllegalArgumentException("Not supported room id");
+        throw new IllegalArgumentException("Not supported room id " + roomId);
     }
 }

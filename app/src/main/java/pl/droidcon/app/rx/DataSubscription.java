@@ -1,9 +1,14 @@
 package pl.droidcon.app.rx;
 
 
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -13,6 +18,7 @@ import pl.droidcon.app.http.RestService;
 import pl.droidcon.app.model.api.AgendaRow;
 import pl.droidcon.app.model.api.AgendaRowDetails;
 import pl.droidcon.app.model.api.SessionResponse;
+import pl.droidcon.app.model.common.Room;
 import pl.droidcon.app.model.db.SessionEntity;
 import pl.droidcon.app.model.db.SessionRowEntity;
 import pl.droidcon.app.model.db.Speaker;
@@ -32,6 +38,8 @@ public class DataSubscription {
     RestService restService;
     @Inject
     DatabaseManager databaseManager;
+
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
 
     public DataSubscription() {
         DroidconInjector.get().inject(this);
@@ -200,10 +208,10 @@ public class DataSubscription {
         AgendaRowDetails room1 = agendaRow.slotArray.get(0);
 
         if (room1.slotSession.length() > 0) {
-            SessionEntity room1Entity = new SessionEntity();
-            room1Entity.setId(Integer.parseInt(room1.slotSession));
+            SessionEntity sessionEntity = buildSessionEntity(agendaRow, room1);
+            sessionEntity.setRoomId(Room.ROOM_1.id);
+            sessionRowEntity.room1(sessionEntity);
 
-            sessionRowEntity.room1(room1Entity);
         } else {
             SessionEntity room1Entity = new SessionEntity();
 
@@ -216,10 +224,9 @@ public class DataSubscription {
         AgendaRowDetails room2 = agendaRow.slotArray.get(1);
 
         if (room2.slotSession.length() > 0) {
-            SessionEntity room2Entity = new SessionEntity();
-            room2Entity.setId(Integer.parseInt(room2.slotSession));
-
-            sessionRowEntity.room2(room2Entity);
+            SessionEntity sessionEntity = buildSessionEntity(agendaRow, room2);
+            sessionEntity.setRoomId(Room.ROOM_2.id);
+            sessionRowEntity.room2(sessionEntity);
         } else {
             SessionEntity room2Entity = new SessionEntity();
 
@@ -232,10 +239,9 @@ public class DataSubscription {
         AgendaRowDetails room3 = agendaRow.slotArray.get(2);
 
         if (room3.slotSession.length() > 0) {
-            SessionEntity room3Entity = new SessionEntity();
-            room3Entity.setId(Integer.parseInt(room3.slotSession));
-
-            sessionRowEntity.room3(room3Entity);
+            SessionEntity sessionEntity = buildSessionEntity(agendaRow, room3);
+            sessionEntity.setRoomId(Room.ROOM_3.id);
+            sessionRowEntity.room3(sessionEntity);
         } else {
             SessionEntity room3Entity = new SessionEntity();
 
@@ -251,6 +257,24 @@ public class DataSubscription {
         sessionRowEntity.sessionType(agendaRow.sessionType);
 
         return DroidconInjector.get().getDatabase().upsert(sessionRowEntity);
+    }
+
+    @NonNull
+    private SessionEntity buildSessionEntity(AgendaRow agendaRow, AgendaRowDetails room1) {
+        SessionEntity room1Entity = new SessionEntity();
+        room1Entity.setId(Integer.parseInt(room1.slotSession));
+
+
+        try {
+            String fullDate = (agendaRow.dayId == 1 ? "2016-12-08 " : "2016-12-09 ") + agendaRow.slotStart;
+            Date date = simpleDateFormat.parse(fullDate);
+            room1Entity.setDate(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        return room1Entity;
     }
 
     String firstNotEmpty(String... texts) {

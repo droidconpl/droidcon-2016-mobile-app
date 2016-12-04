@@ -16,6 +16,7 @@ import pl.droidcon.app.R;
 import pl.droidcon.app.dagger.DroidconInjector;
 import pl.droidcon.app.databinding.ScheduleElementBinding;
 import pl.droidcon.app.helper.DateTimePrinter;
+import pl.droidcon.app.helper.HtmlCompat;
 import pl.droidcon.app.helper.UrlHelper;
 import pl.droidcon.app.model.common.Room;
 import pl.droidcon.app.model.common.Slot;
@@ -46,8 +47,8 @@ public class ScheduleViewHolder extends RecyclerView.ViewHolder implements View.
     public void attachSlot(Slot slot) {
         ViewGroup.LayoutParams layoutParams = itemView.getLayoutParams();
         binding.slotViewHour.setText(DateTimePrinter.toPrintableString(slot.getDateTime()));
-        binding.slotViewTitle.setText(slot.getDisplayTitle());
-        binding.slotViewSessionTitle.setText(slot.getDisplayTitle());
+        binding.slotViewTitle.setText(HtmlCompat.fromHtml(slot.getDisplayTitle()));
+        binding.slotViewSessionTitle.setText(HtmlCompat.fromHtml(slot.getDisplayTitle()));
         // be sure to reset title widget
         // show & hide
         binding.slotViewTitle.setVisibility(View.VISIBLE);
