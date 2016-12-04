@@ -12,14 +12,11 @@ import rx.Observable;
 
 public interface RestService {
 
-    @GET("/model/agenda.json")
-    Observable<AgendaResponse> getAgenda();
-
     @GET("/model/speakers.json")
     Observable<List<SpeakerEntity>> getSpeakers();
 
     @GET("/model/agenda.json")
-    Observable<List<AgendaRow>> getData();
+    Observable<List<AgendaRow>> getAgenda();
 
     @GET("/model/sessions.json")
     Observable<List<SessionResponse>> getSessions();
