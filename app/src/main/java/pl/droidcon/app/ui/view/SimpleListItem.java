@@ -90,7 +90,7 @@ public class SimpleListItem extends LinearLayout {
     }
 
     protected void setTitle(String text) {
-        binding.speakerListItemFullName.setText(text);
+        binding.speakerListItemFullName.setText(HtmlCompat.fromHtml(text));
     }
 
     protected void setImage(@NonNull String imageUrl) {
