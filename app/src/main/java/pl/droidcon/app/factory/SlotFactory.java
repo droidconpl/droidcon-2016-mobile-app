@@ -38,12 +38,11 @@ public final class SlotFactory {
         slots.add(Slot.ofType(Type.SESSION, DAY_ONE, 12, 10));
         slots.add(Slot.ofType(Type.LUNCH_BREAK, DAY_ONE, 12, 40));
         slots.add(Slot.ofType(Type.SESSION, DAY_ONE, 14, 0));
-        slots.add(Slot.ofType(Type.SESSION, DAY_ONE, 14, 40));
-        slots.add(Slot.ofType(Type.COFFEE_BREAK, DAY_ONE, 15, 25));
-        slots.add(Slot.ofType(Type.SESSION, DAY_ONE, 15, 45));
-        slots.add(Slot.ofType(Type.SESSION, DAY_ONE, 16, 40));
-        slots.add(Slot.ofType(Type.CLOSING_1_DAY, DAY_ONE, 17, 10));
-        slots.add(Slot.ofType(Type.AFTER_PARTY, DAY_ONE, 17, 30));
+        slots.add(Slot.ofType(Type.SESSION, DAY_ONE, 14, 55));
+        slots.add(Slot.ofType(Type.COFFEE_BREAK, DAY_ONE, 15, 40));
+        slots.add(Slot.ofType(Type.SESSION, DAY_ONE, 16, 0));
+        slots.add(Slot.ofType(Type.CLOSING_1_DAY, DAY_ONE, 16, 45));
+        slots.add(Slot.ofType(Type.AFTER_PARTY, DAY_ONE, 18, 0));
 
         return slots;
     }
@@ -52,18 +51,18 @@ public final class SlotFactory {
     private static List<Slot> dayTwo() {
         List<Slot> slots = new ArrayList<>();
 
-        slots.add(Slot.ofType(Type.OPENING_2_DAY, DAY_TWO, 9, 45));
-        slots.add(Slot.ofType(Type.SESSION, DAY_TWO, 10, 0));
-        slots.add(Slot.ofType(Type.SESSION, DAY_TWO, 10, 40));
-        slots.add(Slot.ofType(Type.COFFEE_BREAK, DAY_TWO, 11, 25));
-        slots.add(Slot.ofType(Type.SESSION, DAY_TWO, 11, 45));
-        slots.add(Slot.ofType(Type.SESSION, DAY_TWO, 12, 40));
-        slots.add(Slot.ofType(Type.LUNCH_BREAK, DAY_TWO, 13, 10));
-        slots.add(Slot.ofType(Type.SESSION, DAY_TWO, 14, 30));
-        slots.add(Slot.ofType(Type.SESSION, DAY_TWO, 15, 15));
-        slots.add(Slot.ofType(Type.COFFEE_BREAK, DAY_TWO, 16, 0));
-        slots.add(Slot.ofType(Type.BARCAMP, DAY_TWO, 16, 20));
-        slots.add(Slot.ofType(Type.CLOSING_2_DAY, DAY_TWO, 18, 0));
+        slots.add(Slot.ofType(Type.OPENING_2_DAY, DAY_TWO, 8, 45));
+        slots.add(Slot.ofType(Type.SESSION, DAY_TWO, 9, 15));
+        slots.add(Slot.ofType(Type.SESSION, DAY_TWO, 10, 5));
+        slots.add(Slot.ofType(Type.COFFEE_BREAK, DAY_TWO, 10, 35));
+        slots.add(Slot.ofType(Type.SESSION, DAY_TWO, 11, 0));
+        slots.add(Slot.ofType(Type.SESSION, DAY_TWO, 11, 50));
+        slots.add(Slot.ofType(Type.LUNCH_BREAK, DAY_TWO, 12, 35));
+        slots.add(Slot.ofType(Type.BARCAMP, DAY_TWO, 14, 0));
+        slots.add(Slot.ofType(Type.SESSION, DAY_TWO, 15, 0));
+        slots.add(Slot.ofType(Type.COFFEE_BREAK, DAY_TWO, 15, 45));
+        slots.add(Slot.ofType(Type.SESSION, DAY_TWO, 16, 0));
+        slots.add(Slot.ofType(Type.CLOSING_2_DAY, DAY_TWO, 16, 45));
 
         return slots;
     }
