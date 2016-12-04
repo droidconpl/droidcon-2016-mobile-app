@@ -90,6 +90,8 @@ public class AgendaSessionRowViewHolder extends BaseSessionViewHolder {
     }
 
     private void foobar(final Session session, AgendaElementSingleSessionBinding agendaElementBinding) {
+        if(session.getTitle() == null) return;
+
         if (session.getTitle().hashCode() == session.getId()) {
             agendaElementBinding.sessionTitle.setText(HtmlCompat.fromHtml(sessionRowEnity.rowTitle()));
             agendaElementBinding.sessionPicture.setImageResource(R.drawable.droidcon_krakow_logo);

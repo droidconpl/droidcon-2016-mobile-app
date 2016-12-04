@@ -31,7 +31,7 @@ public class MapAndInfoFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
 
-                Uri gmmIntentUri = Uri.parse("geo:50.0472738,19.9309747?q=" + Uri.encode("Q Hotel, Wygrana 6,30-311 Kraków"));
+                Uri gmmIntentUri = Uri.parse("geo:50.0474948,19.9277199?q=" + Uri.encode("Park Inn by Radisson Krakow, Monte Cassino, Kraków"));
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
 
                 if (mapIntent.resolveActivity(getContext().getPackageManager()) != null) {
@@ -57,7 +57,7 @@ public class MapAndInfoFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
 
-                Uri gmmIntentUri = Uri.parse("geo:50.0570504,19.9129173?q=" + Uri.encode("Base Lab, Leona Wyczółkowskiego 7, Kraków"));
+                Uri gmmIntentUri = Uri.parse("geo:50.0354188,19.9233909?q=" + Uri.encode("IG, Kapelanka, Kraków"));
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
 
                 if (mapIntent.resolveActivity(getContext().getPackageManager()) != null) {

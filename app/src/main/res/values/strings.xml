@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Droidcon Kraków 2015</string>
+    <string name="app_name">Droidcon Kraków 2016</string>
     <!--MENU-->
     <string name="agenda">Agenda</string>
     <string name="speakers">Speakers</string>
@@ -25,10 +25,10 @@
     <string name="slot_type_icon">Icon of slot type</string>
     <string name="barcamp">Barcamp</string>
     <string name="after_party">After party</string>
-    <string name="event_date">4th-6th December 2015</string>
+    <string name="event_date">8th-10th December 2016</string>
     <string name="event_more_info_title">More information:  </string>
     <string name="event_website_link">droidcon.pl/</string>
-    <string name="event_description">Want to hear about latest Android technology and talk to experienced Android expert speakers? Be a part of it! Join second edition of droidcon Kraków!</string>
+    <string name="event_description">Want to hear about latest Android technology and talk to experienced Android expert speakers? Be a part of it! Join third edition of droidcon Kraków!</string>
     <string name="speaker_full_name_format">%1$s %2$s</string>
 
 
@@ -36,22 +36,22 @@
     <string name="map_and_info">Map &amp; info</string>
 
     <string name="map_and_info_venue_title">Venue</string>
-    <string name="map_and_info_venue_description">Droidcon is hosted by <b>Q Hotel Kraków</b>. Registration and hot beverages is available on base floor. Both speakers room are on 1st floor.</string>
-    <string name="map_and_info_venue_action">Open\nvenue location</string>
-    <string name="map_and_info_venue_location">Best Western Q Hotel</string>
-    <string name="map_and_info_venue_location_address">ul. Wygrana 6, Kraków</string>
+    <string name="map_and_info_venue_description">Droidcon is hosted by <b>Park Inn Kraków</b>. Registration and lunch is available on base floor. Session rooms and hot beverages are on 1st floor.</string>
+    <string name="map_and_info_venue_action">Open\nlocation</string>
+    <string name="map_and_info_venue_location">Park Inn Hotel</string>
+    <string name="map_and_info_venue_location_address">ul. Monte Cassino 2, Kraków</string>
 
     <string name="map_and_info_party_title">After party</string>
-    <string name="map_and_info_party_description">After party is placed just few meters from the venue in <b>Forum Przestrzenie</b>. It starts on Friday at 7pm. Come and drink beer with attendies</string>
-    <string name="map_and_info_party_action">Open\nafter party location</string>
+    <string name="map_and_info_party_description">After party is placed just few steps from the venue in <b>Forum Przestrzenie</b>. It starts on Thursday at 6pm. Come and drink beer with other attendees and speakers.</string>
+    <string name="map_and_info_party_action">Open\nlocation</string>
     <string name="map_and_info_party_location">Forum Przestrzenie</string>
     <string name="map_and_info_party_location_address">ul. Marii Konopnickiej 28, Kraków</string>
 
-    <string name="map_and_info_hackaton_title">Hackaton</string>
-    <string name="map_and_info_hackaton_description">Hackaton is hosted by <b>Base Lab</b>. Come and hack more Android stuff you just learned on the conference</string>
-    <string name="map_and_info_hackaton_action">Open\nHackaton Location</string>
-    <string name="map_and_info_hackaton_location">Base Lab</string>
-    <string name="map_and_info_hackaton_location_address">ul. Wyczółkowskiego 7, Kraków</string>
+    <string name="map_and_info_hackaton_title">Workshops and Hackaton</string>
+    <string name="map_and_info_hackaton_description">Workshops and Hackaton are hosted by <b>IG</b>. Come and try more Android stuff you just learned on the conference</string>
+    <string name="map_and_info_hackaton_action">Open\nlocation</string>
+    <string name="map_and_info_hackaton_location">IG</string>
+    <string name="map_and_info_hackaton_location_address">ul. Kapelańka 42B, Kraków</string>
 
     <string name="fav_added">Added to schedule</string>
     <string name="fav_removed">Removed from schedule</string>
@@ -63,9 +63,9 @@
     <string name="received_session_notification">Session %1$s is about to start!</string>
 
     <string name="hide">Hide</string>
-    <string name="room_1">Room 1</string>
-    <string name="room_2">Room 2</string>
-    <string name="room_3">Room 3</string>
+    <string name="room_1">Room A</string>
+    <string name="room_2">Room B</string>
+    <string name="room_3">Room C</string>
     <!-- NOT TRANSLATABLE-->
     <string name="preference_notify_sessions" translatable="false">notify_sessions</string>
 </resources>
