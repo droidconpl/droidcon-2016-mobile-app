@@ -29,6 +29,7 @@ public class AgendaNonSessionLargeViewHolder extends BaseSessionViewHolder {
         String title = sessionRowEntity.rowTitle();
 
         binding.sessionTitle.setText(title);
+        binding.sessionTime.setText(String.format("%s - %s", sessionRowEntity.slotStart(), sessionRowEntity.slotEnd()));
 //        binding.sessionDate.setText(DateTimePrinter.toPrintableStringWithDay(new DateTime(session.getDate())));
         String lowerCaseTitle = title.toLowerCase();
 
