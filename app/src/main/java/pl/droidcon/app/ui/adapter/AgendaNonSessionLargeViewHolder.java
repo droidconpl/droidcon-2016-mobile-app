@@ -32,6 +32,9 @@ public class AgendaNonSessionLargeViewHolder extends BaseSessionViewHolder {
         binding.sessionTitle.setText(title);
         binding.sessionTime.setText(String.format("%s - %s", sessionRowEntity.slotStart(), sessionRowEntity.slotEnd()));
 
+        binding.agendaElementStartTime.setText(sessionRowEntity.slotStart());
+        binding.agendaElementEndTime.setText(sessionRowEntity.slotEnd());
+
 //        String url = UrlHelper.assetUrl(sessionRowEntity.rowPicture());
 //        Picasso.with(binding.agendaLargeIcon.getContext())
 //                .load(url)

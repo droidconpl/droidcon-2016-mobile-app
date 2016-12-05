@@ -3,66 +3,120 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/list_item_height"
-        android:layout_marginTop="2dp"
-        android:background="@color/accentColor"
-        android:clickable="true"
-        android:focusable="true">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <com.makeramen.roundedimageview.RoundedImageView
-            android:id="@+id/session_picture"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/slot_outline_size"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/speaker_photo"
-            android:scaleType="centerCrop"
-            app:riv_corner_radius="@dimen/slot_round_size"/>
-
-        <ImageView
-            android:id="@+id/agenda_large_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|end"
-            android:layout_margin="@dimen/list_element_margin"
-            android:paddingRight="16dp"
-            tools:src="@drawable/ic_icon_fork_large"/>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/element_background"/>
 
         <LinearLayout
-            style="@style/AgendaDataContainer"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:background="@null"
-            android:paddingLeft="16dp">
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:background="@android:color/background_dark"/>
 
             <TextView
-                android:id="@+id/session_title"
-                style="@style/AgendaTitle"
-                android:layout_width="wrap_content"
+                android:id="@+id/agenda_element_start_time"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="Data binding"/>
+                android:background="@android:color/white"
+                android:padding="4dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                tools:text="9:00"/>
+
+            <View
+                android:layout_width="5dp"
+                android:layout_height="1dp"
+                android:layout_gravity="center_vertical"
+                android:background="@android:color/background_dark"/>
 
             <TextView
-                android:id="@+id/session_time"
-                style="@style/AgendaTitle"
-                android:layout_width="wrap_content"
+                android:id="@+id/agenda_element_end_time"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="9:00 - 12:00"/>
+                android:background="@android:color/white"
+                android:padding="4dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                tools:text="11:15"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:background="@android:color/background_dark"/>
 
         </LinearLayout>
 
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="?attr/selectableItemBackground"/>
-    </FrameLayout>
+            android:layout_height="@dimen/list_item_height"
+            android:layout_marginTop="2dp"
+            android:background="@color/accentColor"
+            android:clickable="true"
+            android:focusable="true">
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/session_picture"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/slot_outline_size"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/speaker_photo"
+                android:scaleType="centerCrop"
+                app:riv_corner_radius="@dimen/slot_round_size"/>
+
+            <ImageView
+                android:id="@+id/agenda_large_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:layout_margin="@dimen/list_element_margin"
+                android:paddingRight="16dp"
+                tools:src="@drawable/ic_icon_fork_large"/>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/element_background"/>
+
+            <LinearLayout
+                style="@style/AgendaDataContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="@null"
+                android:paddingLeft="16dp">
+
+                <TextView
+                    android:id="@+id/session_title"
+                    style="@style/AgendaTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Data binding"/>
+
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/session_time"
+                    style="@style/AgendaTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="9:00 - 12:00"/>
+
+            </LinearLayout>
+
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackground"/>
+        </FrameLayout>
+    </LinearLayout>
 </layout>
