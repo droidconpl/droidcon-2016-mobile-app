@@ -65,7 +65,7 @@ public class AgendaSessionRowViewHolder extends BaseSessionViewHolder {
     void setRoom(final Session session, final AgendaElementSingleSessionBinding agendaElementBinding) {
         if (session == null) {
             agendaElementBinding.sessionTitle.setText(HtmlCompat.fromHtml(sessionRowEnity.rowTitle()));
-            agendaElementBinding.sessionPicture.setImageResource(R.drawable.droidcon_krakow_logo);
+            agendaElementBinding.sessionPicture.setImageResource(R.drawable.droidcon_place_holder);
             return;
         }
 
@@ -94,7 +94,7 @@ public class AgendaSessionRowViewHolder extends BaseSessionViewHolder {
 
         if (session.getTitle().hashCode() == session.getId()) {
             agendaElementBinding.sessionTitle.setText(HtmlCompat.fromHtml(sessionRowEnity.rowTitle()));
-            agendaElementBinding.sessionPicture.setImageResource(R.drawable.droidcon_krakow_logo);
+            agendaElementBinding.sessionPicture.setImageResource(R.drawable.droidcon_place_holder);
         } else {
             agendaElementBinding.sessionTitle.setText(HtmlCompat.fromHtml(session.getTitle()));
 
@@ -111,7 +111,7 @@ public class AgendaSessionRowViewHolder extends BaseSessionViewHolder {
 
     private void setPicture(List<Speaker> realSpeakerList, final RoundedImageView sessionPicture) {
         if (realSpeakerList.isEmpty()) {
-            sessionPicture.setImageResource(R.drawable.droidcon_krakow_logo);
+            sessionPicture.setImageResource(R.drawable.droidcon_place_holder);
         } else {
 
             speakerSubscription = databaseManager
@@ -131,7 +131,7 @@ public class AgendaSessionRowViewHolder extends BaseSessionViewHolder {
                             String url = UrlHelper.url(speakerEntity.getImageUrl());
                             Picasso.with(sessionPicture.getContext())
                                     .load(url)
-                                    .placeholder(R.drawable.droidcon_krakow_logo)
+                                    .placeholder(R.drawable.droidcon_place_holder)
                                     .into(sessionPicture);
                         }
                     });

@@ -2,13 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="190dp"
-    android:background="@color/primaryColor"
+    android:background="@color/accentColor"
     android:orientation="vertical">
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/droidcon_krakow_logo"
+        android:src="@drawable/droidcon_place_holder"
         android:scaleType="centerCrop"/>
 
     <FrameLayout

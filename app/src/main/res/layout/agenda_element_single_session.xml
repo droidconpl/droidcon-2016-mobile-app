@@ -11,6 +11,7 @@
         android:focusable="true">
 
         <com.makeramen.roundedimageview.RoundedImageView
+            android:background="@color/accentColor"
             android:id="@+id/session_picture"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
