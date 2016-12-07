@@ -42,7 +42,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
             android:background="@color/accentColor"
-            android:src="@drawable/ic_launcher_no_title"/>
+            android:src="@drawable/droidcon_place_holder"/>
 
 
         <LinearLayout
