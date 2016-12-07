@@ -1,5 +1,6 @@
 package pl.droidcon.app.ui.adapter;
 
+import android.util.Log;
 import android.view.View;
 
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -82,7 +83,7 @@ public class AgendaSessionRowViewHolder extends BaseSessionViewHolder {
                 .subscribe(new Action1<SessionEntity>() {
                     @Override
                     public void call(SessionEntity sessionEntity) {
-                        foobar(session, agendaElementBinding);
+                        foobar(sessionEntity, agendaElementBinding);
                     }
                 });
 
