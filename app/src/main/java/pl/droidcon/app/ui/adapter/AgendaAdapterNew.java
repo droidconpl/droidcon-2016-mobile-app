@@ -4,12 +4,10 @@ import android.support.annotation.NonNull;
 import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.util.SortedListAdapterCallback;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import pl.droidcon.app.databinding.AgendaElementBinding;
 import pl.droidcon.app.databinding.AgendaElementNewBinding;
 import pl.droidcon.app.databinding.AgendaNonSessionLargeElementBinding;
 import pl.droidcon.app.model.db.SessionRowEntity;
@@ -84,7 +82,7 @@ public class AgendaAdapterNew extends RecyclerView.Adapter<BaseSessionViewHolder
     public int getItemViewType(int position) {
         SessionRowEntity sessionByPosition = getSessionByPosition(position);
 
-        if("singleSlot".equals(sessionByPosition.sessionType()))
+        if ("singleSlot".equals(sessionByPosition.sessionType()))
 //        if(sessionByPosition.room1() == null)
             return ViewType.LARGE_NON_SESSION.getViewType();
         else
@@ -113,7 +111,7 @@ public class AgendaAdapterNew extends RecyclerView.Adapter<BaseSessionViewHolder
     @Override
     public void onViewRecycled(BaseSessionViewHolder holder) {
         super.onViewRecycled(holder);
-        holder.unSubscribe();
+//        holder.unSubscribe();
     }
 
     @Override
