@@ -111,7 +111,7 @@ public class AgendaAdapterNew extends RecyclerView.Adapter<BaseSessionViewHolder
     @Override
     public void onViewRecycled(BaseSessionViewHolder holder) {
         super.onViewRecycled(holder);
-//        holder.unSubscribe();
+        holder.unSubscribe();
     }
 
     @Override

@@ -145,6 +145,6 @@ public class AgendaSessionRowViewHolder extends BaseSessionViewHolder {
     public void unSubscribe() {
         super.unSubscribe();
 
-        compositeSubscription.unsubscribe();
+        compositeSubscription.clear();
     }
 }
