@@ -3,14 +3,10 @@ package pl.droidcon.app.ui.view;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.text.Html;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,7 +14,6 @@ import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import pl.droidcon.app.R;
 import pl.droidcon.app.databinding.SpeakerListItemBinding;
@@ -94,27 +89,12 @@ public class SimpleListItem extends LinearLayout {
     }
 
     protected void setImage(@NonNull String imageUrl) {
+        Log.d(TAG, "setImage() called with: imageUrl = [" + imageUrl + "]");
         Picasso.with(getContext())
                 .load(imageUrl)
                 .resize(avatarSize, avatarSize)
-                .into(new Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
-                        roundedBitmapDrawable.setCircular(true);
-                        binding.speakerListItemText.setCompoundDrawablesWithIntrinsicBounds(roundedBitmapDrawable, null, null, null);
-                    }
-
-                    @Override
-                    public void onBitmapFailed(Drawable errorDrawable) {
-
-                    }
-
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                    }
-                });
+                .transform(new RoundTransformation(getResources()))
+                .into(binding.speakerListItemThumbnail);
     }
 
     protected void setDescription(String text) {
