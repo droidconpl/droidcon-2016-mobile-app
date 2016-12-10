@@ -353,9 +353,9 @@ public class SessionActivity extends BaseActivity implements SpeakerList.Speaker
             Picasso.with(context)
                     .load(url)
                     .into(imageView);
-            imageView.setOnClickListener(new ViewPagerImageClickListener(url));
-            container.addView(imageView);
-            return imageView;
+            itemView.setOnClickListener(new ViewPagerImageClickListener(url));
+            container.addView(itemView);
+            return itemView;
         }
 
         @Override
