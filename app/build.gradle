@@ -1,6 +1,6 @@
 apply plugin: 'android-sdk-manager'
 apply plugin: 'com.android.application'
-apply plugin: 'android-apt'
+apply plugin: 'groovyx.android'
 
 android {
     compileSdkVersion 25
@@ -46,13 +46,15 @@ dependencies {
     compile "com.android.support:recyclerview-v7:25.0.0"
     compile 'com.squareup.picasso:picasso:2.5.2'
 
-    apt "com.google.dagger:dagger-compiler:2.0.1"
-    compile 'org.glassfish:javax.annotation:10.0-b28'
     compile 'com.google.dagger:dagger:2.0.1'
+    annotationProcessor "com.google.dagger:dagger-compiler:2.0.1"
+
+     compile 'org.glassfish:javax.annotation:10.0-b28'
 
     compile 'io.requery:requery:1.0.1'
     compile 'io.requery:requery-android:1.0.1' // for android
-    apt 'io.requery:requery-processor:1.0.1'   // use an APT plugin
+    annotationProcessor 'io.requery:requery-processor:1.0.1'   // use an APT plugin
+//    apt 'io.requery:requery-processor:1.0.1'   // use an APT plugin
 
     compile 'net.danlew:android.joda:2.8.2'
     compile 'com.google.code.gson:gson:2.3.1'
@@ -66,7 +68,14 @@ dependencies {
     compile 'com.makeramen:roundedimageview:2.2.0'
     compile 'me.relex:circleindicator:1.1.5@aar'
 
-    testCompile 'junit:junit:4.12'
-    testCompile "org.robolectric:robolectric:3.0"
-    testCompile "org.assertj:assertj-core:1.7.0"
+    testCompile "org.spockframework:spock-core:1.0-groovy-2.4"
+
+    testCompile 'org.codehaus.groovy:groovy:2.4.3:grooid'
+    testCompile 'org.objenesis:objenesis:2.2'
+    testCompile 'cglib:cglib-nodep:3.2.2'
+}
+
+afterEvaluate {
+    tasks["compileDebugGroovyWithGroovyc"].enabled = false
+    tasks["compileReleaseGroovyWithGroovyc"].enabled = false
 }

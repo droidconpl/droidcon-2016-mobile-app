@@ -34,7 +34,8 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        DroidconInjector.get().inject(this);
+//        DroidconInjector.get().inject(this);
+        component.inject(this);
         drawerFragmentFactory.restoreState(savedInstanceState, getSupportFragmentManager());
         setupToolbar(binding.mainToolbar.toolbar);
         setupNavigationView();

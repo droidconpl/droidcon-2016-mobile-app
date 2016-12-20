@@ -10,9 +10,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import pl.droidcon.app.R;
+import pl.droidcon.app.dagger.DroidconComponent;
+import pl.droidcon.app.dagger.DroidconInjector;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
+    DroidconComponent component;
+
+    BaseActivity(){
+        component = DroidconInjector.get();
+    }
 
     void setupToolbar(@NonNull Toolbar toolbar) {
         setSupportActionBar(toolbar);
